@@ -1,7 +1,4 @@
 // Automatic FlutterFlow imports
-import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
 import 'package:flutter/material.dart';
 // Begin custom action code
@@ -11,7 +8,7 @@ import 'package:flutter/material.dart';
 // and then add the boilerplate code using the green button on the right!
 import 'dart:convert';
 
-Future<String?> convertImageFileToBase64(FFUploadedFile imageFile) async {
+Future<String?> convertImageFileToBase64(Image imageFile) async {
   List<int>? imageBytes = imageFile.bytes;
   if (imageBytes != null) {
     String base64Image = base64Encode(imageBytes);

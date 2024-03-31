@@ -1,0 +1,10 @@
+lib/main - Copy.dart
+lib/main - Copy (2).dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+lib/custom_code/
+test/
+test_driver/
+web/
+build/

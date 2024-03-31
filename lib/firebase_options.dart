@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -52,9 +49,19 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCQFc8zAsOJEAYZINrkflGzZZ6IsUEKcVs',
+    appId: '1:281666506292:web:480dfc942f97e441680461',
+    messagingSenderId: '281666506292',
+    projectId: 'upatrol-cdf52',
+    authDomain: 'upatrol-cdf52.firebaseapp.com',
+    storageBucket: 'upatrol-cdf52.appspot.com',
+    measurementId: 'G-715N8H7K3J',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCDlyt35FgJ6BN2Jm2KCPnk7wE50KDVSaA',
-    appId: '1:281666506292:android:f90090fd96d5ab0c680461',
+    appId: '1:281666506292:android:cfb69e6fff9d9ef8680461',
     messagingSenderId: '281666506292',
     projectId: 'upatrol-cdf52',
     storageBucket: 'upatrol-cdf52.appspot.com',
