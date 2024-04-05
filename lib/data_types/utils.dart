@@ -4,20 +4,45 @@ class Category {
   final String name;
   final Color color;
   final String description;
-  const Category(this.name, this.color, this.description);
+  final Icon icon;
+  const Category(this.name, this.color, this.description, this.icon);
+
+  factory Category.fromString(String category) {
+    for (final cat in categoryList) {
+      if (cat.name == category) {
+        return cat;
+      }
+    }
+    return categoryList[9];
+  }
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 List<Category> categoryList = [
-  const Category('Water Hazard', Colors.blue, 'Water'),
-  const Category('Obstruction', Colors.brown, 'Blockage'),
-  const Category('Electrical', Colors.yellow, 'PIKA'),
-  const Category('Flammable', Colors.red, 'FIYAA'),
-  const Category('Structural', Colors.grey, 'Shaky'),
-  const Category('Visibility', Colors.white, 'Doko'),
-  const Category('Sanitation', Colors.lightGreen, 'Ew'),
-  const Category('Chemical', Colors.purple, 'Radioactive'),
-  const Category('Vandalism', Colors.black, 'GET REKT'),
-  const Category('Misc', Colors.orange, 'Misc'),
+  const Category('Water Hazard', Colors.blue, 'Water',
+      Icon(Icons.water_drop, size: 30)),
+  const Category('Obstruction', Colors.brown, 'Blockage',
+      Icon(Icons.water_drop, size: 30)),
+  const Category('Electrical', Colors.yellow, 'PIKA',
+      Icon(Icons.bolt, size: 30)),
+  const Category('Flammable', Colors.red, 'FIYAA',
+      Icon(Icons.local_fire_department, size: 30)),
+  const Category('Structural', Colors.grey, 'Shaky',
+      Icon(Icons.business, size: 30)),
+  const Category('Visibility', Colors.white, 'Doko',
+      Icon(Icons.visibility_off, size: 30)),
+  const Category('Sanitation', Colors.lightGreen, 'Ew',
+      Icon(Icons.clean_hands, size: 30)),
+  const Category('Chemical', Colors.purple, 'Radioactive',
+      Icon(Icons.science, size: 30)),
+  const Category('Vandalism', Colors.black, 'GET REKT',
+      Icon(Icons.format_paint, size: 30)),
+  const Category('Misc', Colors.orange, 'Misc',
+      Icon(Icons.more_horiz, size: 30)),
 ];
 
 class LatLng {

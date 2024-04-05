@@ -8,3 +8,6 @@ test/
 test_driver/
 web/
 build/
+ios/
+pubspec.lock
+lib/UPatrol.code-workspace

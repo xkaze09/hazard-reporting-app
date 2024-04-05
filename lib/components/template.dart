@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_patrol/map.dart';
-import 'package:u_patrol/dashboard.dart';
+import 'package:u_patrol/home.dart';
 
 //insert query here
 var reportsList = List<bool>;
@@ -18,29 +18,40 @@ class Template extends StatefulWidget {
 }
 
 class _TemplateState extends State<Template> {
-  int _selectedNavBar = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedNavBar = index;
-      if (index == 0) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Dashboard()),
-        );
-      }
-      if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Map()),
-        );
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+    return MaterialApp(
+      routes: {
+        '/home': (context) => const Template(child: Home()),
+        '/map': (context) => const Template(child: Maps())
+      },
+      home: TemplateBody(
+        title: 'Dashboard',
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class TemplateBody extends StatefulWidget {
+  final Widget child;
+  final String title;
+
+  const TemplateBody({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  State<TemplateBody> createState() => _TemplateBodyState();
+}
+
+class _TemplateBodyState extends State<TemplateBody> {
+  @override
+  Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldKey =
+        GlobalKey<ScaffoldState>();
 
     return MaterialApp(
         home: Scaffold(
@@ -56,26 +67,12 @@ class _TemplateState extends State<Template> {
                 size: 40,
               )),
         ),
-        title: const Text("Dashboard"),
+        title: Text(widget.title),
       ),
       drawer: const Drawer(
         child: PublicDrawer(),
       ),
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedNavBar,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Maps',
-          ),
-        ],
-      ),
     ));
   }
 }
@@ -156,5 +153,69 @@ class _PublicDrawerState extends State<PublicDrawer> {
         ),
       ],
     );
+  }
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late int _selectedPageIndex;
+  late List<Widget> _pages;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedPageIndex = 0;
+    _pages = [const Home(), const Maps()];
+
+    _pageController = PageController(initialPage: _selectedPageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: true,
+              title: const Text("Dashboard"),
+            ),
+            drawer: const Drawer(child: PublicDrawer()),
+            body: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: _pages,
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.map),
+                  label: 'Maps',
+                ),
+              ],
+              currentIndex: _selectedPageIndex,
+              onTap: (selectedPageIndex) {
+                setState(() {
+                  _selectedPageIndex = selectedPageIndex;
+                  _pageController.jumpToPage(selectedPageIndex);
+                });
+              },
+            )));
   }
 }
