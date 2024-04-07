@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'sign_in_up_page.dart';
+import 'authentication/sign_in_up_page.dart';
 
 class LandingPage extends StatelessWidget {
   @override
