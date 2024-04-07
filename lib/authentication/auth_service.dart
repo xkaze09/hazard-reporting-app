@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Method to handle user sign-in using email and password
   Future<User?> signInWithEmailAndPassword(
@@ -21,10 +23,23 @@ class AuthService {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      await createUserDocument(result.user!); // Create a user document
       return result.user;
     } on FirebaseAuthException catch (e) {
       throw e;
     }
+  }
+
+  // Method to create a user document in Firestore
+  Future<void> createUserDocument(User user) async {
+    await _firestore.collection('users').doc(user.uid).set({
+      'uid': user.uid,
+      'email': user.email,
+      // Populate as needed
+      'is_moderator': false,
+      'is_receiver': false,
+      'created_at': FieldValue.serverTimestamp(),
+    });
   }
 
   // Method to handle user sign-out
@@ -38,9 +53,22 @@ class AuthService {
   // Stream to listen to the authentication changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  // Simulated method to fetch user role based on UID
+  // Method to fetch user role based on UID
   Future<String> getUserRole(User? user) async {
-    // Placeholder for actual implementation
-    return 'Reporter'; // Assuming every user is a 'Reporter' by default
+    if (user == null) throw Exception('No user signed in');
+    final userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+    if (userDoc.exists) {
+      final userData = userDoc.data()!;
+      if (userData['is_moderator'] == true) {
+        return 'Moderator';
+      } else if (userData['is_receiver'] == true) {
+        return 'Receiver';
+      } else {
+        return 'Reporter'; // Default role
+      }
+    } else {
+      throw Exception('User document does not exist in Firestore');
+    }
   }
 }
