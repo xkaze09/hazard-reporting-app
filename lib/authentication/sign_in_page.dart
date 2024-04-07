@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'auth_service.dart';
 
 class SignInPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -23,11 +26,16 @@ class SignInPage extends StatelessWidget {
               obscureText: true,
             ),
             ElevatedButton(
-              onPressed: () {
-                // TODO: Implement sign-in logic
-              },
-              child: Text('Sign In'),
-            ),
+                onPressed: () async {
+                  try {
+                    await AuthService().signInWithEmailAndPassword(
+                        emailController.text, passwordController.text);
+                    // On success, navigate to the home page or dashboard according to assigned role (default: Reporter)
+                  } on FirebaseAuthException catch (e) {
+                    // Handle errors by showing a message to the user
+                  }
+                },
+                child: Text('Sign In')),
           ],
         ),
       ),
