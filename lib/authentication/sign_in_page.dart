@@ -1,11 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'auth_service.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  String _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -13,30 +19,58 @@ class SignInPage extends StatelessWidget {
       appBar: AppBar(title: Text('Sign In')),
       body: Padding(
         padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            ElevatedButton(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty || !value.contains('@')) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.length < 6) {
+                    return 'Enter a valid password (min 6 characters)';
+                  }
+                  return null;
+                },
+              ),
+              ElevatedButton(
                 onPressed: () async {
-                  try {
-                    await AuthService().signInWithEmailAndPassword(
-                        emailController.text, passwordController.text);
-                    // On success, navigate to the home page or dashboard according to assigned role (default: Reporter)
-                  } on FirebaseAuthException catch (e) {
-                    // Handle errors by showing a message to the user
+                  if (_formKey.currentState!.validate()) {
+                    try {
+                      await AuthService().signInWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+                      // On success, navigate to the home page or dashboard according to assigned role (default: Reporter)
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        _errorMessage =
+                            e.message ?? 'An unknown error occurred';
+                      });
+                    }
                   }
                 },
-                child: Text('Sign In')),
-          ],
+                child: Text('Sign In'),
+              ),
+              SizedBox(height: 20),
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
