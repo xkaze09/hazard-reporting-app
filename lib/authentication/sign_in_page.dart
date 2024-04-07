@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
-import '../reporter_home_page.dart';
 
 class SignInPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -12,10 +11,10 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Sign In')),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             TextField(
               controller: emailController,
               decoration: InputDecoration(labelText: 'Email'),
@@ -28,17 +27,22 @@ class SignInPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await AuthService().signInWithEmailAndPassword(
-                      emailController.text, passwordController.text);
-                  // Navigate to appropriate user role's Home page upon successful sign-in
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) =>
-                          ReporterHomePage())); // TO DO: Must check user role, then navigate to appropriate page
+                  // Call the signInWithEmailAndPassword method and get UserCredential
+                  UserCredential authResult = await AuthService()
+                      .signInWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+
+                  // Check if we have a User object
+                  if (authResult.user != null) {
+                    // Navigate to the role-based home page
+                    await AuthService()
+                        .navigateToRoleBasedHomePage(context, authResult.user!);
+                  }
                 } on FirebaseAuthException catch (e) {
                   String errorMessage = _getErrorMessage(e.code);
-                  // Show error message
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(errorMessage)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(errorMessage)),
+                  );
                 }
               },
               child: Text('Sign In'),
@@ -62,7 +66,7 @@ class SignInPage extends StatelessWidget {
       case 'operation-not-allowed':
         return 'Signing in with Email and Password is not enabled.';
       default:
-        return 'An error occurred. Please try again.';
+        return 'An unknown error occurred.';
     }
   }
 }
