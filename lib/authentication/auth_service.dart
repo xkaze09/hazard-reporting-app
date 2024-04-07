@@ -11,7 +11,6 @@ class AuthService {
           email: email, password: password);
       return result.user;
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase authentication errors here
       throw e;
     }
   }
@@ -24,7 +23,6 @@ class AuthService {
           email: email, password: password);
       return result.user;
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase authentication errors here
       throw e;
     }
   }
@@ -39,4 +37,10 @@ class AuthService {
 
   // Stream to listen to the authentication changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  // Simulated method to fetch user role based on UID
+  Future<String> getUserRole(User? user) async {
+    // Placeholder for actual implementation
+    return 'Reporter'; // Assuming every user is a 'Reporter' by default
+  }
 }
