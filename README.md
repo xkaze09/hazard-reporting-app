@@ -1,16 +1,23 @@
-# hazard_reporting_app
+# Hazard Reporting App
 
-A new Flutter project.
+## Overview
+This application is designed to empower users to quickly report environmental hazards and incidents within a specified area, such as a university campus. Utilizing Flutter for cross-platform mobile development and Firebase for backend services, this app allows users to submit reports with photo evidence, view the status of their reports, and receive updates on report resolutions.
+
+## Features
+- **Report Submission**: Users can submit hazard reports with photos and location data.
+- **Report Tracking**: Track the status of submitted reports in real-time.
+- **User Authentication**: Secure login and registration system.
+- **Moderation**: Moderators can review, verify, and manage reports.
+- **Resolving**: Receivers can receive verified reports and resolve them.
+- **Notifications**: Reporters receive updates on their report status and other important information.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+- Flutter installed on your machine (See [Flutter installation guide](https://flutter.dev/docs/get-started/install))
+- An active Firebase project for backend services
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/hazard-reporting-app.git
