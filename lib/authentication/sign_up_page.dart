@@ -28,16 +28,25 @@ class SignUpPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await AuthService().createUserWithEmailAndPassword(
-                      emailController.text, passwordController.text);
-                  // Navigate to Sign In page upon successful sign-up
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SignInPage()));
+                  // Call the createUserWithEmailAndPassword method and get UserCredential
+                  UserCredential authResult = (await AuthService()
+                          .createUserWithEmailAndPassword(
+                              emailController.text, passwordController.text))
+                      as UserCredential;
+
+                  // Check if we have a User object
+                  if (authResult.user != null) {
+                    // Navigate to the Sign In page upon successful sign-up
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => SignInPage()),
+                    );
+                  }
                 } on FirebaseAuthException catch (e) {
                   String errorMessage = _getErrorMessage(e.code);
                   // Show error message
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(errorMessage)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(errorMessage)),
+                  );
                 }
               },
               child: Text('Sign Up'),
