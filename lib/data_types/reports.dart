@@ -14,6 +14,7 @@ class ReportsRecord {
   final DocumentReference? reporter;
   final Timestamp? timestamp;
   final String? title;
+  final bool? landscape;
   const ReportsRecord(
       this.category,
       this.description,
@@ -25,13 +26,14 @@ class ReportsRecord {
       this.location,
       this.reporter,
       this.timestamp,
-      this.title);
+      this.title,
+      this.landscape);
 
   factory ReportsRecord.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    DocumentSnapshot<Map<String, dynamic>>? snapshot,
     SnapshotOptions? options,
   ) {
-    final data = snapshot.data();
+    final data = snapshot?.data();
     return ReportsRecord(
         Category.fromString(data?['category']),
         data?['description'],
@@ -43,7 +45,8 @@ class ReportsRecord {
         data?['location'],
         data?['reporter'],
         data?['timestamp'],
-        data?['title']);
+        data?['title'],
+        checkRatio(Image.network(data?['image'])));
   }
 
   static Future<ReportsRecord> fromMap(
@@ -61,7 +64,8 @@ class ReportsRecord {
         data['location'],
         data['reporter'],
         data['timestamp'],
-        data['title']);
+        data['title'],
+        checkRatio(Image.network(data['image'])));
   }
 
   Map<String, dynamic> toFirestore() {
@@ -77,5 +81,14 @@ class ReportsRecord {
       if (timestamp != null) 'timestamp': timestamp,
       if (title != null) 'title': title,
     };
+  }
+
+  static bool checkRatio(Image image) {
+    try {
+      if (image.height!.ceil() > image.width!.ceil()) return false;
+    } catch (e) {
+      return true;
+    }
+    return true;
   }
 }

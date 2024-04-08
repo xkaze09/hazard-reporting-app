@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:u_patrol/map.dart';
-import 'package:u_patrol/home.dart';
+import 'package:u_patrol/pages/createReport.dart';
+import 'package:u_patrol/pages/dashboard.dart';
+import 'package:u_patrol/pages/map.dart';
+import 'package:u_patrol/pages/home.dart';
 
 //insert query here
 var reportsList = List<bool>;
 
 class Template extends StatefulWidget {
   final Widget child;
-
-  const Template({
-    super.key,
-    required this.child,
-  });
+  const Template({super.key, required this.child});
 
   @override
   State<Template> createState() => _TemplateState();
@@ -22,8 +20,12 @@ class _TemplateState extends State<Template> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/home': (context) => const Template(child: Home()),
-        '/map': (context) => const Template(child: Maps())
+        '/home': (context) => const Template(child: Dashboard()),
+        '/map': (context) => const Template(
+                child: Dashboard(
+              initialKey: 1,
+            )),
+        '/create': (context) => const Template(child: CreateReport())
       },
       home: TemplateBody(
         title: 'Dashboard',
@@ -53,28 +55,45 @@ class _TemplateBodyState extends State<TemplateBody> {
     final GlobalKey<ScaffoldState> scaffoldKey =
         GlobalKey<ScaffoldState>();
 
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        leading: SizedBox(
-          width: 40,
-          height: 40,
-          child: IconButton(
-              onPressed: () => scaffoldKey.currentState?.openDrawer(),
-              icon: const ImageIcon(
-                AssetImage('images/UPatrol-logo.png'),
-                size: 40,
-              )),
-        ),
-        title: Text(widget.title),
-      ),
-      drawer: const Drawer(
-        child: PublicDrawer(),
-      ),
+      appBar: PublicAppBar(scaffoldKey: scaffoldKey, widget: widget),
+      drawer: const PublicDrawer(),
       body: widget.child,
-    ));
+    );
   }
+}
+
+class PublicAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  const PublicAppBar({
+    super.key,
+    required this.scaffoldKey,
+    required this.widget,
+  });
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final TemplateBody widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: SizedBox(
+        width: 40,
+        height: 40,
+        child: IconButton(
+            onPressed: () => scaffoldKey.currentState?.openDrawer(),
+            icon: const ImageIcon(
+              AssetImage('images/UPatrol-logo.png'),
+              size: 40,
+            )),
+      ),
+      title: Text(widget.title),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class PublicDrawer extends StatefulWidget {
@@ -87,72 +106,71 @@ class PublicDrawer extends StatefulWidget {
 class _PublicDrawerState extends State<PublicDrawer> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            Column(
-              children: [
-                SizedBox(
-                  width: 75,
-                  height: 75,
-                  child: Image.asset("images/UPatrol-logo.png"),
-                ),
-              ],
-            ),
-            const Column(
-              children: [
-                Row(
-                  children: [Text("UserName")],
-                ),
-                Row(
-                  children: [Text("User")],
-                )
-              ],
-            )
-          ],
-        ),
-        const Row(
-          children: [
-            Icon(Icons.home_outlined, size: 48),
-            Text(
-              "Dashboard",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                fontFamily: "Roboto",
-              ),
-            )
-          ],
-        ),
-        const Row(
-          children: [
-            Icon(Icons.history, size: 48),
-            Text(
-              "History",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                fontFamily: "Roboto",
-              ),
-            )
-          ],
-        ),
-        const Row(
-          children: [
-            Icon(Icons.settings_outlined, size: 48),
-            Text(
-              "Settings",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                fontFamily: "Roboto",
-              ),
-            )
-          ],
-        ),
-      ],
+    return Drawer(
+      child: ListView(
+        children: const [
+          ListTile(
+              leading:
+                  Image(image: AssetImage('images/UPatrol-logo.png')),
+              title: Column(
+                children: [
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Username")),
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Username"))
+                ],
+              )),
+          DashboardTile(
+              icon: Icon(Icons.house_outlined, size: 40),
+              label: 'Dashboard',
+              namedRoute: '/home'),
+          DashboardTile(
+              icon: Icon(Icons.history, size: 40),
+              label: 'History',
+              namedRoute: '/history'),
+          DashboardTile(
+              icon: Icon(Icons.settings_outlined, size: 40),
+              label: 'Settings',
+              namedRoute: '/settings'),
+          DashboardTile(
+              icon: Icon(Icons.logout_outlined, size: 40),
+              label: 'Log-out',
+              namedRoute: '/settings'),
+        ],
+      ),
     );
+  }
+}
+
+class DashboardTile extends StatelessWidget {
+  final Icon icon;
+  final String label;
+  final String namedRoute;
+
+  const DashboardTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.namedRoute,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        leading: icon,
+        title: Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            fontFamily: "Roboto",
+          ),
+        ),
+        onTap: () {
+          Navigator.of(context).pushNamed(namedRoute);
+        });
   }
 }
 

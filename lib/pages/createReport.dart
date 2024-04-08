@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'components/template.dart';
+import '../components/template.dart';
 
 void main() {
   runApp(const UPatrol());
@@ -25,8 +25,7 @@ class CreateReport extends StatefulWidget {
   const CreateReport({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CreateReportState createState() => _CreateReportState();
+  State<CreateReport> createState() => _CreateReportState();
 }
 
 class _CreateReportState extends State<CreateReport> {
