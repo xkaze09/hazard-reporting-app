@@ -1,4 +1,4 @@
-import 'package:u_patrol/data_types/utils.dart';
+import '../data_types/utils.dart';
 
 class LatLng implements LatLngType {
   const LatLng(this.latitude, this.longitude);

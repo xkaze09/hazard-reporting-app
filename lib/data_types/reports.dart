@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:u_patrol/data_types/utils.dart';
+import '../data_types/utils.dart';
 
 class ReportsRecord {
   final Category? category;

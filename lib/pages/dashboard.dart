@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:u_patrol/pages/home.dart';
-import 'package:u_patrol/pages/map.dart';
+import '../pages/home.dart';
+import '../pages/map.dart';
 
 class Dashboard extends StatefulWidget {
   final int? initialKey;
