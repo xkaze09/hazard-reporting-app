@@ -11,3 +11,5 @@ build/
 ios/
 pubspec.lock
 lib/UPatrol.code-workspace
+linux/
+macos/
