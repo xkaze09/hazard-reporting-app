@@ -13,10 +13,12 @@ Future<void> main() async {
     options:
         DefaultFirebaseOptions.currentPlatform, // Initialize Firebase
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,27 +27,29 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 0), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => Template(child: Dashboard())));
+            builder: (_) => const Template(child: Dashboard())));
       } else {
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => LandingPage()));
+            MaterialPageRoute(builder: (_) => const LandingPage()));
       }
     });
   }

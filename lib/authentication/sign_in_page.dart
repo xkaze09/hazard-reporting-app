@@ -3,25 +3,30 @@ import 'package:flutter/material.dart';
 import 'auth_service.dart';
 
 class SignInPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController();
+  final TextEditingController passwordController =
+      TextEditingController();
+
+  SignInPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign In')),
+      appBar: AppBar(title: const Text('Sign In')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration:
+                  const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             ElevatedButton(
@@ -30,13 +35,14 @@ class SignInPage extends StatelessWidget {
                   // Call the signInWithEmailAndPassword method and get UserCredential
                   UserCredential authResult = await AuthService()
                       .signInWithEmailAndPassword(
-                          emailController.text, passwordController.text);
+                          emailController.text,
+                          passwordController.text);
 
                   // Check if we have a User object
                   if (authResult.user != null) {
                     // Navigate to the role-based home page
-                    await AuthService()
-                        .navigateToRoleBasedHomePage(context, authResult.user!);
+                    await AuthService().navigateToRoleBasedHomePage(
+                        context, authResult.user!);
                   }
                 } on FirebaseAuthException catch (e) {
                   String errorMessage = _getErrorMessage(e.code);
@@ -45,7 +51,7 @@ class SignInPage extends StatelessWidget {
                   );
                 }
               },
-              child: Text('Sign In'),
+              child: const Text('Sign In'),
             ),
           ],
         ),

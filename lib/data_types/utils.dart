@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'globals.dart';
+
 class Category {
   final String name;
   final Color color;
@@ -67,4 +69,26 @@ class Email {
     List<String> sep = email.split('@');
     return Email(name: sep[0], provider: sep[1]);
   }
+}
+
+String getErrorMessage(String errorCode) {
+  switch (errorCode) {
+    case 'user-not-found':
+      return 'No user found for that email.';
+    case 'wrong-password':
+      return 'Wrong password provided for that user.';
+    case 'user-disabled':
+      return 'User has been disabled.';
+    case 'too-many-requests':
+      return 'Too many requests. Try again later.';
+    case 'operation-not-allowed':
+      return 'Signing in with Email and Password is not enabled.';
+    default:
+      return 'An unknown error occurred.';
+  }
+}
+
+void showSnackBar(String text) {
+  rootScaffoldMessengerKey.currentState
+      ?.showSnackBar(SnackBar(content: Text(text)));
 }

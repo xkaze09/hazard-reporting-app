@@ -14,7 +14,8 @@ class ReceiverHomePage extends StatelessWidget {
             icon: const Icon(Icons.exit_to_app),
             onPressed: () async {
               await AuthService().signOut();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context)
+                  .popUntil((route) => route.isFirst);
             },
           ),
         ],
@@ -24,10 +25,10 @@ class ReceiverHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('Welcome, Receiver!',
-                style: Theme.of(context).textTheme.headline4),
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 20),
             Text('This is your dashboard.',
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
       ),

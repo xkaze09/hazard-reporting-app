@@ -1,8 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:u_patrol/pages/createReport.dart';
-import 'package:u_patrol/pages/dashboard.dart';
-import 'package:u_patrol/pages/map.dart';
-import 'package:u_patrol/pages/home.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/landing_page.dart';
+import '../pages/create_report.dart';
+import '/pages/dashboard.dart';
+import '/pages/map.dart';
+import '/pages/home.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
 
 //insert query here
 var reportsList = List<bool>;
@@ -19,6 +23,7 @@ class _TemplateState extends State<Template> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
         '/home': (context) => const Template(child: Dashboard()),
         '/map': (context) => const Template(
@@ -108,36 +113,50 @@ class _PublicDrawerState extends State<PublicDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: const [
+        children: [
           ListTile(
-              leading:
-                  Image(image: AssetImage('images/UPatrol-logo.png')),
+              leading: currentUser?.photo,
               title: Column(
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Username")),
+                      child: Text(
+                          currentUser?.displayName ?? "No Name")),
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Username"))
+                      child: Text(currentUser?.getRole() ?? "User"))
                 ],
               )),
-          DashboardTile(
+          const DashboardTile(
               icon: Icon(Icons.house_outlined, size: 40),
               label: 'Dashboard',
               namedRoute: '/home'),
-          DashboardTile(
+          const DashboardTile(
               icon: Icon(Icons.history, size: 40),
               label: 'History',
               namedRoute: '/history'),
-          DashboardTile(
+          const DashboardTile(
               icon: Icon(Icons.settings_outlined, size: 40),
               label: 'Settings',
               namedRoute: '/settings'),
-          DashboardTile(
-              icon: Icon(Icons.logout_outlined, size: 40),
-              label: 'Log-out',
-              namedRoute: '/settings'),
+          ListTile(
+            leading: const Icon(Icons.logout, size: 40),
+            title: const Text(
+              "Log-Out",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                fontFamily: "Roboto",
+              ),
+            ),
+            onTap: () {
+              logOut();
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) {
+                return const LandingPage();
+              }));
+            },
+          )
         ],
       ),
     );
@@ -185,6 +204,8 @@ class _MyAppState extends State<MyApp> {
   late int _selectedPageIndex;
   late List<Widget> _pages;
   late PageController _pageController;
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -206,6 +227,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               automaticallyImplyLeading: true,
               title: const Text("Dashboard"),

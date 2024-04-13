@@ -25,7 +25,6 @@ class _HomeState extends State<Home>
       builder: (BuildContext context,
           AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          debugPrint(snapshot.error.toString());
           return const Text('Error');
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
