@@ -4,25 +4,30 @@ import 'auth_service.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController();
+  final TextEditingController passwordController =
+      TextEditingController();
+
+  SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
+      appBar: AppBar(title: const Text('Sign Up')),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration:
+                  const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             ElevatedButton(
@@ -30,9 +35,9 @@ class SignUpPage extends StatelessWidget {
                 try {
                   // Call the createUserWithEmailAndPassword method and get UserCredential
                   UserCredential authResult = (await AuthService()
-                          .createUserWithEmailAndPassword(
-                              emailController.text, passwordController.text))
-                      as UserCredential;
+                      .createUserWithEmailAndPassword(
+                          emailController.text,
+                          passwordController.text));
 
                   // Check if we have a User object
                   if (authResult.user != null) {
@@ -49,7 +54,7 @@ class SignUpPage extends StatelessWidget {
                   );
                 }
               },
-              child: Text('Sign Up'),
+              child: const Text('Sign Up'),
             ),
           ],
         ),

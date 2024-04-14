@@ -22,8 +22,9 @@ class AuthService {
   // Method to handle user sign-up using email and password
   Future<UserCredential> createUserWithEmailAndPassword(
       String email, String password) async {
-    UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+    UserCredential result =
+        await _auth.createUserWithEmailAndPassword(
+            email: email, password: password);
     await createUserDocument(result.user!); // Create a user document
     return result;
   }
@@ -44,7 +45,8 @@ class AuthService {
     DocumentSnapshot userDoc =
         await _firestore.collection('users').doc(user.uid).get();
     if (userDoc.exists) {
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> userData =
+          userDoc.data() as Map<String, dynamic>;
       if (userData['is_moderator'] == true) {
         return 'Moderator';
       } else if (userData['is_receiver'] == true) {
@@ -75,17 +77,18 @@ class AuthService {
     switch (role) {
       case 'Moderator':
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => ModeratorHomePage()),
+          MaterialPageRoute(
+              builder: (_) => const ModeratorHomePage()),
         );
         break;
       case 'Receiver':
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => ReceiverHomePage()),
+          MaterialPageRoute(builder: (_) => const ReceiverHomePage()),
         );
         break;
       default: // 'Reporter' or any other roles default to Reporter's dashboard
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => ReporterHomePage()),
+          MaterialPageRoute(builder: (_) => const ReporterHomePage()),
         );
         break;
     }
