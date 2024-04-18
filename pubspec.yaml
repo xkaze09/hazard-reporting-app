@@ -43,7 +43,7 @@ dependencies:
   google_maps_flutter: ^2.6.0 # for integrating Google Maps
   geolocator: ^11.0.0 # for location services
   image_picker: ^1.0.7 # for image capturing
-  visibility_detector: ^0.4.0+2
+  google_maps_webservice: ^0.0.20-nullsafety.5
 
 dev_dependencies:
   flutter_test:

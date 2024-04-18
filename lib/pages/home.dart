@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import '../backend/firestore.dart';
 import '../data_types/reports.dart';
 
@@ -13,15 +14,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
-  final Stream<QuerySnapshot> _reportStream = reportsCollection
-      .orderBy('timestamp', descending: true)
-      .where('isResolved', isEqualTo: false)
-      .snapshots();
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _reportStream,
+      stream: getActiveReports(),
       builder: (BuildContext context,
           AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {

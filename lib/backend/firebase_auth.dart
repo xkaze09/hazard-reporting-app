@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/authentication/auth_page.dart';
 import 'package:hazard_reporting_app/authentication/transfer_page.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
@@ -28,10 +27,8 @@ void signInWithPassword(
         email: email.value.text, password: password.value.text);
 
     if (_instance.currentUser != null) {
-      if (context.mounted) {
-        checkUserChanges();
-        transferPage(context);
-      }
+      checkUserChanges();
+      transferPage(context);
     }
   } on FirebaseAuthException catch (e) {
     showSnackBar(getErrorMessage(e.code));
@@ -39,7 +36,7 @@ void signInWithPassword(
 }
 
 void checkUserChanges() {
-  FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+  _instance.authStateChanges().listen((User? user) async {
     if (user != null) {
       currentUser = ReporterRecord.fromFirestore(
           (await usersCollection.doc(user.uid).get())
@@ -47,4 +44,14 @@ void checkUserChanges() {
           SnapshotOptions());
     }
   });
+}
+
+Stream<QuerySnapshot> getActiveReports() {
+  Stream<QuerySnapshot> reportStream = reportsCollection
+      .orderBy('timestamp', descending: true)
+      // .where('category', arrayContainsAny: categoryFilters)
+      .where('isResolved', isEqualTo: false)
+      .snapshots();
+
+  return reportStream;
 }

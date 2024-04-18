@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 ReporterRecord? currentUser;
+
+List<String>? categoryFilters;

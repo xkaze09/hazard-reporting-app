@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'authentication/sign_in_up_page.dart';
 import 'authentication/auth_page.dart';
 
 class LandingPage extends StatelessWidget {
@@ -10,6 +9,7 @@ class LandingPage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
+          //TODO Improve App Design
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Spacer(),

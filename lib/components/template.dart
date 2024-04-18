@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
@@ -57,12 +56,8 @@ class TemplateBody extends StatefulWidget {
 class _TemplateBodyState extends State<TemplateBody> {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey =
-        GlobalKey<ScaffoldState>();
-
     return Scaffold(
-      key: scaffoldKey,
-      appBar: PublicAppBar(scaffoldKey: scaffoldKey, widget: widget),
+      appBar: PublicAppBar(widget: widget),
       drawer: const PublicDrawer(),
       body: widget.child,
     );
@@ -73,26 +68,14 @@ class PublicAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const PublicAppBar({
     super.key,
-    required this.scaffoldKey,
     required this.widget,
   });
-
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final TemplateBody widget;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: SizedBox(
-        width: 40,
-        height: 40,
-        child: IconButton(
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
-            icon: const ImageIcon(
-              AssetImage('images/UPatrol-logo.png'),
-              size: 40,
-            )),
-      ),
+      automaticallyImplyLeading: true,
       title: Text(widget.title),
     );
   }
