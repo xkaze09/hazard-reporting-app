@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hazard_reporting_app/authentication/auth_service.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import 'package:hazard_reporting_app/data_types/utils.dart';
-import '../authentication/sign_in_page.dart';
 
 class AuthPage extends StatefulWidget {
   final bool showSignUpFirst;
@@ -19,52 +15,8 @@ class _AuthPageState extends State<AuthPage> {
   bool isSignInSelected = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-
-  Widget _buildSocialButton(String logoPath, VoidCallback onTap) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 2.0,
-      ),
-      onPressed: onTap,
-      child: Image.asset(logoPath, height: 30),
-    );
-  }
-
-  Widget _buildSocialButtonsRow() {
-    String text = isSignInSelected ? 'or sign in with' : 'or sign up with';
-
-    return Column(
-      children: <Widget>[
-        Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
-        SizedBox(height: 5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildSocialButton(
-              'assets/images/facebook-logo.jpg',
-              () {
-                // Implement here if facebook is pressed
-              },
-            ),
-            SizedBox(width: 15),
-            _buildSocialButton(
-              'assets/images/google-logo.jpg',
-              () {
-                // Implement here if google is pressed
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +31,7 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: height,
           child: Stack(
             children: [
@@ -89,15 +41,15 @@ class _AuthPageState extends State<AuthPage> {
                   children: [
                     Container(
                       height: height * .3,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 30),
+                      padding: const EdgeInsets.only(top: 30),
                       child: Container(
                         height: height * .7 - 30,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFF146136),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
@@ -112,11 +64,12 @@ class _AuthPageState extends State<AuthPage> {
               Positioned(
                 top: height * .3 - (width * .45),
                 left: width * .1,
-                child: Container(
+                child: SizedBox(
                   height: width * .5,
                   width: width * .8,
-                  child: Image(
-                    image: AssetImage("assets/images/UPatrol-logo.png"),
+                  child: const Image(
+                    image:
+                        AssetImage("assets/images/UPatrol-logo.png"),
                   ),
                 ),
               ),
@@ -146,7 +99,7 @@ class _AuthPageState extends State<AuthPage> {
                           ),
                           if (isSignInSelected)
                             Container(
-                              margin: EdgeInsets.only(top: 5),
+                              margin: const EdgeInsets.only(top: 5),
                               width: 50,
                               height: 2,
                               color: Colors.white,
@@ -154,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 50),
+                    const SizedBox(width: 50),
                     GestureDetector(
                       onTap: () {
                         setState(() {
@@ -175,7 +128,7 @@ class _AuthPageState extends State<AuthPage> {
                           ),
                           if (!isSignInSelected)
                             Container(
-                              margin: EdgeInsets.only(top: 5),
+                              margin: const EdgeInsets.only(top: 5),
                               width: 50,
                               height: 2,
                               color: Colors.white,
@@ -186,177 +139,15 @@ class _AuthPageState extends State<AuthPage> {
                   ],
                 ),
               ),
-                                    GestureDetector(
-                        onTap: () async {
-                          try {
-                            // Call the signInWithEmailAndPassword method and get UserCredential
-                            UserCredential authResult = await AuthService()
-                                .signInWithEmailAndPassword(
-                                    emailController.text,
-                                    passwordController.text);
-
-                            // Check if we have a User object
-                            if (authResult.user != null) {
-                              // Navigate to the role-based home page
-                              await AuthService().navigateToRoleBasedHomePage(
-                                  context, authResult.user!);
-                            }
-                          } on FirebaseAuthException catch (e) {
-                            String errorMessage = _getErrorMessage(e.code);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(errorMessage)),
-                            );
-                          }
-                        },
-
-                        
-                      ),
               if (isSignInSelected) // Sign In
-                Positioned(
-                  top: height * .5 + 5,
-                  left: width * .1,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * .8,
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(Icons.email, color: Colors.grey),
-                            hintText: 'Email Address',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        width: width * .8,
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                            hintText: 'Password',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-                      Container(
-                        width: width * 0.3,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Sign In', style: TextStyle(fontSize: 17, color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF29AB84),
-                            textStyle: TextStyle(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => ResetPasswordPage()), 
-                          // );
-                        },
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.white.withOpacity(0.8)),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _buildSocialButtonsRow(),
-                    ],
-                  ),
-                ),
+                SignUpPage(
+                    height: height, width: width, isSignUp: false),
               if (!isSignInSelected) // Sign Up
-                Positioned(
-                  top: height * .5 + 10,
-                  left: width * .1,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * .8,
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(Icons.email, color: Colors.grey),
-                            hintText: 'Email Address',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Container(
-                        width: width * .8,
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                            hintText: 'Password',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Container(
-                        width: width * .8,
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: confirmPasswordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                            hintText: 'Confirm Password',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      Container(
-                        width: width * 0.3,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Sign Up', style: TextStyle(fontSize: 17, color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF29AB84),
-                            textStyle: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _buildSocialButtonsRow(),
-                    ],
-                  ),
-                ),
+                SignUpPage(
+                  height: height,
+                  width: width,
+                  isSignUp: true,
+                )
             ],
           ),
         ),
@@ -365,19 +156,164 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
- String _getErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'user-not-found':
-        return 'No user found for that email.';
-      case 'wrong-password':
-        return 'Wrong password provided for that user.';
-      case 'user-disabled':
-        return 'User has been disabled.';
-      case 'too-many-requests':
-        return 'Too many requests. Try again later.';
-      case 'operation-not-allowed':
-        return 'Signing in with Email and Password is not enabled.';
-      default:
-        return 'An unknown error occurred.';
-    }
+class SignUpPage extends StatefulWidget {
+  final double height;
+  final double width;
+  final bool isSignUp;
+
+  const SignUpPage(
+      {super.key,
+      required this.height,
+      required this.width,
+      required this.isSignUp});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  Widget _buildSocialButton(String logoPath, VoidCallback onTap) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 2.0,
+      ),
+      onPressed: onTap,
+      child: Image.asset(logoPath, height: 30),
+    );
   }
+
+  Widget _buildSocialButtonsRow() {
+    String text =
+        !widget.isSignUp ? 'or sign in with' : 'or sign up with';
+
+    return Column(
+      children: [
+        Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _buildSocialButton(
+              'assets/images/facebook-logo.jpg',
+              () {
+                // Implement here if facebook is pressed
+              },
+            ),
+            const SizedBox(width: 15),
+            _buildSocialButton(
+              'assets/images/google-logo.jpg',
+              () {
+                // Implement here if google is pressed
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: widget.height * .5 + 10,
+      left: widget.width * .1,
+      child: Column(
+        children: [
+          Container(
+            width: widget.width * .8,
+            padding: const EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(Icons.email, color: Colors.grey),
+                hintText: 'Email Address',
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          Container(
+            width: widget.width * .8,
+            padding: const EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                hintText: 'Password',
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          Visibility(
+            visible: widget.isSignUp,
+            child: Container(
+              width: widget.width * .8,
+              padding: const EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                  hintText: 'Confirm Password',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 25),
+          SizedBox(
+            width: widget.width * 0.3,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF29AB84),
+                textStyle: const TextStyle(fontSize: 20),
+              ),
+              child: TextButton(
+                child: Text(widget.isSignUp ? 'Sign Up' : 'Sign In',
+                    style: const TextStyle(
+                        fontSize: 17, color: Colors.white)),
+                onPressed: () {
+                  if (widget.isSignUp) {
+                    signUpWithPassword(
+                        context, emailController, passwordController);
+                  } else {
+                    signInWithPassword(
+                        context, emailController, passwordController);
+                  }
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _buildSocialButtonsRow(),
+        ],
+      ),
+    );
+  }
+}

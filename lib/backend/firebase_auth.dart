@@ -25,7 +25,26 @@ void signInWithPassword(
     TextEditingController password) async {
   try {
     await _instance.signInWithEmailAndPassword(
-        email: email.value.text, password: password.value.text);
+        email: email.text, password: password.text);
+
+    if (_instance.currentUser != null) {
+      if (context.mounted) {
+        checkUserChanges();
+        transferPage(context);
+      }
+    }
+  } on FirebaseAuthException catch (e) {
+    showSnackBar(getErrorMessage(e.code));
+  }
+}
+
+void signUpWithPassword(
+    BuildContext context,
+    TextEditingController email,
+    TextEditingController password) async {
+  try {
+    await _instance.createUserWithEmailAndPassword(
+        email: email.text, password: password.text);
 
     if (_instance.currentUser != null) {
       if (context.mounted) {
