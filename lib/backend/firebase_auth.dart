@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/authentication/auth_page.dart';
 import 'package:hazard_reporting_app/authentication/transfer_page.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
@@ -28,10 +27,9 @@ void signInWithPassword(
         email: email.text, password: password.text);
 
     if (_instance.currentUser != null) {
-      if (context.mounted) {
-        checkUserChanges();
-        transferPage(context);
-      }
+      checkUserChanges();
+
+      transferPage(context);
     }
   } on FirebaseAuthException catch (e) {
     showSnackBar(getErrorMessage(e.code));
@@ -47,10 +45,8 @@ void signUpWithPassword(
         email: email.text, password: password.text);
 
     if (_instance.currentUser != null) {
-      if (context.mounted) {
-        checkUserChanges();
-        transferPage(context);
-      }
+      checkUserChanges();
+      transferPage(context);
     }
   } on FirebaseAuthException catch (e) {
     showSnackBar(getErrorMessage(e.code));
