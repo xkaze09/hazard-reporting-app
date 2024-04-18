@@ -68,7 +68,11 @@ flutter:
   uses-material-design: true
 
   assets:
-      - assets/upatrol_logo.png
+      - assets/images/UPatrol-logo.png
+      - assets/images/facebook-logo.jpg
+      - assets/images/google-logo.jpg
+      
+ 
 
   # To add assets to your application, add an assets section, like this:
   # assets:
