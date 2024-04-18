@@ -287,12 +287,12 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           const SizedBox(height: 25),
           SizedBox(
-            width: widget.width * 0.3,
+            width: widget.width * 0.4,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF29AB84),
-                textStyle: const TextStyle(fontSize: 20),
+                textStyle: const TextStyle(fontSize: 17),
               ),
               child: TextButton(
                 child: Text(widget.isSignUp ? 'Sign Up' : 'Sign In',
