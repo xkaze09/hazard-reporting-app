@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 void main() => runApp(const Maps());
-
-Future<LatLng> getPosition() async {
-  Position pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.low);
-  LatLng posnew = LatLng(pos.latitude, pos.longitude);
-  return posnew;
-}
 
 class Maps extends StatefulWidget {
   const Maps({super.key});
@@ -43,7 +36,7 @@ class _MapState extends State<Maps>
               ),
             );
           }
-          LatLng location = snapshot.data!;
+          LatLng location = snapshot.data! as LatLng;
           return GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(

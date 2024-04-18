@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hazard_reporting_app/data_types/latlng.dart';
 
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
 
+Future<LatLng> getPosition() async {
+  Position pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.low);
+  LatLng posnew = LatLng(pos.latitude, pos.longitude);
+  return posnew;
+}
 
 class Category {
   final String name;
