@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 class AuthPage extends StatefulWidget {
   final bool showSignUpFirst;
@@ -300,9 +301,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontSize: 17, color: Colors.white)),
                 onPressed: () {
                   if (widget.isSignUp) {
-                    signUpWithPassword(
-                        context, emailController, passwordController);
-                  } else {
+                    if (passwordController.value ==
+                        confirmPasswordController.value) {
+                      signUpWithPassword(context, emailController,
+                          passwordController);
+                    } else {
+                      showSnackBar("Passwords don't match.");
+                    }
+                  } else if (!widget.isSignUp) {
                     signInWithPassword(
                         context, emailController, passwordController);
                   }
