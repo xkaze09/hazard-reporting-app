@@ -28,7 +28,7 @@ class LandingPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -39,43 +39,45 @@ class LandingPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AuthPage()),
+                                  builder: (context) =>
+                                      const AuthPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF29AB84),
+                            backgroundColor: const Color(0xFF29AB84),
                             shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.circular(20.0),
                             ),
-                            minimumSize: Size(200, 50),
+                            minimumSize: const Size(200, 50),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Get Started',
                             style: TextStyle(
                                 color: Colors.white, fontSize: 20),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         OutlinedButton(
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.white),
+                            side:
+                                const BorderSide(color: Colors.white),
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.circular(20.0),
                             ),
-                            minimumSize: Size(200, 50),
+                            minimumSize: const Size(200, 50),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Quick Report',
                             style: TextStyle(
                                 color: Color(0xFF146136),
                                 fontSize: 20),
                           ),
                         ),
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                       ],
                     ),
                   ),
@@ -92,7 +94,7 @@ class LandingPage extends StatelessWidget {
 class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Color(0xFF146136);
+    Paint paint = Paint()..color = const Color(0xFF146136);
     Path path = Path()
       ..moveTo(0, size.height * 0.4)
       ..quadraticBezierTo(size.width / 2, size.height / 2, size.width,
