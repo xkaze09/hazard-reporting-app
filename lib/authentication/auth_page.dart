@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 
 class AuthPage extends StatefulWidget {
   final bool showSignUpFirst;
@@ -189,17 +190,9 @@ class _AuthPageState extends State<AuthPage> {
                 onTap: () async {
                   try {
                     // Call the signInWithEmailAndPassword method and get UserCredential
-                    UserCredential authResult = await AuthService()
-                        .signInWithEmailAndPassword(
-                            emailController.text,
-                            passwordController.text);
-
+                    signInWithPassword(
+                        context, emailController, passwordController);
                     // Check if we have a User object
-                    if (authResult.user != null) {
-                      // Navigate to the role-based home page
-                      await AuthService().navigateToRoleBasedHomePage(
-                          context, authResult.user!);
-                    }
                   } on FirebaseAuthException catch (e) {
                     String errorMessage = _getErrorMessage(e.code);
                     ScaffoldMessenger.of(context).showSnackBar(

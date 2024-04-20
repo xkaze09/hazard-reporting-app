@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import '../backend/firestore.dart';
 import '../data_types/reports.dart';
 
 class Home extends StatefulWidget {
@@ -80,10 +79,13 @@ class _ActiveFeedState extends State<ActiveFeed> {
               ],
             ),
             title: Text(report.title ?? ''),
-            trailing: const Icon(Icons.ac_unit, color: Colors.white),
+            trailing: const SizedBox(),
           );
         },
-        body: ListTile(title: _expansion(report)),
+        body: ListTile(
+          title: _expansion(report),
+          trailing: const SizedBox(),
+        ),
         value: report.id ?? 0);
   }
 

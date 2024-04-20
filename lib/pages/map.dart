@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import 'package:hazard_reporting_app/backend/firestore.dart';
-import 'package:hazard_reporting_app/firebase_options.dart';
 
 void main() => runApp(const Maps());
 
@@ -33,6 +31,7 @@ class _MapState extends State<Maps>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    getMarkers();
     return FutureBuilder(
         future: getPosition(),
         builder: (context, snapshot) {
@@ -64,6 +63,7 @@ class _MapState extends State<Maps>
 
 void getMarkers() async {
   Stream reports = getActiveReports(); //Stream<QuerySnapshot>
-  List reportsList = await reports.toList(); //List<QuerySnapshot>
-  debugPrint(reportsList.runtimeType.toString());
+  List<QuerySnapshot> rep =
+      reports.toList() as List<QuerySnapshot<Object?>>;
+  debugPrint(rep.runtimeType.toString());
 }
