@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/backend/firestore.dart';
+import 'package:hazard_reporting_app/firebase_options.dart';
 
 void main() => runApp(const Maps());
 
@@ -56,4 +60,10 @@ class _MapState extends State<Maps>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+void getMarkers() async {
+  Stream reports = getActiveReports(); //Stream<QuerySnapshot>
+  List reportsList = await reports.toList(); //List<QuerySnapshot>
+  debugPrint(reportsList.runtimeType.toString());
 }

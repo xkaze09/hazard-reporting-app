@@ -49,7 +49,7 @@ void checkUserChanges() {
 Stream<QuerySnapshot> getActiveReports() {
   Stream<QuerySnapshot> reportStream = reportsCollection
       .orderBy('timestamp', descending: true)
-      // .where('category', arrayContainsAny: categoryFilters)
+      .where('category', whereNotIn: categoryFilters ?? [])
       .where('isResolved', isEqualTo: false)
       .snapshots();
 

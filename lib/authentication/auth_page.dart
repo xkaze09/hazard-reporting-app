@@ -1,8 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import 'package:hazard_reporting_app/data_types/globals.dart';
-import 'package:hazard_reporting_app/data_types/utils.dart';
-import '../authentication/sign_in_page.dart';
 
 class AuthPage extends StatefulWidget {
   final bool showSignUpFirst;
