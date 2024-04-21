@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 class Category {
   final String name;
@@ -30,7 +34,7 @@ List<Category> categoryList = [
   const Category('Water Hazard', Colors.blue, 'Water',
       Icon(Icons.water_drop, size: 30)),
   const Category('Obstruction', Colors.brown, 'Blockage',
-      Icon(Icons.water_drop, size: 30)),
+      Icon(Icons.fence, size: 30)),
   const Category('Electrical', Colors.yellow, 'PIKA',
       Icon(Icons.bolt, size: 30)),
   const Category('Flammable', Colors.red, 'FIYAA',
@@ -91,6 +95,7 @@ String getErrorMessage(String errorCode) {
 }
 
 void showSnackBar(String text) {
+  //Use global key to call snackbar
   rootScaffoldMessengerKey.currentState
       ?.showSnackBar(SnackBar(content: Text(text)));
 }
@@ -104,12 +109,40 @@ pickImage(ImageSource source) async {
   print("No Image Selected");
 }
 
+Future<String> reverseGeocode(LatLng location) async {
+  // Call the geocoding API to get the address of the location
+  List<Placemark> placemarks = await placemarkFromCoordinates(
+      location.latitude, location.longitude);
 
+  // Extract the address from the placemark
+  Placemark placemark = placemarks[0];
+  String address =
+      '${placemark.locality}, ${placemark.administrativeArea} , ${placemark.country}';
 
-// showSnackBar(String content, BuildContext context) {
-//   ScaffoldMessenger.of(context).showSnackBar(
-//     SnackBar(
-//       content: Text(content),
-//     ),
-//   );
-// }
+  // Return the address
+  return address;
+}
+
+Future<Uint8List?> iconToBytes(IconData icon,
+    {Color color = Colors.red}) async {
+  final pictureRecorder = PictureRecorder();
+  final canvas = Canvas(pictureRecorder);
+  final textPainter = TextPainter(textDirection: TextDirection.ltr);
+  final iconStr = String.fromCharCode(icon.codePoint);
+
+  textPainter.text = TextSpan(
+      text: iconStr,
+      style: TextStyle(
+        letterSpacing: 0.0,
+        fontSize: 48.0,
+        fontFamily: icon.fontFamily,
+        color: color,
+      ));
+  textPainter.layout();
+  textPainter.paint(canvas, const Offset(0.0, 0.0));
+
+  final picture = pictureRecorder.endRecording();
+  final image = await picture.toImage(48, 48);
+  final bytes = await image.toByteData(format: ImageByteFormat.png);
+  return bytes?.buffer.asUint8List();
+}

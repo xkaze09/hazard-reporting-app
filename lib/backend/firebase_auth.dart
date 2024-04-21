@@ -46,12 +46,16 @@ void checkUserChanges() {
   });
 }
 
-Stream<QuerySnapshot> getActiveReports() {
-  Stream<QuerySnapshot> reportStream = reportsCollection
+Stream<QuerySnapshot> getActiveReports({int limit = 20}) {
+  var reportStream = reportsCollection
+      .limit(limit)
       .orderBy('timestamp', descending: true)
-      .where('category', whereNotIn: categoryFilters ?? [])
-      .where('isResolved', isEqualTo: false)
-      .snapshots();
+      .where('isResolved', isEqualTo: false);
 
-  return reportStream;
+  if (categoryFilters != null) {
+    reportStream =
+        reportStream.where('category', whereNotIn: categoryFilters);
+  }
+
+  return reportStream.snapshots();
 }
