@@ -82,8 +82,10 @@ class _MapState extends State<Maps>
 Future<List<Marker>> getMarkers() async {
   QuerySnapshot repo = await reportsCollection
       .orderBy('timestamp', descending: true)
+      .where('isVerified', whereNotIn: categoryFilters ?? ['test'])
       .limit(20)
       .get();
+
   Set<ReportsRecord> reports = repo.docs
       .map((DocumentSnapshot document) {
         ReportsRecord report = ReportsRecord.fromFirestore(
