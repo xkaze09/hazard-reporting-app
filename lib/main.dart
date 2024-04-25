@@ -1,19 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
+import 'package:hazard_reporting_app/pages/create_report.dart';
 import 'firebase_options.dart';
 import 'landing_page.dart';
 import 'pages/dashboard.dart';
 import 'components/template.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Ensure flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure flutter bindings are initialized
   await Firebase.initializeApp(
     options:
         DefaultFirebaseOptions.currentPlatform, // Initialize Firebase
   );
-  runApp(const MyApp());
+  await FirebaseAuth.instance.signInAnonymously();
+  checkUserChanges();
+  runApp(const UPatrol());
 }
 
 class MyApp extends StatelessWidget {

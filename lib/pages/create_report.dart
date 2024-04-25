@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/template.dart';
@@ -7,10 +10,12 @@ import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 import '../data_types/utils.dart';
+import '../backend/firestore.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const UPatrol());
 }
 
@@ -37,12 +42,50 @@ class CreateReport extends StatefulWidget {
 }
 
 class _CreateReportState extends State<CreateReport> {
+  final _createReportFormKey = GlobalKey<FormState>();
   
   Uint8List? _file;
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  String? _ratingControllerValue;
+  String? _categoryControllerValue;
+
+  bool _isLoading = false;
+  void postReport() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      String res = await ImageStoreMethods().uploadPost(
+        _subjectController.text,
+        _descriptionController.text,
+        _categoryControllerValue??'', 
+        _locationController.text,  
+        _file!
+      );
+      if (res == 'success') {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar('Posted');
+        clearImage();
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(res);
+      }
+    } catch (err) {
+      showSnackBar(err.toString());
+    }
+  }
+
+  void clearImage(){
+    setState(() {
+      _file = null;
+    });
+  }
+
 
   _imageSelect(BuildContext context) async {
     return showDialog(
@@ -84,8 +127,9 @@ class _CreateReportState extends State<CreateReport> {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Form(
+                  key: _createReportFormKey,
+                  child: ListView(
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -125,29 +169,20 @@ class _CreateReportState extends State<CreateReport> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DropdownButtonFormField<String>(
-                        value: _ratingControllerValue,
+                        value: _categoryControllerValue,
                         decoration: const InputDecoration(
                           labelText: 'Report Category',
                         ),
-                        items: [
-                          'Wet',
-                          'Obstruction',
-                          'Electrical',
-                          'Fire',
-                          'Structural',
-                          'Visibility',
-                          'Sanitation',
-                          'Chemical',
-                          'Vandalism',
-                          'Misc'
-                        ].map((String value) {
+                        items: categoryList.map((category) {
                           return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                            value: category.name,
+                            child: Text(category.name),
                           );
                         }).toList(),
                         onChanged: (value) {
-                            setState(() { _ratingControllerValue = value;});
+                            setState(() { 
+                              _categoryControllerValue = value!;
+                              });
                           },
                         isExpanded: true,
                       ),
@@ -205,7 +240,7 @@ class _CreateReportState extends State<CreateReport> {
                         child: const Text('Take Photo'),
                       ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: postReport,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -214,7 +249,7 @@ class _CreateReportState extends State<CreateReport> {
                       child: const Text('Submit'),
                     ),
                   ],
-                ),
+                ),)
               ),
             );
           }
