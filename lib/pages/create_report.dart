@@ -197,12 +197,12 @@ class _CreateReportState extends State<CreateReport> {
                       ),
                       ElevatedButton(
                         onPressed: () => _imageSelect(context),
-                        child: Text('Take Photo'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        child: const Text('Take Photo'),
                       ),
                     ElevatedButton(
                       onPressed: () {},
