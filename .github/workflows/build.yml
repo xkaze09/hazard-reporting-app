@@ -1,58 +1,24 @@
-name: Android Builds
+name: CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
-
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
-  build:
+  test:
+    name: Flutter Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone repo
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
         with:
-          branch: 'main'
-          owner: 'xkaze09'
-          repository: 'hazard-reporting-app'
-      - name: Access cloned repository content
-        run: |
-          cd hazard-reporting-app
-          ls -la
-      - uses: actions/setup-java@v3
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
         with:
-          distribution: 'zulu'
-          java-version: "12.x"
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '5b12b74' # tag, commit or branch
-          channel: 'master'
-          
-      - name: Resolve issue
-        run: flutter pub add intl:^0.18.1
-        
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Build aab
-        run: flutter build appbundle
-
-      - name: Build aab
-        run: flutter build apk --split-per-abi
-
-      # Runs a set of commands using the runners shell
-      - name: Upload artifact aab
-        uses: actions/upload-artifact@v2
-        with:
-          name: appbundle
-          path: build/app/outputs/bundle/release/app-release.aab
-          
-      - name: Upload artifact apk
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: build/app/outputs/apk/release/app-release.apk
+          channel: 'stable'
+      - run: flutter doctor
+      - run: flutter pub get
+      - run: flutter build apk
+      - run: flutter build appbundle
