@@ -50,6 +50,7 @@ class _CreateReportState extends State<CreateReport> {
   final TextEditingController _locationController = TextEditingController();
   String? _categoryControllerValue;
 
+  // ignore: unused_field
   bool _isLoading = false;
   void postReport() async {
     setState(() {
@@ -92,11 +93,11 @@ class _CreateReportState extends State<CreateReport> {
       context: context, 
       builder: (context) {
         return SimpleDialog(
-          title: Text('Select Image'),
+          title: const Text('Select Image'),
           children: [
             SimpleDialogOption(
               padding: EdgeInsets.all(20),
-              child: Text('Take a Photo'),
+              child: const Text('Take a Photo'),
               onPressed: () async {
                 Navigator.of(context).pop();
                 Uint8List file = await pickImage(
@@ -116,144 +117,172 @@ class _CreateReportState extends State<CreateReport> {
             )
           ]
         );
-      });
+      }
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Template(
       child: StatefulBuilder(builder:
-        (BuildContext context,
-          StateSetter setState) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  key: _createReportFormKey,
-                  child: ListView(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
+        (BuildContext context, StateSetter setState) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _createReportFormKey,
+                child: ListView(
+                children: [
+                  ReportFormField(controller: _subjectController, label: 'Subject'),
+                  ReportFormField(controller: _descriptionController, label: 'Short Description'),
+                  ReportDropdownField(controllerValue: _categoryControllerValue, label: 'Report Category'),
+                  ReportFormField(controller: _locationController, label: 'Location'),
+                  const SizedBox(height: 40),
+                  ReportImageContainer(file: _file),
+                  const SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: () => _imageSelect(context),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      height: 200,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _subjectController,
-                              decoration: const InputDecoration(
-                                labelText: 'Subject',
-                              ),
-                              maxLines: 3,
-                              maxLength: 30,
-                            ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _descriptionController,
-                              decoration: const InputDecoration(
-                                labelText: 'Short Description',
-                              ),
-                              maxLines: 5,
-                              maxLength: 500,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                    child: const Text('Take Photo'),
+                  ),
+                  ElevatedButton(
+                    onPressed: postReport,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: DropdownButtonFormField<String>(
-                        value: _categoryControllerValue,
-                        decoration: const InputDecoration(
-                          labelText: 'Report Category',
-                        ),
-                        items: categoryList.map((category) {
-                          return DropdownMenuItem<String>(
-                            value: category.name,
-                            child: Text(category.name),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                            setState(() { 
-                              _categoryControllerValue = value!;
-                              });
-                          },
-                        isExpanded: true,
-                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextFormField(                 //location fetching not yet automatic, just text field for now
-                          controller: _locationController,
-                        decoration: const InputDecoration(
-                          labelText: 'Location',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const SizedBox(height: 20),
-                      _file == null ? 
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          'Placeholder for Uploaded Photo',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    )
-                    :
-                    SizedBox(
-                        height: 300,
-                        width: 300,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: MemoryImage(_file!),
-                              fit: BoxFit.fill,
-                              alignment: FractionalOffset.topCenter,
-                            ),
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _imageSelect(context),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text('Take Photo'),
-                      ),
-                    ElevatedButton(
-                      onPressed: postReport,
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text('Submit'),
-                    ),
-                  ],
-                ),)
-              ),
-            );
-          }
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),)
+            ),
+          );
+        }
       )
+    );
+  }
+}
+
+
+class ReportFormField extends StatelessWidget{
+  const ReportFormField({super.key, required this.controller, required this.label});
+
+  final TextEditingController controller;
+  final String label;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextFormField(                 
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class ReportDropdownField extends StatefulWidget {
+  ReportDropdownField({super.key, this.controllerValue, required this.label});
+
+  String? controllerValue;
+  final String label;
+
+  @override
+  State<ReportDropdownField> createState() => _ReportDropdownFieldState();
+}
+
+class _ReportDropdownFieldState extends State<ReportDropdownField> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: DropdownButtonFormField<String>(
+            value: widget.controllerValue,
+            decoration: const InputDecoration(
+              labelText: 'Report Category',
+            ),
+            items: categoryList.map((category) {
+              return DropdownMenuItem<String>(
+                value: category.name,
+                child: Text(category.name),
+              );
+            }).toList(),
+            onChanged: (value) {
+                setState(() { 
+                  widget.controllerValue = value!;
+                  });
+              },
+            isExpanded: true,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ReportImageContainer extends StatefulWidget {
+  const ReportImageContainer({super.key, this.file});
+
+  final Uint8List? file;
+
+  @override
+  State<ReportImageContainer> createState() => _ReportImageContainerState();
+}
+
+class _ReportImageContainerState extends State<ReportImageContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.file == null ? 
+    Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Text(
+          'Placeholder for Uploaded Photo',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+    )
+    :
+    SizedBox(
+      height: 400,
+      width: 300,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: MemoryImage(widget.file!),
+            fit: BoxFit.fill,
+            alignment: FractionalOffset.topCenter,
+          ),
+        ),
+      ),
     );
   }
 }
