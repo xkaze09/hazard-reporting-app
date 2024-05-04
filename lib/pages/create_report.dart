@@ -1,19 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/template.dart';
-import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 import '../data_types/utils.dart';
 import '../backend/firestore.dart';
 
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const UPatrol());
@@ -43,11 +39,14 @@ class CreateReport extends StatefulWidget {
 
 class _CreateReportState extends State<CreateReport> {
   final _createReportFormKey = GlobalKey<FormState>();
-  
+
   Uint8List? _file;
-  final TextEditingController _subjectController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _subjectController =
+      TextEditingController();
+  final TextEditingController _descriptionController =
+      TextEditingController();
+  final TextEditingController _locationController =
+      TextEditingController();
   String? _categoryControllerValue;
 
   // ignore: unused_field
@@ -58,12 +57,11 @@ class _CreateReportState extends State<CreateReport> {
     });
     try {
       String res = await ImageStoreMethods().uploadPost(
-        _subjectController.text,
-        _descriptionController.text,
-        _categoryControllerValue??'', 
-        _locationController.text,  
-        _file!
-      );
+          _subjectController.text,
+          _descriptionController.text,
+          _categoryControllerValue ?? '',
+          _locationController.text,
+          _file!);
       if (res == 'success') {
         setState(() {
           _isLoading = false;
@@ -81,62 +79,66 @@ class _CreateReportState extends State<CreateReport> {
     }
   }
 
-  void clearImage(){
+  void clearImage() {
     setState(() {
       _file = null;
     });
   }
 
-
   _imageSelect(BuildContext context) async {
     return showDialog(
-      context: context, 
-      builder: (context) {
-        return SimpleDialog(
-          title: const Text('Select Image'),
-          children: [
-            SimpleDialogOption(
-              padding: EdgeInsets.all(20),
-              child: const Text('Take a Photo'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                Uint8List file = await pickImage(
-                  ImageSource.camera,
-                );
-                setState(() {
-                  _file = file;
-                });
-              },
-            ),
-            SimpleDialogOption(
-              padding: EdgeInsets.all(20),
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+              title: const Text('Select Image'),
+              children: [
+                SimpleDialogOption(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text('Take a Photo'),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    Uint8List file = await pickImage(
+                      ImageSource.camera,
+                    );
+                    setState(() {
+                      _file = file;
+                    });
+                  },
+                ),
+                SimpleDialogOption(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Template(
-      child: StatefulBuilder(builder:
-        (BuildContext context, StateSetter setState) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Form(
-                key: _createReportFormKey,
-                child: ListView(
+    return Template(child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return Center(
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _createReportFormKey,
+              child: ListView(
                 children: [
-                  ReportFormField(controller: _subjectController, label: 'Subject'),
-                  ReportFormField(controller: _descriptionController, label: 'Short Description'),
-                  ReportDropdownField(controllerValue: _categoryControllerValue, label: 'Report Category'),
-                  ReportFormField(controller: _locationController, label: 'Location'),
+                  ReportFormField(
+                      controller: _subjectController,
+                      label: 'Subject'),
+                  ReportFormField(
+                      controller: _descriptionController,
+                      label: 'Short Description'),
+                  ReportDropdownField(
+                      controllerValue: _categoryControllerValue,
+                      label: 'Report Category'),
+                  ReportFormField(
+                      controller: _locationController,
+                      label: 'Location'),
                   const SizedBox(height: 40),
                   ReportImageContainer(file: _file),
                   const SizedBox(height: 40),
@@ -159,22 +161,19 @@ class _CreateReportState extends State<CreateReport> {
                     child: const Text('Submit'),
                   ),
                 ],
-              ),)
-            ),
-          );
-        }
-      )
-    );
+              ),
+            )),
+      );
+    }));
   }
 }
 
-
-class ReportFormField extends StatelessWidget{
-  const ReportFormField({super.key, required this.controller, required this.label});
+class ReportFormField extends StatelessWidget {
+  const ReportFormField(
+      {super.key, required this.controller, required this.label});
 
   final TextEditingController controller;
   final String label;
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +185,7 @@ class ReportFormField extends StatelessWidget{
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(10),
           ),
-          child: TextFormField(                 
+          child: TextFormField(
             controller: controller,
             decoration: InputDecoration(
               labelText: label,
@@ -198,15 +197,16 @@ class ReportFormField extends StatelessWidget{
   }
 }
 
-// ignore: must_be_immutable
 class ReportDropdownField extends StatefulWidget {
-  ReportDropdownField({super.key, this.controllerValue, required this.label});
+  ReportDropdownField(
+      {super.key, this.controllerValue, required this.label});
 
   String? controllerValue;
   final String label;
 
   @override
-  State<ReportDropdownField> createState() => _ReportDropdownFieldState();
+  State<ReportDropdownField> createState() =>
+      _ReportDropdownFieldState();
 }
 
 class _ReportDropdownFieldState extends State<ReportDropdownField> {
@@ -232,10 +232,10 @@ class _ReportDropdownFieldState extends State<ReportDropdownField> {
               );
             }).toList(),
             onChanged: (value) {
-                setState(() { 
-                  widget.controllerValue = value!;
-                  });
-              },
+              setState(() {
+                widget.controllerValue = value!;
+              });
+            },
             isExpanded: true,
           ),
         ),
@@ -250,39 +250,39 @@ class ReportImageContainer extends StatefulWidget {
   final Uint8List? file;
 
   @override
-  State<ReportImageContainer> createState() => _ReportImageContainerState();
+  State<ReportImageContainer> createState() =>
+      _ReportImageContainerState();
 }
 
 class _ReportImageContainerState extends State<ReportImageContainer> {
   @override
   Widget build(BuildContext context) {
-    return widget.file == null ? 
-    Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          'Placeholder for Uploaded Photo',
-          style: TextStyle(color: Colors.grey),
-        ),
-      ),
-    )
-    :
-    SizedBox(
-      height: 400,
-      width: 300,
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: MemoryImage(widget.file!),
-            fit: BoxFit.fill,
-            alignment: FractionalOffset.topCenter,
-          ),
-        ),
-      ),
-    );
+    return widget.file == null
+        ? Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                'Placeholder for Uploaded Photo',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+          )
+        : SizedBox(
+            height: 400,
+            width: 300,
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: MemoryImage(widget.file!),
+                  fit: BoxFit.fill,
+                  alignment: FractionalOffset.topCenter,
+                ),
+              ),
+            ),
+          );
   }
 }
