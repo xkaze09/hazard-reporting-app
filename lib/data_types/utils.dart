@@ -3,6 +3,42 @@ import 'package:flutter/material.dart';
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
 
+enum Categories {
+  waterHazard(Category('Water Hazard', Colors.blue, 'Water',
+      Icon(Icons.water_drop, size: 30))),
+  obstruction(Category('Obstruction', Colors.brown, 'Blockage',
+      Icon(Icons.water_drop, size: 30))),
+  electrical(Category('Electrical', Colors.yellow, 'PIKA',
+      Icon(Icons.bolt, size: 30))),
+  fireHazard(Category('Flammable', Colors.red, 'FIYAA',
+      Icon(Icons.local_fire_department, size: 30))),
+  structural(Category('Structural', Colors.grey, 'Shaky',
+      Icon(Icons.business, size: 30))),
+  visibility(Category('Visibility', Colors.white, 'Doko',
+      Icon(Icons.visibility_off, size: 30))),
+  sanitation(Category('Sanitation', Colors.lightGreen, 'Ew',
+      Icon(Icons.clean_hands, size: 30))),
+  chemical(Category('Chemical', Colors.purple, 'Radioactive',
+      Icon(Icons.science, size: 30))),
+  vandalism(Category('Vandalism', Colors.black, 'GET REKT',
+      Icon(Icons.format_paint, size: 30))),
+  miscellaneous(Category('Misc', Colors.orange, 'Misc',
+      Icon(Icons.more_horiz, size: 30)));
+
+  const Categories(this.category);
+
+  final Category category;
+
+  factory Categories.fromString(String category) {
+    Categories cat = Categories.miscellaneous;
+    try {
+      cat = Categories.values.byName(category);
+    } catch (e) {
+      cat = Categories.miscellaneous;
+    }
+    return cat;
+  }
+}
 
 class Category {
   final String name;

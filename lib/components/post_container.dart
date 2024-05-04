@@ -7,18 +7,19 @@ class PostContainer extends StatelessWidget {
   final String category;
 
   const PostContainer({
-    Key? key,
+    super.key,
     required this.displayName,
     required this.location,
     required this.title,
     required this.category,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: EdgeInsets.all(16.0),
+      margin:
+          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
@@ -27,7 +28,7 @@ class PostContainer extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -38,7 +39,7 @@ class PostContainer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 20,
                     backgroundColor: Color(0xFF29AB84),
                     child: Text(
@@ -46,13 +47,13 @@ class PostContainer extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         displayName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0,
                         ),
@@ -68,23 +69,23 @@ class PostContainer extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 height: 200,
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Image Placeholder',
                     style: TextStyle(fontSize: 16.0),
@@ -97,14 +98,15 @@ class PostContainer extends StatelessWidget {
             top: 8,
             right: 8,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Color(0xFF29AB84).withOpacity(0.5), 
+                color: const Color(0xFF29AB84).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: Text(
                 category,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

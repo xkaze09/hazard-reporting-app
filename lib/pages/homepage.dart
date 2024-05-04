@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/components/post_container.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,22 +32,11 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Home Page',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF146136),
-                ),
-              ),
-            ),
             Expanded(
               child: ListView.builder(
                 itemCount: 15,
                 itemBuilder: (BuildContext context, int index) {
-                  return PostContainer(
+                  return const PostContainer(
                     displayName: '[Display Name]',
                     location: '[Location]',
                     title: '[Title]',
@@ -51,86 +50,83 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showFilterDialog(context);
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const FilterDialog();
+              });
         },
-        backgroundColor: Color(0xFF29AB84),
-        child: Icon(Icons.filter_list),
+        backgroundColor: const Color(0xFF29AB84),
+        child: const Icon(Icons.filter_list),
       ),
     );
   }
+}
 
-  void _showFilterDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Filter'),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildFilterCheckbox('Wet'),
-              _buildFilterCheckbox('Obstruction'),
-              _buildFilterCheckbox('Electrical'),
-              _buildFilterCheckbox('Fire'),
-              _buildFilterCheckbox('Structural'),
-              _buildFilterCheckbox('Visibility'),
-              _buildFilterCheckbox('Sanitation'),
-              _buildFilterCheckbox('Chemical'),
-              _buildFilterCheckbox('Vandalism'),
-              _buildFilterCheckbox('Misc'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Reset',
-                style: TextStyle(color: Colors.black), 
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // implement apply filter 
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF29AB84), 
-              ),
-              child: Text(
-                'Apply Filter',
-                style: TextStyle(color: Colors.black), 
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+class FilterDialog extends StatefulWidget {
+  const FilterDialog({super.key});
 
-  Widget _buildFilterCheckbox(String filter) {
-    return Row(
-      children: [
-        Checkbox(
-          // Implement to manage selected filters
-          value: false,
-          onChanged: (value) {
-            // Implement to manage selected filters
+  @override
+  State<FilterDialog> createState() => _FilterDialogState();
+}
+
+class _FilterDialogState extends State<FilterDialog> {
+  List<bool> filter = List.filled(Categories.values.length, false);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Filter'),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        //Magic
+        children: Categories.values.map((Categories cat) {
+          return CheckboxListTile(
+              value: filter[cat.index],
+              dense: true,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (bool? val) {
+                setState(() {
+                  filter[cat.index] = val ?? false;
+                });
+              },
+              title: Text(cat.category.name));
+        }).toList(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
           },
+          child: const Text(
+            'Reset',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
-        Text(filter),
+        ElevatedButton(
+          onPressed: () {
+            // implement apply filter
+            Navigator.pop(context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF29AB84),
+          ),
+          child: const Text(
+            'Apply Filter',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
       ],
     );
   }
