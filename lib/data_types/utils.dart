@@ -2,8 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hazard_reporting_app/backend/firestore.dart';
 
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
@@ -143,7 +142,7 @@ pickImage(ImageSource source) async {
   if (file != null) {
     return await file.readAsBytes();
   }
-  print("No Image Selected");
+  showSnackBar("No Image Selected");
 }
 
 Future<String> reverseGeocode(LatLng location) async {
