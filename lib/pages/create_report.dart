@@ -52,30 +52,32 @@ class _CreateReportState extends State<CreateReport> {
   // ignore: unused_field
   bool _isLoading = false;
   void postReport() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      String res = await ImageStoreMethods().uploadPost(
-          _subjectController.text,
-          _descriptionController.text,
-          _categoryControllerValue ?? '',
-          _locationController.text,
-          _file!);
-      if (res == 'success') {
-        setState(() {
-          _isLoading = false;
-        });
-        showSnackBar('Posted');
-        clearImage();
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-        showSnackBar(res);
+    if(_createReportFormKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        String res = await ImageStoreMethods().uploadPost(
+            _subjectController.text,
+            _descriptionController.text,
+            _categoryControllerValue ?? '',
+            _locationController.text,
+            _file!);
+        if (res == 'success') {
+          setState(() {
+            _isLoading = false;
+          });
+          showSnackBar('Posted');
+          clearImage();
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          showSnackBar(res);
+        }
+      } catch (err) {
+        showSnackBar(err.toString());
       }
-    } catch (err) {
-      showSnackBar(err.toString());
     }
   }
 
@@ -129,16 +131,39 @@ class _CreateReportState extends State<CreateReport> {
                 children: [
                   ReportFormField(
                       controller: _subjectController,
-                      label: 'Subject'),
+                      label: 'Subject',
+                      isRequired: true,),
                   ReportFormField(
                       controller: _descriptionController,
-                      label: 'Short Description'),
-                  ReportDropdownField(
-                      controllerValue: _categoryControllerValue,
-                      label: 'Report Category'),
+                      label: 'Short Description',
+                      isRequired: false,),
+                  const SizedBox(height: 10),
+                  Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value: _categoryControllerValue,
+                        decoration: const InputDecoration(
+                          labelText: 'Report Category',
+                        ),
+                        items: categoryList.map((category) {
+                          return DropdownMenuItem<String>(
+                            value: category.name,
+                            child: Text(category.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                            _categoryControllerValue = value!;
+                        },
+                        isExpanded: true,
+                      ),
+                    ),
                   ReportFormField(
                       controller: _locationController,
-                      label: 'Location'),
+                      label: 'Location',
+                      isRequired: false,),
                   const SizedBox(height: 40),
                   ReportImageContainer(file: _file),
                   const SizedBox(height: 40),
@@ -170,9 +195,10 @@ class _CreateReportState extends State<CreateReport> {
 
 class ReportFormField extends StatelessWidget {
   const ReportFormField(
-      {super.key, required this.controller, required this.label});
+      {super.key, required this.controller, required this.label, required this.isRequired});
 
   final TextEditingController controller;
+  final bool isRequired;
   final String label;
 
   @override
@@ -187,6 +213,12 @@ class ReportFormField extends StatelessWidget {
           ),
           child: TextFormField(
             controller: controller,
+            validator: (value) {
+              if (isRequired == true && (value == null || value.isEmpty)) {
+                return 'Please enter a subject';
+              }
+              return null;
+            },
             decoration: InputDecoration(
               labelText: label,
             ),
@@ -197,52 +229,92 @@ class ReportFormField extends StatelessWidget {
   }
 }
 
-class ReportDropdownField extends StatefulWidget {
-  ReportDropdownField(
-      {super.key, this.controllerValue, required this.label});
+// class ReportDropdownField extends StatelessWidget {
+//   const ReportDropdownField(
+//       {super.key, required this.onPressed, required this.label});
 
-  String? controllerValue;
-  final String label;
+//   final ValueChanged<String> onPressed;
+//   final String label;
 
-  @override
-  State<ReportDropdownField> createState() =>
-      _ReportDropdownFieldState();
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         const SizedBox(height: 10),
+//         Container(
+//           decoration: BoxDecoration(
+//             color: Colors.grey[200],
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: DropdownButtonFormField<String>(
+//             value: onPressed,
+//             decoration: const InputDecoration(
+//               labelText: 'Report Category',
+//             ),
+//             items: categoryList.map((category) {
+//               return DropdownMenuItem<String>(
+//                 value: category.name,
+//                 child: Text(category.name),
+//               );
+//             }).toList(),
+//             onChanged: (value) {
+//                 onPressed(value!);
+//             },
+//             isExpanded: true,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
-class _ReportDropdownFieldState extends State<ReportDropdownField> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: DropdownButtonFormField<String>(
-            value: widget.controllerValue,
-            decoration: const InputDecoration(
-              labelText: 'Report Category',
-            ),
-            items: categoryList.map((category) {
-              return DropdownMenuItem<String>(
-                value: category.name,
-                child: Text(category.name),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                widget.controllerValue = value!;
-              });
-            },
-            isExpanded: true,
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class ReportDropdownField extends StatefulWidget {
+//   const ReportDropdownField(
+//       {super.key, required this.controllerValue, required this.onChanged, required this.label});
+
+//   final String controllerValue;
+//   final ValueChanged<String> onChanged;
+//   final String label;
+
+//   @override
+//   State<ReportDropdownField> createState() =>
+//       _ReportDropdownFieldState();
+// }
+
+// class _ReportDropdownFieldState extends State<ReportDropdownField> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         const SizedBox(height: 10),
+//         Container(
+//           decoration: BoxDecoration(
+//             color: Colors.grey[200],
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: DropdownButtonFormField<String>(
+//             value: widget.controllerValue,
+//             decoration: const InputDecoration(
+//               labelText: 'Report Category',
+//             ),
+//             items: categoryList.map((category) {
+//               return DropdownMenuItem<String>(
+//                 value: category.name,
+//                 child: Text(category.name),
+//               );
+//             }).toList(),
+//             onChanged: (value) {
+//               setState(() {
+//                 widget.onChanged(value!);
+//               });
+//             },
+//             isExpanded: true,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class ReportImageContainer extends StatefulWidget {
   const ReportImageContainer({super.key, this.file});
