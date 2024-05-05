@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hazard_reporting_app/authentication/auth_service.dart';
+import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import 'package:hazard_reporting_app/data_types/utils.dart';
-import '../authentication/sign_in_page.dart';
 
 class AuthPage extends StatefulWidget {
   final bool showSignUpFirst;
@@ -19,7 +16,8 @@ class _AuthPageState extends State<AuthPage> {
   bool isSignInSelected = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController();
 
   Widget _buildSocialButton(String logoPath, VoidCallback onTap) {
     return ElevatedButton(
@@ -32,7 +30,8 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildSocialButtonsRow() {
-    String text = isSignInSelected ? 'or sign in with' : 'or sign up with';
+    String text =
+        isSignInSelected ? 'or sign in with' : 'or sign up with';
 
     return Column(
       children: <Widget>[
@@ -116,7 +115,8 @@ class _AuthPageState extends State<AuthPage> {
                   height: width * .5,
                   width: width * .8,
                   child: Image(
-                    image: AssetImage("assets/images/UPatrol-logo.png"),
+                    image:
+                        AssetImage("assets/images/UPatrol-logo.png"),
                   ),
                 ),
               ),
@@ -186,31 +186,21 @@ class _AuthPageState extends State<AuthPage> {
                   ],
                 ),
               ),
-                                    GestureDetector(
-                        onTap: () async {
-                          try {
-                            // Call the signInWithEmailAndPassword method and get UserCredential
-                            UserCredential authResult = await AuthService()
-                                .signInWithEmailAndPassword(
-                                    emailController.text,
-                                    passwordController.text);
-
-                            // Check if we have a User object
-                            if (authResult.user != null) {
-                              // Navigate to the role-based home page
-                              await AuthService().navigateToRoleBasedHomePage(
-                                  context, authResult.user!);
-                            }
-                          } on FirebaseAuthException catch (e) {
-                            String errorMessage = _getErrorMessage(e.code);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(errorMessage)),
-                            );
-                          }
-                        },
-
-                        
-                      ),
+              GestureDetector(
+                onTap: () async {
+                  try {
+                    // Call the signInWithEmailAndPassword method and get UserCredential
+                    signInWithPassword(
+                        context, emailController, passwordController);
+                    // Check if we have a User object
+                  } on FirebaseAuthException catch (e) {
+                    String errorMessage = _getErrorMessage(e.code);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(errorMessage)),
+                    );
+                  }
+                },
+              ),
               if (isSignInSelected) // Sign In
                 Positioned(
                   top: height * .5 + 5,
@@ -228,7 +218,8 @@ class _AuthPageState extends State<AuthPage> {
                           controller: emailController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.email, color: Colors.grey),
+                            prefixIcon:
+                                Icon(Icons.email, color: Colors.grey),
                             hintText: 'Email Address',
                           ),
                         ),
@@ -246,18 +237,20 @@ class _AuthPageState extends State<AuthPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey),
                             hintText: 'Password',
                           ),
                         ),
                       ),
                       SizedBox(height: 20),
-
                       Container(
                         width: width * 0.3,
                         child: ElevatedButton(
                           onPressed: () {},
-                          child: Text('Sign In', style: TextStyle(fontSize: 17, color: Colors.white)),
+                          child: Text('Sign In',
+                              style: TextStyle(
+                                  fontSize: 17, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF29AB84),
                             textStyle: TextStyle(fontSize: 15),
@@ -269,12 +262,13 @@ class _AuthPageState extends State<AuthPage> {
                         onTap: () {
                           // Navigator.push(
                           //   context,
-                          //   MaterialPageRoute(builder: (context) => ResetPasswordPage()), 
+                          //   MaterialPageRoute(builder: (context) => ResetPasswordPage()),
                           // );
                         },
                         child: Text(
                           'Forgot Password?',
-                          style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.8)),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -299,7 +293,8 @@ class _AuthPageState extends State<AuthPage> {
                           controller: emailController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.email, color: Colors.grey),
+                            prefixIcon:
+                                Icon(Icons.email, color: Colors.grey),
                             hintText: 'Email Address',
                           ),
                         ),
@@ -317,7 +312,8 @@ class _AuthPageState extends State<AuthPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey),
                             hintText: 'Password',
                           ),
                         ),
@@ -335,7 +331,8 @@ class _AuthPageState extends State<AuthPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey),
                             hintText: 'Confirm Password',
                           ),
                         ),
@@ -345,7 +342,9 @@ class _AuthPageState extends State<AuthPage> {
                         width: width * 0.3,
                         child: ElevatedButton(
                           onPressed: () {},
-                          child: Text('Sign Up', style: TextStyle(fontSize: 17, color: Colors.white)),
+                          child: Text('Sign Up',
+                              style: TextStyle(
+                                  fontSize: 17, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF29AB84),
                             textStyle: TextStyle(fontSize: 20),
@@ -365,19 +364,19 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
- String _getErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'user-not-found':
-        return 'No user found for that email.';
-      case 'wrong-password':
-        return 'Wrong password provided for that user.';
-      case 'user-disabled':
-        return 'User has been disabled.';
-      case 'too-many-requests':
-        return 'Too many requests. Try again later.';
-      case 'operation-not-allowed':
-        return 'Signing in with Email and Password is not enabled.';
-      default:
-        return 'An unknown error occurred.';
-    }
+String _getErrorMessage(String errorCode) {
+  switch (errorCode) {
+    case 'user-not-found':
+      return 'No user found for that email.';
+    case 'wrong-password':
+      return 'Wrong password provided for that user.';
+    case 'user-disabled':
+      return 'User has been disabled.';
+    case 'too-many-requests':
+      return 'Too many requests. Try again later.';
+    case 'operation-not-allowed':
+      return 'Signing in with Email and Password is not enabled.';
+    default:
+      return 'An unknown error occurred.';
   }
+}

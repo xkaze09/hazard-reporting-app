@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/pages/map.dart';
 import '../data_types/utils.dart';
 
 class ReportsRecord {
@@ -15,6 +16,8 @@ class ReportsRecord {
   final Timestamp? timestamp;
   final String? title;
   final bool? landscape;
+  final String? address;
+
   const ReportsRecord(
     this.category,
     this.description,
@@ -44,6 +47,7 @@ class ReportsRecord {
         data?['isResolved'],
         data?['isVerified'],
         data?['location'],
+        data?['address'],
         data?['reporter'],
         data?['timestamp'],
         data?['title'],
@@ -51,26 +55,7 @@ class ReportsRecord {
     );
   }
 
-  static Future<ReportsRecord> fromMap(
-    Map<String, dynamic> data,
-  ) async {
-    // debugPrint(data['reporter'].runtimeType.toString());
-    return ReportsRecord(
-        Category.fromString(data['category']),
-        data['description'],
-        data['id'],
-        Image.network(data['image']),
-        data['image'],
-        data['isResolved'],
-        data['isVerified'],
-        data['location'],
-        data['reporter'],
-        data['timestamp'],
-        data['title'],
-        checkRatio(Image.network(data['image'])));
-  }
-
-  Map<String, dynamic> toFirestore() {
+  Future<Map<String, dynamic>> toFirestore() async {
     return {
       if (category != null) 'category': category.toString(),
       if (description != null) 'description': description,
@@ -79,6 +64,9 @@ class ReportsRecord {
       if (isResolved != null) 'isResolved': isResolved,
       if (isVerified != null) 'isVerified': isVerified,
       if (location != null) 'location': location,
+      if (location != null)
+        'address': await reverseGeocode(
+            convertFromGeoPoint(location ?? const GeoPoint(0, 0))),
       if (reporter != null) 'reporter': reporter,
       if (timestamp != null) 'timestamp': timestamp,
       if (title != null) 'title': title,
@@ -153,20 +141,6 @@ class ReporterRecord {
         data?['uid'],
         data?['is_responder'] ?? false,
         data?['is_receiver'] ?? false);
-  }
-
-  factory ReporterRecord.fromMap(
-    Map<String, dynamic> snapshot,
-  ) {
-    return ReporterRecord(
-        snapshot['timestamp'],
-        snapshot['display_name'],
-        Email.fromString(snapshot['email'].toString()),
-        Image.network(snapshot['photo_url']),
-        snapshot['photo_url'],
-        snapshot['uid'],
-        snapshot['is_responder'] ?? false,
-        snapshot['is_receiver'] ?? false);
   }
 
   static Future<ReporterRecord> fromReference(

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../backend/firestore.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import '../data_types/reports.dart';
 
 class Home extends StatefulWidget {
@@ -13,15 +13,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
-  final Stream<QuerySnapshot> _reportStream = reportsCollection
-      .orderBy('timestamp', descending: true)
-      .where('isResolved', isEqualTo: false)
-      .snapshots();
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _reportStream,
+      stream: getActiveReports(),
       builder: (BuildContext context,
           AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -83,10 +79,13 @@ class _ActiveFeedState extends State<ActiveFeed> {
               ],
             ),
             title: Text(report.title ?? ''),
-            trailing: const Icon(Icons.ac_unit, color: Colors.white),
+            trailing: const SizedBox(),
           );
         },
-        body: ListTile(title: _expansion(report)),
+        body: ListTile(
+          title: _expansion(report),
+          trailing: const SizedBox(),
+        ),
         value: report.id ?? 0);
   }
 
