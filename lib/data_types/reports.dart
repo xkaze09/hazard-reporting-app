@@ -16,18 +16,19 @@ class ReportsRecord {
   final String? title;
   final bool? landscape;
   const ReportsRecord(
-      this.category,
-      this.description,
-      this.id,
-      this.image,
-      this.imageURL,
-      this.isResolved,
-      this.isVerified,
-      this.location,
-      this.reporter,
-      this.timestamp,
-      this.title,
-      this.landscape);
+    this.category,
+    this.description,
+    this.id,
+    this.image,
+    this.imageURL,
+    this.isResolved,
+    this.isVerified,
+    this.location,
+    this.reporter,
+    this.timestamp,
+    this.title,
+    this.landscape
+  );
 
   factory ReportsRecord.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>>? snapshot,
@@ -46,7 +47,8 @@ class ReportsRecord {
         data?['reporter'],
         data?['timestamp'],
         data?['title'],
-        checkRatio(Image.network(data?['image'])));
+        checkRatio(Image.network(data?['image']))
+    );
   }
 
   static Future<ReportsRecord> fromMap(

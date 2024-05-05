@@ -50,20 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCQFc8zAsOJEAYZINrkflGzZZ6IsUEKcVs',
-    appId: '1:281666506292:web:480dfc942f97e441680461',
-    messagingSenderId: '281666506292',
-    projectId: 'upatrol-cdf52',
-    authDomain: 'upatrol-cdf52.firebaseapp.com',
-    storageBucket: 'upatrol-cdf52.appspot.com',
-    measurementId: 'G-715N8H7K3J',
+    apiKey: 'AIzaSyD9DgQs0g5WbFhcFfx9YU2p3iMd3zGmplc',
+    appId: '1:53989677370:web:962a5ef1a26d5d8ae5d803',
+    messagingSenderId: '53989677370',
+    projectId: 'hazard-reporting-app-1',
+    authDomain: 'hazard-reporting-app-1.firebaseapp.com',
+    storageBucket: 'hazard-reporting-app-1.appspot.com',
+    measurementId: 'G-1W5PLPEV76',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCDlyt35FgJ6BN2Jm2KCPnk7wE50KDVSaA',
-    appId: '1:281666506292:android:cfb69e6fff9d9ef8680461',
-    messagingSenderId: '281666506292',
-    projectId: 'upatrol-cdf52',
-    storageBucket: 'upatrol-cdf52.appspot.com',
+    apiKey: 'AIzaSyAj7FWOSPE74--0KvJjtKVWp4lwo3BUFv4',
+    appId: '1:53989677370:android:f1d283e6e65c60ebe5d803',
+    messagingSenderId: '53989677370',
+    projectId: 'hazard-reporting-app-1',
+    storageBucket: 'hazard-reporting-app-1.appspot.com',
   );
+
 }
