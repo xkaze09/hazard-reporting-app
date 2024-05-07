@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './authentication/auth_service.dart'; // import the AuthService for sign-out functionality
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 
 class ModeratorHomePage extends StatelessWidget {
   const ModeratorHomePage({super.key});
@@ -13,7 +13,7 @@ class ModeratorHomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () async {
-              await AuthService().signOut();
+              await logOut();
               Navigator.of(context)
                   .popUntil((route) => route.isFirst);
             },

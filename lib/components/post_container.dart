@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 class PostContainer extends StatelessWidget {
   final String displayName;
   final String location;
   final String title;
-  final String category;
+  final Category category;
 
   const PostContainer({
     super.key,
@@ -73,9 +74,9 @@ class PostContainer extends StatelessWidget {
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    const Icon(
-                      Icons.local_fire_department,
-                      size: 70,
+                    Icon(
+                      category.icon.icon,
+                      size: 60,
                       color: Colors.grey,
                       opticalSize: 2,
                     ),
@@ -88,7 +89,7 @@ class PostContainer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Text(
-                        category,
+                        category.name,
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           color: Colors.white,

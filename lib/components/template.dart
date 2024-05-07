@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
@@ -13,7 +12,9 @@ var reportsList = List<bool>;
 
 class Template extends StatefulWidget {
   final Widget child;
-  const Template({super.key, required this.child});
+  final String title;
+  const Template(
+      {super.key, required this.child, required this.title});
 
   @override
   State<Template> createState() => _TemplateState();
@@ -23,17 +24,21 @@ class _TemplateState extends State<Template> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
+      navigatorKey: navigatorKey,
+      // scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
-        '/home': (context) => const Template(child: Dashboard()),
+        '/home': (context) =>
+            const Template(title: "Dashboard", child: Dashboard()),
         '/map': (context) => const Template(
-                child: Dashboard(
+            title: "Dashboard",
+            child: Dashboard(
               initialKey: 1,
             )),
-        '/create': (context) => const Template(child: CreateReport())
+        '/create': (context) => const Template(
+            title: "Create Report", child: CreateReport())
       },
       home: TemplateBody(
-        title: 'Dashboard',
+        title: widget.title,
         child: widget.child,
       ),
     );
@@ -57,12 +62,8 @@ class TemplateBody extends StatefulWidget {
 class _TemplateBodyState extends State<TemplateBody> {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey =
-        GlobalKey<ScaffoldState>();
-
     return Scaffold(
-      key: scaffoldKey,
-      appBar: PublicAppBar(scaffoldKey: scaffoldKey, widget: widget),
+      appBar: PublicAppBar(widget: widget),
       drawer: const PublicDrawer(),
       body: widget.child,
     );
@@ -73,26 +74,14 @@ class PublicAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const PublicAppBar({
     super.key,
-    required this.scaffoldKey,
     required this.widget,
   });
-
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final TemplateBody widget;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: SizedBox(
-        width: 40,
-        height: 40,
-        child: IconButton(
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
-            icon: const ImageIcon(
-              AssetImage('images/UPatrol-logo.png'),
-              size: 40,
-            )),
-      ),
+      automaticallyImplyLeading: true,
       title: Text(widget.title),
     );
   }
@@ -117,6 +106,7 @@ class _PublicDrawerState extends State<PublicDrawer> {
           ListTile(
               leading: currentUser?.photo,
               title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,

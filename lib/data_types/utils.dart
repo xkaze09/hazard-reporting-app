@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/backend/firestore.dart';
+import 'dart:typed_data';
+import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -8,7 +13,7 @@ enum Categories {
   waterHazard(Category('Water Hazard', Colors.blue, 'Water',
       Icon(Icons.water_drop, size: 30))),
   obstruction(Category('Obstruction', Colors.brown, 'Blockage',
-      Icon(Icons.water_drop, size: 30))),
+      Icon(Icons.fence, size: 30))),
   electrical(Category('Electrical', Colors.yellow, 'PIKA',
       Icon(Icons.bolt, size: 30))),
   fireHazard(Category('Flammable', Colors.red, 'FIYAA',
@@ -48,7 +53,11 @@ class Category {
   final Icon icon;
   const Category(this.name, this.color, this.description, this.icon);
 
-  factory Category.fromString(String category) {
+  factory Category.fromString(String? category) {
+    if (category == null) {
+      return categoryList[9];
+    }
+
     for (final cat in categoryList) {
       if (cat.name == category) {
         return cat;
@@ -67,7 +76,7 @@ List<Category> categoryList = [
   const Category('Water Hazard', Colors.blue, 'Water',
       Icon(Icons.water_drop, size: 30)),
   const Category('Obstruction', Colors.brown, 'Blockage',
-      Icon(Icons.water_drop, size: 30)),
+      Icon(Icons.fence, size: 30)),
   const Category('Electrical', Colors.yellow, 'PIKA',
       Icon(Icons.bolt, size: 30)),
   const Category('Flammable', Colors.red, 'FIYAA',
@@ -127,12 +136,53 @@ String getErrorMessage(String errorCode) {
   }
 }
 
+Future<String> reverseGeocode(LatLng location) async {
+  // Call the geocoding API to get the address of the location
+  List<Placemark> placemarks = await placemarkFromCoordinates(
+      location.latitude, location.longitude);
+
+  // Extract the address from the placemark
+  Placemark placemark = placemarks[0];
+  String address =
+      '${placemark.locality}, ${placemark.administrativeArea} , ${placemark.country}';
+
+  return address;
+}
+
+Future<Uint8List?> iconToBytes(IconData icon,
+    {Color color = Colors.red}) async {
+  final pictureRecorder = PictureRecorder();
+  final canvas = Canvas(pictureRecorder);
+  final textPainter = TextPainter(textDirection: TextDirection.ltr);
+  final iconStr = String.fromCharCode(icon.codePoint);
+
+  textPainter.text = TextSpan(
+      text: iconStr,
+      style: TextStyle(
+        letterSpacing: 0.0,
+        fontSize: 48.0,
+        fontFamily: icon.fontFamily,
+        color: color,
+      ));
+  textPainter.layout();
+  textPainter.paint(canvas, const Offset(0.0, 0.0));
+
+  final picture = pictureRecorder.endRecording();
+  final image = await picture.toImage(48, 48);
+  final bytes = await image.toByteData(format: ImageByteFormat.png);
+  return bytes?.buffer.asUint8List();
+}
+
+LatLng convertFromGeoPoint(GeoPoint location) {
+  return LatLng(location.latitude, location.longitude);
+}
+
 void showSnackBar(String text) {
   rootScaffoldMessengerKey.currentState
       ?.showSnackBar(SnackBar(content: Text(text)));
 }
 
-pickImage(ImageSource source) async {
+dynamic pickImage(ImageSource source) async {
   final ImagePicker imagePicker = ImagePicker();
   XFile? file = await imagePicker.pickImage(source: source);
   if (file != null) {
@@ -141,7 +191,55 @@ pickImage(ImageSource source) async {
   showSnackBar("No Image Selected");
 }
 
+class PasswordField extends StatefulWidget {
+  final Icon? icon;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  const PasswordField(
+      {super.key,
+      this.icon,
+      this.validator,
+      required this.controller});
 
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool isPasswordVisible = false;
+  String? Function(String?)? backup = (value) {
+    if (value!.length < 8) {
+      return "Password must be 8 characters long";
+    }
+    return null;
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      obscureText: !isPasswordVisible,
+      controller: widget.controller,
+      decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          icon: widget.icon ?? const Icon(Icons.lock),
+          suffixIcon: IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                setState(() {
+                  isPasswordVisible = !isPasswordVisible;
+                });
+              },
+              icon: isPasswordVisible
+                  ? const Icon(
+                      Icons.visibility,
+                      color: Colors.black,
+                    )
+                  : const Icon(Icons.visibility_off,
+                      color: Colors.black))),
+      validator: widget.validator ?? backup,
+    );
+  }
+}
 
 // showSnackBar(String content, BuildContext context) {
 //   ScaffoldMessenger.of(context).showSnackBar(

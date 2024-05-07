@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../backend/firestore.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/backend/firestore.dart';
+import 'package:hazard_reporting_app/components/post_container.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 import '../data_types/reports.dart';
 
 class Home extends StatefulWidget {
@@ -13,23 +16,34 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
-  final Stream<QuerySnapshot> _reportStream = reportsCollection
-      .orderBy('timestamp', descending: true)
-      .where('isResolved', isEqualTo: false)
-      .snapshots();
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _reportStream,
+      stream: getActiveReports(),
       builder: (BuildContext context,
           AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return const Text('Error');
+          debugPrint(snapshot.error.toString());
+          return Text(snapshot.error.toString());
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text("Loading");
         }
+
+        // return ListView(
+        //   children: snapshot.data!.docs
+        //       .map((DocumentSnapshot document) {
+        //         Map<String, dynamic> data =
+        //             document.data()! as Map<String, dynamic>;
+        //         return ListTile(
+        //           title: Text(data['title'] ?? "Untitled"),
+        //           subtitle: Text(data['address'] ?? "IDK"),
+        //         );
+        //       })
+        //       .toList()
+        //       .cast(),
+        // );
 
         return ActiveFeed(
           snapshot: snapshot,
@@ -53,68 +67,182 @@ class ActiveFeed extends StatefulWidget {
 class _ActiveFeedState extends State<ActiveFeed> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-      child: _renderTile(widget.snapshot),
-    ));
+    return ListView.builder(
+      itemCount: widget.snapshot.data?.size,
+      itemBuilder: (context, index) {
+        Map<String, dynamic> data = widget.snapshot.data!.docs[index]
+            .data()! as Map<String, dynamic>;
+        return PostContainer(
+          displayName: "Anonymous",
+          location: data['address'] ?? "Location Unknown",
+          title: data['title'] ?? "Untitled Report",
+          category: Category.fromString(data['category']),
+        );
+        // ReportsRecord report = ReportsRecord.fromFirestore(
+        //     widget.snapshot.data!.docs[index]
+        //         as DocumentSnapshot<Map<String, dynamic>>?,
+        //     SnapshotOptions());
+        // return FutureBuilder(
+        //     future: report.reporter!.get(),
+        //     builder: (context, snapshot) {
+        //       ReporterRecord reporter = ReporterRecord.fromFirestore(
+        //           snapshot as DocumentSnapshot<Map<String, dynamic>>,
+        //           SnapshotOptions());
+        //       debugPrint(reporter.toString());
+        //       return PostContainer(
+        //         displayName: reporter.displayName ?? "Anonymous",
+        //         location: report.address ?? "Location Unknown",
+        //         title: report.title ?? "Untitled Report",
+        //         category: report.category?.name ??
+        //             Categories.miscellaneous.name,
+        //       );
+        //     });
+      },
+    );
+    // return _renderTile(widget.snapshot);
   }
 
-  Widget _renderTile(AsyncSnapshot<QuerySnapshot> snapshot) {
-    return ExpansionPanelList.radio(
-        children: snapshot.data!.docs
-            .map((DocumentSnapshot document) {
-              ReportsRecord report = ReportsRecord.fromFirestore(
-                  document as DocumentSnapshot<Map<String, dynamic>>,
-                  SnapshotOptions());
-              return _reportTile(report);
-            })
-            .toList()
-            .cast());
-  }
+  // Widget _renderTile(AsyncSnapshot<QuerySnapshot> snapshot) {
+  //   return ListView.builder(
+  //       itemCount: snapshot.data?.docs.length,
+  //       itemBuilder: (context, index) {
+  //         debugPrint(snapshot.data?.docs[index].toString());
+  //         ReportsRecord report = ReportsRecord.fromFirestore(
+  //             snapshot.data?.docs[index]
+  //                 as DocumentSnapshot<Map<String, dynamic>>,
+  //             SnapshotOptions());
+  //         return FutureBuilder(
+  //             future: report.reporter!.get(),
+  //             builder: (context, snapshot) {
+  //               ReporterRecord reporter =
+  //                   ReporterRecord.fromFirestore(
+  //                       snapshot
+  //                           as DocumentSnapshot<Map<String, dynamic>>,
+  //                       SnapshotOptions());
+  //               debugPrint(reporter.toString());
+  //               return PostContainer(
+  //                 displayName: reporter.displayName ?? "Anonymous",
+  //                 location: report.address ?? "Location Unknown",
+  //                 title: report.title ?? "Untitled Report",
+  //                 category: report.category?.name ??
+  //                     Categories.miscellaneous.name,
+  //               );
+  //             });
+  //       });
+  // }
+}
 
-  ExpansionPanelRadio _reportTile(ReportsRecord report) {
-    return ExpansionPanelRadio(
-        headerBuilder: (context, isExpanded) {
-          return ListTile(
-            leading: Column(
-              children: [
-                report.category?.icon as Icon,
-                Text(report.category?.name ?? '')
-              ],
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: 15,
+                itemBuilder: (BuildContext context, int index) {
+                  return PostContainer(
+                    displayName: '[Display Name]',
+                    location: '[Location]',
+                    title: '[Title]',
+                    category: categoryList[9],
+                  );
+                },
+              ),
             ),
-            title: Text(report.title ?? ''),
-            trailing: const Icon(Icons.ac_unit, color: Colors.white),
-          );
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const FilterDialog();
+              });
         },
-        body: ListTile(title: _expansion(report)),
-        value: report.id ?? 0);
+        backgroundColor: const Color(0xFF29AB84),
+        child: const Icon(Icons.filter_list),
+      ),
+    );
   }
+}
 
-  Widget _expansion(ReportsRecord report) {
-    if (report.landscape ?? false) {
-      return Column(
+class FilterDialog extends StatefulWidget {
+  const FilterDialog({super.key});
+
+  @override
+  State<FilterDialog> createState() => _FilterDialogState();
+}
+
+class _FilterDialogState extends State<FilterDialog> {
+  List<bool> filter = List.filled(Categories.values.length, false);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(report.description ?? 'No Description'),
-          Image(
-            image: NetworkImage(report.imageURL ?? ''),
-            height: 360,
-            width: 640,
-            fit: BoxFit.contain,
-          )
+          const Text('Filter'),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.close),
+          ),
         ],
-      );
-    } else {
-      return Row(
-        children: [
-          Text(report.description ?? 'No Description'),
-          Image(
-            image: NetworkImage(report.imageURL ?? ''),
-            height: 360,
-            width: 640,
-            fit: BoxFit.contain,
-          )
-        ],
-      );
-    }
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        //Magic
+        children: Categories.values.map((Categories cat) {
+          return CheckboxListTile(
+              value: filter[cat.index],
+              dense: true,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (bool? val) {
+                setState(() {
+                  filter[cat.index] = val ?? false;
+                });
+              },
+              title: Text(cat.category.name));
+        }).toList(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
+            'Reset',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // implement apply filter
+            Navigator.pop(context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF29AB84),
+          ),
+          child: const Text(
+            'Apply Filter',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
+    );
   }
 }
