@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/components/template.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/pages/create_report.dart';
 import '../pages/home.dart';
@@ -60,13 +61,15 @@ class _DashboardState extends State<Dashboard> {
               "images/logo-notext.png",
             ),
             onPressed: () {
-              navigatorKey.currentState?.push(MaterialPageRoute(
-                  builder: (context) => const CreateReport()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const Template(
+                      title: "Create Report",
+                      child: CreateReport())));
             },
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          shape: CircularNotchedRectangle(),
+          shape: const CircularNotchedRectangle(),
           padding: EdgeInsets.zero,
           child: BottomNavigationBar(
             items: const [

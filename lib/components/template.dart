@@ -24,7 +24,7 @@ class _TemplateState extends State<Template> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
+      // navigatorKey: navigatorKey,
       // scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
         '/home': (context) =>

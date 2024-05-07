@@ -19,36 +19,51 @@ class _HomeState extends State<Home>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<QuerySnapshot>(
-      stream: getActiveReports(),
-      builder: (BuildContext context,
-          AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          debugPrint(snapshot.error.toString());
-          return Text(snapshot.error.toString());
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading");
-        }
+    return Scaffold(
+      // floatingActionButtonLocation:
+      //     FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const FilterDialog();
+              });
+        },
+        backgroundColor: const Color(0xFF29AB84),
+        child: const Icon(Icons.filter_list),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: getActiveReports(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
+            return Text(snapshot.error.toString());
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Loading");
+          }
 
-        // return ListView(
-        //   children: snapshot.data!.docs
-        //       .map((DocumentSnapshot document) {
-        //         Map<String, dynamic> data =
-        //             document.data()! as Map<String, dynamic>;
-        //         return ListTile(
-        //           title: Text(data['title'] ?? "Untitled"),
-        //           subtitle: Text(data['address'] ?? "IDK"),
-        //         );
-        //       })
-        //       .toList()
-        //       .cast(),
-        // );
+          // return ListView(
+          //   children: snapshot.data!.docs
+          //       .map((DocumentSnapshot document) {
+          //         Map<String, dynamic> data =
+          //             document.data()! as Map<String, dynamic>;
+          //         return ListTile(
+          //           title: Text(data['title'] ?? "Untitled"),
+          //           subtitle: Text(data['address'] ?? "IDK"),
+          //         );
+          //       })
+          //       .toList()
+          //       .cast(),
+          // );
 
-        return ActiveFeed(
-          snapshot: snapshot,
-        );
-      },
+          return ActiveFeed(
+            snapshot: snapshot,
+          );
+        },
+      ),
     );
   }
 
