@@ -74,12 +74,7 @@ Stream<QuerySnapshot> getActiveReports({int limit = 20}) {
   var reportStream = reportsCollection
       .limit(limit)
       .where('isResolved', isEqualTo: false)
+      .where('category', whereNotIn: categoryFilters)
       .orderBy('timestamp', descending: true);
-
-  if (categoryFilters != null) {
-    reportStream =
-        reportStream.where('category', whereNotIn: categoryFilters);
-  }
-
   return reportStream.snapshots();
 }

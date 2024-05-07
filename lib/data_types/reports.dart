@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/backend/firestore.dart';
 import '../data_types/utils.dart';
 
 class ReportsRecord {
@@ -38,17 +39,35 @@ class ReportsRecord {
         Category.fromString(data?['category']),
         data?['description'] ?? "No Description",
         data?['id'] ?? '0',
-        (data?['image_url'] != null)
-            ? Image.network(data?['image_url'])
-            : Image.asset("images/UPatrol-logo.png"),
+        Image.network(data?['image_url']),
         data?['image_url'] ?? "",
         data?['isResolved'] ?? false,
         data?['isVerified'] ?? false,
         data?['location'] ?? const GeoPoint(0, 0),
         data?['address'] ?? "Location Unknown",
-        data?['reporter'],
+        data?['reporter'] ??
+            usersCollection.doc("/users/paXZUUVoXrXgIkLxg3iw"),
         data?['timestamp'] ?? Timestamp.now(),
         data?['title'] ?? "Untitled");
+  }
+
+  factory ReportsRecord.fromMap(
+    Map<String, dynamic> data,
+  ) {
+    return ReportsRecord(
+        Category.fromString(data['category']),
+        data['description'] ?? "No Description",
+        data['id'] ?? '0',
+        Image.network(data['image_url']),
+        data['image_url'] ?? "",
+        data['isResolved'] ?? false,
+        data['isVerified'] ?? false,
+        data['location'] ?? const GeoPoint(0, 0),
+        data['address'] ?? "Location Unknown",
+        data['reporter'] ??
+            usersCollection.doc("/users/paXZUUVoXrXgIkLxg3iw"),
+        data['timestamp'] ?? Timestamp.now(),
+        data['title'] ?? "Untitled");
   }
 
   Map<String, dynamic> toFirestore() {
@@ -65,6 +84,11 @@ class ReportsRecord {
       if (timestamp != null) 'timestamp': timestamp,
       if (title != null) 'title': title,
     };
+  }
+
+  @override
+  String toString() {
+    return "$address,$category,$description,$id,$imageURL,$isResolved,$isVerified,$location,$reporter,$timestamp,$title";
   }
 }
 
@@ -116,15 +140,19 @@ class ReporterRecord {
       DocumentSnapshot<Map<String, dynamic>>? snapshot,
       SnapshotOptions? options) {
     final data = snapshot?.data();
+    Image image = Image.network(data?['photo_url'],
+        errorBuilder: (context, error, stacktrace) {
+      return const Text("Image failed to load");
+    });
     return ReporterRecord(
         data?['timestamp'],
         data?['display_name'],
         Email.fromString(data?['email']),
-        Image.network(data?['photo_url']),
+        image,
         data?['photo_url'],
         data?['uid'],
-        data?['is_responder'] ?? false,
-        data?['is_receiver'] ?? false);
+        data?['is_responder'],
+        data?['is_receiver']);
   }
 
   factory ReporterRecord.fromMap(
@@ -142,19 +170,25 @@ class ReporterRecord {
   }
 
   static Future<ReporterRecord> fromReference(
-    DocumentReference reference,
-  ) {
-    return reference.get().then((DocumentSnapshot value) {
-      var data = value.data() as Map<String, dynamic>;
-      return ReporterRecord(
-          data['created_time'],
-          data['display_name'],
-          data['email'],
-          data['photo'],
-          data['photo_url'],
-          data['uid'],
-          data['is_responder'] ?? false,
-          data['is_receiver'] ?? false);
-    });
+    DocumentReference? reference,
+  ) async {
+    if (reference == null) {
+      throw Error();
+    }
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await reference
+        .get() as DocumentSnapshot<Map<String, dynamic>>;
+    debugPrint(snapshot.data().toString());
+    Map<String, dynamic>? data =
+        (await reference.get()).data() as Map<String, dynamic>?;
+    debugPrint(data.toString());
+    return ReporterRecord(
+        data?['created_time'],
+        data?['display_name'],
+        Email.fromString(data?['email']),
+        Image.network(data?['photo_url']),
+        data?['photo_url'],
+        data?['uid'],
+        data?['is_responder'],
+        data?['is_receiver']);
   }
 }

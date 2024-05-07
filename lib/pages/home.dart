@@ -1,11 +1,16 @@
+import 'dart:async';
+import 'dart:js_interop';
+import 'dart:math';
+
 import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
-import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/components/post_container.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
+import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
-import '../data_types/reports.dart';
+import 'package:hazard_reporting_app/pages/report_info.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,13 +21,28 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
+  Stream<QuerySnapshot> reportStream = getActiveReports();
+
+  ValueNotifier<List> filterListener =
+      ValueNotifier<List>(categoryFilters);
+
+  @override
+  initState() {
+    super.initState();
+    // print value on change
+    filterListener.addListener(() {
+      setState(() {
+        reportStream = getActiveReports();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      // floatingActionButtonLocation:
-      //     FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
+        heroTag: "Filter",
         onPressed: () {
           showDialog(
               context: context,
@@ -34,7 +54,7 @@ class _HomeState extends State<Home>
         child: const Icon(Icons.filter_list),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: getActiveReports(),
+        stream: reportStream,
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -44,21 +64,6 @@ class _HomeState extends State<Home>
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text("Loading");
           }
-
-          // return ListView(
-          //   children: snapshot.data!.docs
-          //       .map((DocumentSnapshot document) {
-          //         Map<String, dynamic> data =
-          //             document.data()! as Map<String, dynamic>;
-          //         return ListTile(
-          //           title: Text(data['title'] ?? "Untitled"),
-          //           subtitle: Text(data['address'] ?? "IDK"),
-          //         );
-          //       })
-          //       .toList()
-          //       .cast(),
-          // );
-
           return ActiveFeed(
             snapshot: snapshot,
           );
@@ -85,110 +90,24 @@ class _ActiveFeedState extends State<ActiveFeed> {
     return ListView.builder(
       itemCount: widget.snapshot.data?.size,
       itemBuilder: (context, index) {
-        Map<String, dynamic> data = widget.snapshot.data!.docs[index]
-            .data()! as Map<String, dynamic>;
-        return PostContainer(
-          displayName: "Anonymous",
-          location: data['address'] ?? "Location Unknown",
-          title: data['title'] ?? "Untitled Report",
-          category: Category.fromString(data['category']),
+        Map<String, dynamic>? data = widget.snapshot.data!.docs[index]
+            .data() as Map<String, dynamic>;
+        debugPrint(data.toString());
+        ReportsRecord report = ReportsRecord.fromMap(data);
+        return GestureDetector(
+          key: Key("${Random().nextDouble()}"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ReportInfo(report: report)));
+          },
+          child: FutureBuilder(
+              future: ReporterRecord.fromReference(report.reporter),
+              builder: (context, snapshot) {
+                return PostContainer(
+                    report: report, reporter: snapshot.data);
+              }),
         );
-        // ReportsRecord report = ReportsRecord.fromFirestore(
-        //     widget.snapshot.data!.docs[index]
-        //         as DocumentSnapshot<Map<String, dynamic>>?,
-        //     SnapshotOptions());
-        // return FutureBuilder(
-        //     future: report.reporter!.get(),
-        //     builder: (context, snapshot) {
-        //       ReporterRecord reporter = ReporterRecord.fromFirestore(
-        //           snapshot as DocumentSnapshot<Map<String, dynamic>>,
-        //           SnapshotOptions());
-        //       debugPrint(reporter.toString());
-        //       return PostContainer(
-        //         displayName: reporter.displayName ?? "Anonymous",
-        //         location: report.address ?? "Location Unknown",
-        //         title: report.title ?? "Untitled Report",
-        //         category: report.category?.name ??
-        //             Categories.miscellaneous.name,
-        //       );
-        //     });
       },
-    );
-    // return _renderTile(widget.snapshot);
-  }
-
-  // Widget _renderTile(AsyncSnapshot<QuerySnapshot> snapshot) {
-  //   return ListView.builder(
-  //       itemCount: snapshot.data?.docs.length,
-  //       itemBuilder: (context, index) {
-  //         debugPrint(snapshot.data?.docs[index].toString());
-  //         ReportsRecord report = ReportsRecord.fromFirestore(
-  //             snapshot.data?.docs[index]
-  //                 as DocumentSnapshot<Map<String, dynamic>>,
-  //             SnapshotOptions());
-  //         return FutureBuilder(
-  //             future: report.reporter!.get(),
-  //             builder: (context, snapshot) {
-  //               ReporterRecord reporter =
-  //                   ReporterRecord.fromFirestore(
-  //                       snapshot
-  //                           as DocumentSnapshot<Map<String, dynamic>>,
-  //                       SnapshotOptions());
-  //               debugPrint(reporter.toString());
-  //               return PostContainer(
-  //                 displayName: reporter.displayName ?? "Anonymous",
-  //                 location: report.address ?? "Location Unknown",
-  //                 title: report.title ?? "Untitled Report",
-  //                 category: report.category?.name ??
-  //                     Categories.miscellaneous.name,
-  //               );
-  //             });
-  //       });
-  // }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 15,
-                itemBuilder: (BuildContext context, int index) {
-                  return PostContainer(
-                    displayName: '[Display Name]',
-                    location: '[Location]',
-                    title: '[Title]',
-                    category: categoryList[9],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return const FilterDialog();
-              });
-        },
-        backgroundColor: const Color(0xFF29AB84),
-        child: const Icon(Icons.filter_list),
-      ),
     );
   }
 }
@@ -201,63 +120,95 @@ class FilterDialog extends StatefulWidget {
 }
 
 class _FilterDialogState extends State<FilterDialog> {
-  List<bool> filter = List.filled(Categories.values.length, false);
+  List<bool> filter = List.generate(categoryList.length, (index) {
+    return !categoryFilters.contains(categoryList[index].name);
+  });
+
+  void refreshFilter() {
+    for (int index = 0; index < filter.length; index++) {
+      if (categoryFilters.contains(categoryList[index].name)) {
+        filter[index] = false;
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refreshFilter();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Filter'),
-          IconButton(
+    return StatefulBuilder(builder: (context, setState) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Filter'),
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          //Magic
+          children: Categories.values.map((Categories cat) {
+            return CheckboxListTile(
+                value: filter[cat.index],
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (bool? val) {
+                  setState(() {
+                    filter[cat.index] = val ?? false;
+                  });
+                },
+                title: Text(cat.category.name));
+          }).toList(),
+        ),
+        actions: [
+          TextButton(
             onPressed: () {
+              categoryFilters = ['test'];
+              setState(() {
+                refreshFilter();
+              });
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.close),
+            child: const Text(
+              'Reset',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // implement apply filter
+              for (int i = 0; i < filter.length; i++) {
+                if (!filter[i] &&
+                    !categoryFilters.contains(categoryList[i].name)) {
+                  categoryFilters.add(categoryList[i].name);
+                } else if (filter[i] &&
+                    categoryFilters.contains(categoryList[i].name)) {
+                  categoryFilters.remove(categoryList[i].name);
+                }
+              }
+              debugPrint(categoryFilters.toString());
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF29AB84),
+            ),
+            child: const Text(
+              'Apply Filter',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        //Magic
-        children: Categories.values.map((Categories cat) {
-          return CheckboxListTile(
-              value: filter[cat.index],
-              dense: true,
-              controlAffinity: ListTileControlAffinity.leading,
-              onChanged: (bool? val) {
-                setState(() {
-                  filter[cat.index] = val ?? false;
-                });
-              },
-              title: Text(cat.category.name));
-        }).toList(),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text(
-            'Reset',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // implement apply filter
-            Navigator.pop(context);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF29AB84),
-          ),
-          child: const Text(
-            'Apply Filter',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ],
-    );
+      );
+    });
   }
 }

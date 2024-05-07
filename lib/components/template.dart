@@ -24,6 +24,7 @@ class _TemplateState extends State<Template> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       // navigatorKey: navigatorKey,
       // scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
@@ -35,7 +36,7 @@ class _TemplateState extends State<Template> {
               initialKey: 1,
             )),
         '/create': (context) => const Template(
-            title: "Create Report", child: CreateReport())
+            title: "Create Report", child: CreateReport()),
       },
       home: TemplateBody(
         title: widget.title,

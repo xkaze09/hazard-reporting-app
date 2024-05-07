@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 
 class PostContainer extends StatelessWidget {
-  final String displayName;
-  final String location;
-  final String title;
-  final Category category;
+  final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const PostContainer({
-    super.key,
-    required this.displayName,
-    required this.location,
-    required this.title,
-    required this.category,
-  });
+  const PostContainer(
+      {super.key, required this.report, required this.reporter});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +47,7 @@ class PostContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        displayName,
+                        reporter?.displayName ?? "Anonymous",
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -61,7 +55,7 @@ class PostContainer extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        location,
+                        report?.address ?? "Location Unknown",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 12,
@@ -75,7 +69,8 @@ class PostContainer extends StatelessWidget {
                   alignment: AlignmentDirectional.center,
                   children: [
                     Icon(
-                      category.icon.icon,
+                      report?.category?.icon.icon ??
+                          Categories.miscellaneous.category.icon.icon,
                       size: 60,
                       color: Colors.grey,
                       opticalSize: 2,
@@ -89,7 +84,7 @@ class PostContainer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Text(
-                        category.name,
+                        report?.category?.name ?? "Miscellaneous",
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           color: Colors.white,
@@ -101,7 +96,7 @@ class PostContainer extends StatelessWidget {
                 )
               ]),
               Text(
-                title,
+                report?.title ?? "Untitled",
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -112,19 +107,23 @@ class PostContainer extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Image Placeholder',
-                    style: TextStyle(fontSize: 16.0),
+              Stack(children: [
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Image Placeholder',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
                   ),
                 ),
-              ),
+                report?.image ??
+                    Image.asset("images/UPatrol-logo.png"),
+              ]),
             ]));
   }
 }

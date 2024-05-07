@@ -11,33 +11,35 @@ class ReportInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        // automaticallyImplyLeading: true,
         title: Text.rich(TextSpan(children: [
           TextSpan(text: report.title ?? 'Untitled'),
           const TextSpan(text: ' Report')
         ])),
         actions: [
-          Stack(
+          Column(
             children: [
               report.category?.icon ??
-                  const Icon(Icons.question_mark),
+                  const Icon(Icons.question_mark, size: 20),
               Center(
-                child: Text(
-                  report.category?.name ?? 'Unknown',
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(report.category?.name ?? 'Unknown',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 10,
+                    )),
               )
             ],
           )
         ],
       ),
-      body: ReportTile(
-        report: report,
+      body: SingleChildScrollView(
+        child: ReportTile(
+          report: report,
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -75,7 +77,7 @@ class ReportTile extends StatelessWidget {
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: 'Title',
-              prefixIcon: Icon(Icons.note)),
+              icon: Icon(Icons.note)),
         ),
         TextField(
           //Description
@@ -86,7 +88,7 @@ class ReportTile extends StatelessWidget {
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: '',
-              prefixIcon: Icon(Icons.list)),
+              icon: Icon(Icons.list)),
           maxLines: 3,
         ),
         TextField(
@@ -98,7 +100,7 @@ class ReportTile extends StatelessWidget {
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: '',
-              prefixIcon: Icon(Icons.map)),
+              icon: Icon(Icons.map)),
         ),
         TextField(
           //Reporter
@@ -110,7 +112,7 @@ class ReportTile extends StatelessWidget {
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: '',
-              prefixIcon: Icon(Icons.person)),
+              icon: Icon(Icons.person)),
         ),
       ],
     );

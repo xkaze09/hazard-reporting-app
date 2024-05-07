@@ -7,4 +7,4 @@ final GlobalKey<NavigatorState> navigatorKey =
     GlobalKey<NavigatorState>();
 
 ReporterRecord? currentUser;
-List<String>? categoryFilters;
+List<String> categoryFilters = List.filled(1, "test", growable: true);
