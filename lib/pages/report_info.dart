@@ -112,6 +112,7 @@ class ReportTile extends StatelessWidget {
               labelText: '',
               icon: Icon(Icons.person)),
         ),
+        ModControl(report: report)
       ],
     );
   }
@@ -127,10 +128,11 @@ class ModControl extends StatelessWidget {
     return Visibility(
       visible: currentUser?.getRole() == 'Moderator',
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton(
               onPressed: () {
-                usersCollection
+                reportsCollection
                     .doc(report.id)
                     .update({"isVerified": true});
               },
@@ -153,7 +155,60 @@ class ModControl extends StatelessWidget {
                               child: const Text('No')),
                           TextButton(
                               onPressed: () {
-                                usersCollection
+                                reportsCollection
+                                    .doc(report.id)
+                                    .delete();
+                                Navigator.of(context).popUntil(
+                                    (route) => route.isFirst);
+                              },
+                              child: const Text('Yes'))
+                        ],
+                      );
+                    });
+              },
+              child: const Text('Reject')),
+        ],
+      ),
+    );
+  }
+}
+
+class ResponderControl extends StatelessWidget {
+  final ReportsRecord report;
+
+  const ResponderControl({super.key, required this.report});
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: currentUser?.getRole() == 'responder',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(
+              onPressed: () {
+                //TODO implement stuff
+              },
+              child: Text(
+                  report.isVerified ?? false ? 'Revoke' : 'Verify')),
+          TextButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Delete Report'),
+                        content: const Text(
+                            'Are youre about deleting this report?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('No')),
+                          TextButton(
+                              onPressed: () {
+                                reportsCollection
                                     .doc(report.id)
                                     .delete();
                                 Navigator.of(context).popUntil(

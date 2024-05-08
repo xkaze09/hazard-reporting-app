@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/pages/map.dart';
 
 import 'dart:typed_data';
 
@@ -117,9 +118,25 @@ class _CreateReportState extends State<CreateReport> {
         });
   }
 
+  Future<void> _getAddress() async {
+    String? address = await reverseGeocode(await getPosition());
+    setState(() {
+      _locationController.text = address;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getPosition().then((position) {
+      reverseGeocode(position).then(
+        (value) {
+          setState(() {
+            _locationController.text = value;
+          });
+        },
+      );
+    });
   }
 
   @override
@@ -216,11 +233,13 @@ class ReportFormField extends StatelessWidget {
       {super.key,
       required this.controller,
       required this.label,
-      required this.isRequired});
+      required this.isRequired,
+      this.readOnly});
 
   final TextEditingController controller;
   final bool isRequired;
   final String label;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -233,6 +252,7 @@ class ReportFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: TextFormField(
+            readOnly: readOnly ?? false,
             controller: controller,
             validator: (value) {
               if (isRequired == true &&

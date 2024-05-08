@@ -35,7 +35,6 @@ class _HomeState extends State<Home>
         reportStream = getActiveReports();
       });
     });
-    debugPrint(currentUser.toString());
   }
 
   @override

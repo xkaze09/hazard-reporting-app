@@ -26,7 +26,7 @@ Future<void> main() async {
 
 Future<LatLng> getPosition() async {
   Position pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.low);
+      desiredAccuracy: LocationAccuracy.best);
   LatLng posnew = LatLng(pos.latitude, pos.longitude);
   return posnew;
 }

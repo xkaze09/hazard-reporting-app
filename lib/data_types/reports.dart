@@ -113,12 +113,10 @@ class ReporterRecord {
       this.isModerator);
 
   String getRole() {
-    if (isModerator != null && isResponder != null) {
-      if (isModerator ?? false) {
-        return "Moderator";
-      } else {
-        return "Responder";
-      }
+    if (isModerator == true) {
+      return "Moderator";
+    } else if (isResponder == true) {
+      return "Responder";
     } else {
       return "User";
     }

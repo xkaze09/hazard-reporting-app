@@ -35,7 +35,8 @@ class PostContainer extends StatelessWidget {
                   foregroundImage: reporter?.photo?.image ??
                       const AssetImage('images/logo-notext.png'),
                   radius: 20,
-                  backgroundColor: const Color(0xFF29AB84),
+                  backgroundColor:
+                      const Color.fromARGB(255, 11, 14, 13),
                   child: const Text(
                     'DP',
                     style: TextStyle(color: Colors.white),
