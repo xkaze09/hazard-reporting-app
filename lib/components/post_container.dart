@@ -31,10 +31,12 @@ class PostContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                const CircleAvatar(
+                CircleAvatar(
+                  foregroundImage: reporter?.photo?.image ??
+                      const AssetImage('images/logo-notext.png'),
                   radius: 20,
-                  backgroundColor: Color(0xFF29AB84),
-                  child: Text(
+                  backgroundColor: const Color(0xFF29AB84),
+                  child: const Text(
                     'DP',
                     style: TextStyle(color: Colors.white),
                   ),

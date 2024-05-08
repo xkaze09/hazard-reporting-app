@@ -15,6 +15,7 @@ final authInstance = FirebaseAuth.instance;
 bool isSignedIn = authInstance.currentUser != null;
 
 Future<void> logOut() async {
+  debugPrint(authInstance.currentUser?.uid);
   await authInstance.signOut();
   checkUserChanges();
 }
@@ -42,27 +43,20 @@ void signInWithPassword(BuildContext context,
     } else {
       await authInstance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
+      usersCollection.add(currentUser?.toFirestore());
     }
 
     if (authInstance.currentUser != null) {
       checkUserChanges();
       if (context.mounted) {
         Navigator.of(context).pop();
-        showDialog(
-            context: context,
-            builder: (context) {
-              return const Dialog(
-                child: Center(
-                  child: Text("Logged In"),
-                ),
-              );
-            });
-        sleep(const Duration(milliseconds: 500));
         transferPage(context);
       }
     }
   } on FirebaseAuthException catch (e) {
-    showSnackBar(e.message ?? "An unknown error has occurred.");
+    loggedScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+      content: Text(e.message ?? "An unknown error has occurred."),
+    ));
     if (context.mounted) {
       Navigator.of(context).pop();
     }

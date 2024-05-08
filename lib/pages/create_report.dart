@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/components/template.dart';
-import 'package:hazard_reporting_app/data_types/globals.dart';
 
 import 'dart:typed_data';
 
