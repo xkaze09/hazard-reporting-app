@@ -26,7 +26,7 @@ class ReportInfo extends StatelessWidget {
               Center(
                 child: Text(report.category?.name ?? 'Unknown',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 10,
                     )),
               )
@@ -63,9 +63,7 @@ class ReportTile extends StatelessWidget {
     return Column(
       children: [
         Row(children: [
-          SizedBox(
-              width: 500,
-              height: 500,
+          Expanded(
               child: report.image ?? Image.asset('assets/Hey.png')),
         ]),
         TextField(
@@ -83,7 +81,7 @@ class ReportTile extends StatelessWidget {
           //Description
           readOnly: true,
           controller: TextEditingController(
-            text: report.title ?? 'Untitled',
+            text: report.description ?? 'No Description',
           ),
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),

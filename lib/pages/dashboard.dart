@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/components/template.dart';
-import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/pages/create_report.dart';
 import '../pages/home.dart';
 import '../pages/map.dart';
@@ -36,7 +35,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void dispose() {
     _pageController.dispose();
-
     super.dispose();
   }
 
@@ -61,10 +59,7 @@ class _DashboardState extends State<Dashboard> {
               "images/logo-notext.png",
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const Template(
-                      title: "Create Report",
-                      child: CreateReport())));
+              Navigator.of(context).popAndPushNamed('/create');
             },
           ),
         ),

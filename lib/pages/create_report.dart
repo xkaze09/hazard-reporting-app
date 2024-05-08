@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/components/template.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
 
-import '../components/template.dart';
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
@@ -119,80 +120,96 @@ class _CreateReportState extends State<CreateReport> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _subjectController.dispose();
+    _descriptionController.dispose();
+    _locationController.dispose();
+    _createReportFormKey.currentState?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-      return Center(
-        child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _createReportFormKey,
-              child: ListView(
-                children: [
-                  ReportFormField(
-                    controller: _subjectController,
-                    label: 'Subject',
-                    isRequired: true,
-                  ),
-                  ReportFormField(
-                    controller: _descriptionController,
-                    label: 'Short Description',
-                    isRequired: false,
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
+    return Scaffold(
+      body: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Center(
+          child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _createReportFormKey,
+                child: ListView(
+                  children: [
+                    ReportFormField(
+                      controller: _subjectController,
+                      label: 'Subject',
+                      isRequired: true,
                     ),
-                    child: DropdownButtonFormField<String>(
-                      value: _categoryControllerValue,
-                      decoration: const InputDecoration(
-                        labelText: 'Report Category',
-                      ),
-                      items: categoryList.map((category) {
-                        return DropdownMenuItem<String>(
-                          value: category.name,
-                          child: Text(category.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        _categoryControllerValue = value!;
-                      },
-                      isExpanded: true,
+                    ReportFormField(
+                      controller: _descriptionController,
+                      label: 'Short Description',
+                      isRequired: false,
                     ),
-                  ),
-                  ReportFormField(
-                    controller: _locationController,
-                    label: 'Location',
-                    isRequired: false,
-                  ),
-                  const SizedBox(height: 40),
-                  ReportImageContainer(file: _file),
-                  const SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () => _imageSelect(context),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
+                    const SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    child: const Text('Take Photo'),
-                  ),
-                  ElevatedButton(
-                    onPressed: postReport,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      child: DropdownButtonFormField<String>(
+                        value: _categoryControllerValue,
+                        decoration: const InputDecoration(
+                          labelText: 'Report Category',
+                        ),
+                        items: categoryList.map((category) {
+                          return DropdownMenuItem<String>(
+                            value: category.name,
+                            child: Text(category.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          _categoryControllerValue = value!;
+                        },
+                        isExpanded: true,
                       ),
                     ),
-                    child: const Text('Submit'),
-                  ),
-                ],
-              ),
-            )),
-      );
-    });
+                    ReportFormField(
+                      controller: _locationController,
+                      label: 'Location',
+                      isRequired: false,
+                    ),
+                    const SizedBox(height: 40),
+                    ReportImageContainer(file: _file),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => _imageSelect(context),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Take Photo'),
+                    ),
+                    ElevatedButton(
+                      onPressed: postReport,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                ),
+              )),
+        );
+      }),
+    );
   }
 }
 

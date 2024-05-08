@@ -140,10 +140,13 @@ class ReporterRecord {
       DocumentSnapshot<Map<String, dynamic>>? snapshot,
       SnapshotOptions? options) {
     final data = snapshot?.data();
-    Image image = Image.network(data?['photo_url'],
-        errorBuilder: (context, error, stacktrace) {
-      return const Text("Image failed to load");
-    });
+    Image? image;
+    if (data?['photo_url'] != null) {
+      image = Image.network(data?['photo_url'],
+          errorBuilder: (context, error, stacktrace) {
+        return const Text("Image failed to load");
+      });
+    }
     return ReporterRecord(
         data?['timestamp'],
         data?['display_name'],
@@ -175,12 +178,8 @@ class ReporterRecord {
     if (reference == null) {
       throw Error();
     }
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await reference
-        .get() as DocumentSnapshot<Map<String, dynamic>>;
-    debugPrint(snapshot.data().toString());
     Map<String, dynamic>? data =
         (await reference.get()).data() as Map<String, dynamic>?;
-    debugPrint(data.toString());
     return ReporterRecord(
         data?['created_time'],
         data?['display_name'],

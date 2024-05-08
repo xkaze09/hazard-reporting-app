@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
@@ -9,6 +11,8 @@ import 'package:hazard_reporting_app/data_types/globals.dart';
 
 //insert query here
 var reportsList = List<bool>;
+final GlobalKey<ScaffoldMessengerState> rootScaffoldKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class Template extends StatefulWidget {
   final Widget child;
@@ -22,20 +26,30 @@ class Template extends StatefulWidget {
 
 class _TemplateState extends State<Template> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // navigatorKey: navigatorKey,
-      // scaffoldMessengerKey: rootScaffoldMessengerKey,
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
-        '/home': (context) =>
-            const Template(title: "Dashboard", child: Dashboard()),
-        '/map': (context) => const Template(
+        '/home': (context) => const TemplateBody(
+            title: "Dashboard", child: Dashboard()),
+        '/map': (context) => const TemplateBody(
             title: "Dashboard",
             child: Dashboard(
               initialKey: 1,
             )),
-        '/create': (context) => const Template(
+        '/create': (context) => const TemplateBody(
             title: "Create Report", child: CreateReport()),
       },
       home: TemplateBody(
@@ -61,6 +75,11 @@ class TemplateBody extends StatefulWidget {
 }
 
 class _TemplateBodyState extends State<TemplateBody> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +118,11 @@ class PublicDrawer extends StatefulWidget {
 }
 
 class _PublicDrawerState extends State<PublicDrawer> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

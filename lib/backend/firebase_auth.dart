@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,11 +48,24 @@ void signInWithPassword(BuildContext context,
       checkUserChanges();
       if (context.mounted) {
         Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const Dialog(
+                child: Center(
+                  child: Text("Logged In"),
+                ),
+              );
+            });
+        sleep(const Duration(milliseconds: 500));
         transferPage(context);
       }
     }
   } on FirebaseAuthException catch (e) {
     showSnackBar(e.message ?? "An unknown error has occurred.");
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }
 

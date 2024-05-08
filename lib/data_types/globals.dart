@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 
-final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> loggedScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey =
     GlobalKey<NavigatorState>();

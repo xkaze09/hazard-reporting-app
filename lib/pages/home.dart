@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:js_interop';
+// import 'dart:js_interop';
 import 'dart:math';
 
 import "package:flutter/material.dart";
@@ -27,7 +27,7 @@ class _HomeState extends State<Home>
       ValueNotifier<List>(categoryFilters);
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     // print value on change
     filterListener.addListener(() {
@@ -35,6 +35,13 @@ class _HomeState extends State<Home>
         reportStream = getActiveReports();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    filterListener.dispose();
+    reportStream.drain();
+    super.dispose();
   }
 
   @override
@@ -86,13 +93,22 @@ class ActiveFeed extends StatefulWidget {
 
 class _ActiveFeedState extends State<ActiveFeed> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: widget.snapshot.data?.size,
       itemBuilder: (context, index) {
         Map<String, dynamic>? data = widget.snapshot.data!.docs[index]
             .data() as Map<String, dynamic>;
-        debugPrint(data.toString());
         ReportsRecord report = ReportsRecord.fromMap(data);
         return GestureDetector(
           key: Key("${Random().nextDouble()}"),
@@ -196,7 +212,6 @@ class _FilterDialogState extends State<FilterDialog> {
                   categoryFilters.remove(categoryList[i].name);
                 }
               }
-              debugPrint(categoryFilters.toString());
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(

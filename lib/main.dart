@@ -26,8 +26,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'UPatrol',
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
+      scaffoldMessengerKey: loggedScaffoldMessengerKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
