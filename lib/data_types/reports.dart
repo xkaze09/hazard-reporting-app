@@ -155,7 +155,7 @@ class ReporterRecord {
         data?['photo_url'],
         data?['uid'],
         data?['is_responder'],
-        data?['is_receiver']);
+        data?['is_moderator']);
   }
 
   factory ReporterRecord.fromMap(
@@ -169,7 +169,12 @@ class ReporterRecord {
         snapshot['photo_url'],
         snapshot['uid'],
         snapshot['is_responder'] ?? false,
-        snapshot['is_receiver'] ?? false);
+        snapshot['is_moderator'] ?? false);
+  }
+
+  @override
+  String toString() {
+    return "{timestamp:$timestamp,display_name:$displayName,email:$email,photo_url:$photoUrl,uid:$uid,isResponder:$isResponder,isModerator:$isModerator}";
   }
 
   static Future<ReporterRecord> fromReference(

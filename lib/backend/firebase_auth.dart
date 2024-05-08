@@ -63,7 +63,12 @@ void signInWithPassword(BuildContext context,
   }
 }
 
-void checkUserChanges() {
+void checkUserChanges() async {
+  // debugPrint(authInstance.currentUser?.toString());
+  // currentUser = ReporterRecord.fromFirestore(
+  //     (await usersCollection.doc(authInstance.currentUser?.uid).get())
+  //         as DocumentSnapshot<Map<String, dynamic>>,
+  //     SnapshotOptions());
   authInstance.authStateChanges().listen((User? user) async {
     try {
       if (user != null) {
@@ -71,6 +76,7 @@ void checkUserChanges() {
             (await usersCollection.doc(user.uid).get())
                 as DocumentSnapshot<Map<String, dynamic>>?,
             SnapshotOptions());
+        debugPrint(currentUser.toString());
       }
     } catch (e) {
       debugPrint(e.toString());

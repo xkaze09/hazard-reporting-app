@@ -203,7 +203,7 @@ class DashboardTile extends StatelessWidget {
           ),
         ),
         onTap: () {
-          Navigator.of(context).pushNamed(namedRoute);
+          Navigator.of(context).popAndPushNamed(namedRoute);
         });
   }
 }
