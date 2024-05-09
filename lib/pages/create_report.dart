@@ -62,7 +62,7 @@ class _CreateReportState extends State<CreateReport> {
             _descriptionController.text,
             _categoryControllerValue ?? '',
             _locationController.text,
-            _file!);
+            _file ?? Uint8List(0));
         if (res == 'success') {
           setState(() {
             _isLoading = false;
