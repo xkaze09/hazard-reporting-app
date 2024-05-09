@@ -71,7 +71,7 @@ class ImageStoreMethods {
           Timestamp.now(),
           Timestamp.now(),
           subject);
-      db.collection('reports').doc(reportId).set(
+      reportsCollection.doc(reportId).set(
             report.toFirestore(),
           );
       res = 'success';

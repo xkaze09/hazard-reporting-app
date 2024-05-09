@@ -41,6 +41,7 @@ void signInWithPassword(BuildContext context,
     } else {
       await authInstance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
+      checkUserChanges();
       usersCollection.add(currentUser?.toFirestore());
     }
 

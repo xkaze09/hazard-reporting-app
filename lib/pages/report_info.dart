@@ -112,7 +112,8 @@ class ReportTile extends StatelessWidget {
               labelText: '',
               icon: Icon(Icons.person)),
         ),
-        ModControl(report: report)
+        ModControl(report: report),
+        ResponderControl(report: report),
       ],
     );
   }
