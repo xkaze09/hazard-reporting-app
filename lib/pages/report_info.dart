@@ -112,7 +112,8 @@ class ReportTile extends StatelessWidget {
               labelText: '',
               icon: Icon(Icons.person)),
         ),
-        ModControl(report: report)
+        ModControl(report: report),
+        ResponderControl(report: report),
       ],
     );
   }
@@ -181,45 +182,46 @@ class ResponderControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: currentUser?.getRole() == 'responder',
+      visible: currentUser?.getRole() == 'Responder',
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton(
               onPressed: () {
-                //TODO implement stuff
+                reportsCollection
+                    .doc(report.id)
+                    .update({"isResolved": true});
               },
-              child: Text(
-                  report.isVerified ?? false ? 'Revoke' : 'Verify')),
-          TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Delete Report'),
-                        content: const Text(
-                            'Are youre about deleting this report?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('No')),
-                          TextButton(
-                              onPressed: () {
-                                reportsCollection
-                                    .doc(report.id)
-                                    .delete();
-                                Navigator.of(context).popUntil(
-                                    (route) => route.isFirst);
-                              },
-                              child: const Text('Yes'))
-                        ],
-                      );
-                    });
-              },
-              child: const Text('Reject')),
+              child: const Text('Resolve')),
+          // TextButton(
+          //     onPressed: () {
+          //       showDialog(
+          //           context: context,
+          //           builder: (BuildContext context) {
+          //             return AlertDialog(
+          //               title: const Text('Delete Report'),
+          //               content: const Text(
+          //                   'Are youre about deleting this report?'),
+          //               actions: [
+          //                 TextButton(
+          //                     onPressed: () {
+          //                       Navigator.of(context).pop();
+          //                     },
+          //                     child: const Text('No')),
+          //                 TextButton(
+          //                     onPressed: () {
+          //                       reportsCollection
+          //                           .doc(report.id)
+          //                           .delete();
+          //                       Navigator.of(context).popUntil(
+          //                           (route) => route.isFirst);
+          //                     },
+          //                     child: const Text('Yes'))
+          //               ],
+          //             );
+          //           });
+          //     },
+          //     child: const Text('Reject')),
         ],
       ),
     );
