@@ -90,10 +90,13 @@ class ReportsRecord {
       if (imageURL != null) 'image_url': imageURL,
       if (isResolved != null) 'isResolved': isResolved,
       if (isVerified != null) 'isVerified': isVerified,
+      if (isPending != null) 'isPending': isPending,
       if (location != null) 'location': location,
       if (address != null) 'address': address,
       if (reporter != null) 'reporter': reporter,
       if (timestamp != null) 'timestamp': timestamp,
+      if (dateResolving != null) 'dateResolving': dateResolving,
+      if (dateResolved != null) 'dateResolved': dateResolved,
       if (title != null) 'title': title,
     };
   }

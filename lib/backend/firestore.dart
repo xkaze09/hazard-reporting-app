@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
@@ -77,6 +76,7 @@ class ImageStoreMethods {
           );
       res = 'success';
     } catch (err) {
+      debugPrint(err.toString());
       res = err.toString();
     }
     return res;
