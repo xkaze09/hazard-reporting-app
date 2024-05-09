@@ -118,13 +118,6 @@ class _CreateReportState extends State<CreateReport> {
         });
   }
 
-  Future<void> _getAddress() async {
-    String? address = await reverseGeocode(await getPosition());
-    setState(() {
-      _locationController.text = address;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -132,6 +125,7 @@ class _CreateReportState extends State<CreateReport> {
       reverseGeocode(position).then(
         (value) {
           setState(() {
+            debugPrint(value);
             _locationController.text = value;
           });
         },

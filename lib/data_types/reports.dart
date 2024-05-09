@@ -46,7 +46,7 @@ class ReportsRecord {
         data?['location'] ?? const GeoPoint(0, 0),
         data?['address'] ?? "Location Unknown",
         data?['reporter'] ??
-            usersCollection.doc("/users/paXZUUVoXrXgIkLxg3iw"),
+            usersCollection.doc("paXZUUVoXrXgIkLxg3iw"),
         data?['timestamp'] ?? Timestamp.now(),
         data?['title'] ?? "Untitled");
   }
@@ -65,7 +65,7 @@ class ReportsRecord {
         data['location'] ?? const GeoPoint(0, 0),
         data['address'] ?? "Location Unknown",
         data['reporter'] ??
-            usersCollection.doc("/users/paXZUUVoXrXgIkLxg3iw"),
+            usersCollection.doc("paXZUUVoXrXgIkLxg3iw"),
         data['timestamp'] ?? Timestamp.now(),
         data['title'] ?? "Untitled");
   }
@@ -122,6 +122,18 @@ class ReporterRecord {
     }
   }
 
+  static Image? _getImage(String? url) {
+    Image? image;
+    if (url != null) {
+      image = Image.network(url,
+          errorBuilder: (context, error, stacktrace) {
+        return Image.asset('images/logo-notext.png');
+        // return const Text("Image failed to load");
+      });
+    }
+    return image;
+  }
+
   Map<String, dynamic> toFirestore() {
     return {
       if (displayName != null) 'display_name': displayName,
@@ -138,13 +150,8 @@ class ReporterRecord {
       DocumentSnapshot<Map<String, dynamic>>? snapshot,
       SnapshotOptions? options) {
     final data = snapshot?.data();
-    Image? image;
-    if (data?['photo_url'] != null) {
-      image = Image.network(data?['photo_url'],
-          errorBuilder: (context, error, stacktrace) {
-        return const Text("Image failed to load");
-      });
-    }
+    Image? image = _getImage(data?['photo_url']);
+
     return ReporterRecord(
         data?['timestamp'],
         data?['display_name'],
@@ -159,11 +166,13 @@ class ReporterRecord {
   factory ReporterRecord.fromMap(
     Map<String, dynamic> snapshot,
   ) {
+    Image? image = _getImage(snapshot['photo_url']);
+
     return ReporterRecord(
         snapshot['timestamp'],
         snapshot['display_name'],
         Email.fromString(snapshot['email'].toString()),
-        Image.network(snapshot['photo_url']),
+        image,
         snapshot['photo_url'],
         snapshot['uid'],
         snapshot['is_responder'] ?? false,
