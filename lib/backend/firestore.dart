@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
@@ -66,9 +68,9 @@ class ImageStoreMethods {
           address,
           // (await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).get()) as DocumentReference<Object?>,   //reporter
           currentUserRef,
-          Timestamp.fromDate(DateTime.now()), //timestamp
-          Timestamp.fromMicrosecondsSinceEpoch(0),
-          Timestamp.fromMicrosecondsSinceEpoch(0),
+          Timestamp.now(), //timestamp
+          Timestamp.now(),
+          Timestamp.now(),
           subject);
       db.collection('reports').doc(reportId).set(
             report.toFirestore(),

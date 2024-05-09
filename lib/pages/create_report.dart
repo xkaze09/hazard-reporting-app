@@ -135,10 +135,10 @@ class _CreateReportState extends State<CreateReport> {
 
   @override
   void dispose() {
-    _subjectController.dispose();
-    _descriptionController.dispose();
-    _locationController.dispose();
-    _createReportFormKey.currentState?.dispose();
+    // _subjectController.dispose();
+    // _descriptionController.dispose();
+    // _locationController.dispose();
+    // _createReportFormKey.currentState?.dispose();
     super.dispose();
   }
 
