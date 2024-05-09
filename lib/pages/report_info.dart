@@ -132,9 +132,15 @@ class ModControl extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () {
-                reportsCollection
-                    .doc(report.id)
-                    .update({"isVerified": true});
+                if (report.isVerified ?? false) {
+                  reportsCollection
+                      .doc(report.id)
+                      .update({"isVerified": false});
+                } else {
+                  reportsCollection
+                      .doc(report.id)
+                      .update({"isVerified": true});
+                }
               },
               child: Text(
                   report.isVerified ?? false ? 'Revoke' : 'Verify')),
@@ -146,7 +152,7 @@ class ModControl extends StatelessWidget {
                       return AlertDialog(
                         title: const Text('Delete Report'),
                         content: const Text(
-                            'Are youre about deleting this report?'),
+                            'Are you sure about deleting this report?'),
                         actions: [
                           TextButton(
                               onPressed: () {
@@ -187,39 +193,59 @@ class ResponderControl extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () {
+                if (report.isPending ?? false) {
+                  reportsCollection.doc(report.id).update({
+                    "isPending": false,
+                    "dateResolving":
+                        Timestamp.fromMicrosecondsSinceEpoch(0),
+                  });
+                } else {
+                  reportsCollection.doc(report.id).update({
+                    "isPending": true,
+                    "dateResolving": Timestamp.now(),
+                  });
+                }
                 //TODO implement stuff
               },
-              child: Text(
-                  report.isVerified ?? false ? 'Revoke' : 'Verify')),
-          TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Delete Report'),
-                        content: const Text(
-                            'Are youre about deleting this report?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('No')),
-                          TextButton(
-                              onPressed: () {
-                                reportsCollection
-                                    .doc(report.id)
-                                    .delete();
-                                Navigator.of(context).popUntil(
-                                    (route) => route.isFirst);
-                              },
-                              child: const Text('Yes'))
-                        ],
-                      );
-                    });
-              },
-              child: const Text('Reject')),
+              child: Text(report.isVerified ?? false
+                  ? 'Cancel Resolving'
+                  : 'Start Resolving')),
+          Visibility(
+            visible: report.isPending ?? false,
+            child: TextButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Resolve Report'),
+                          content: const Text(
+                              'Are you sure that the issue has been resolved?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('No')),
+                            TextButton(
+                                onPressed: () {
+                                  reportsCollection
+                                      .doc(report.id)
+                                      .update({
+                                    'isResolved': true,
+                                    'isPending': false,
+                                    'dateResolved': Timestamp.now(),
+                                  });
+                                  Navigator.of(context).popUntil(
+                                      (route) => route.isFirst);
+                                },
+                                child: const Text('Yes'))
+                          ],
+                        );
+                      });
+                },
+                child: const Text('Mark Resolved')),
+          ),
         ],
       ),
     );

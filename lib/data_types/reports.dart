@@ -3,6 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import '../data_types/utils.dart';
 
+Image? _getImage(String? url) {
+  Image? image;
+  if (url != null) {
+    image = Image.network(url,
+        errorBuilder: (context, error, stacktrace) {
+      return Image.asset('images/logo-notext.png');
+      // return const Text("Image failed to load");
+    });
+  }
+  return image;
+}
+
 class ReportsRecord {
   final Category? category;
   final String? description;
@@ -11,63 +23,63 @@ class ReportsRecord {
   final String? imageURL;
   final bool? isResolved;
   final bool? isVerified;
+  final bool? isPending;
   final GeoPoint? location;
   final String? address;
   final DocumentReference? reporter;
   final Timestamp? timestamp;
+  final Timestamp? dateResolving;
+  final Timestamp? dateResolved;
   final String? title;
   const ReportsRecord(
-      this.category,
-      this.description,
-      this.id,
-      this.image,
-      this.imageURL,
-      this.isResolved,
-      this.isVerified,
-      this.location,
-      this.address,
-      this.reporter,
-      this.timestamp,
-      this.title);
+    this.category,
+    this.description,
+    this.id,
+    this.image,
+    this.imageURL,
+    this.isResolved,
+    this.isVerified,
+    this.isPending,
+    this.location,
+    this.address,
+    this.reporter,
+    this.timestamp,
+    this.dateResolved,
+    this.dateResolving,
+    this.title,
+  );
 
   factory ReportsRecord.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>>? snapshot,
     SnapshotOptions? options,
   ) {
     final data = snapshot?.data();
-    return ReportsRecord(
-        Category.fromString(data?['category']),
-        data?['description'] ?? "No Description",
-        data?['id'] ?? '0',
-        Image.network(data?['image_url']),
-        data?['image_url'] ?? "",
-        data?['isResolved'] ?? false,
-        data?['isVerified'] ?? false,
-        data?['location'] ?? const GeoPoint(0, 0),
-        data?['address'] ?? "Location Unknown",
-        data?['reporter'] ??
-            usersCollection.doc("paXZUUVoXrXgIkLxg3iw"),
-        data?['timestamp'] ?? Timestamp.now(),
-        data?['title'] ?? "Untitled");
+    return ReportsRecord.fromMap(data);
   }
 
   factory ReportsRecord.fromMap(
-    Map<String, dynamic> data,
+    Map<String, dynamic>? data,
   ) {
     return ReportsRecord(
-        Category.fromString(data['category']),
-        data['description'] ?? "No Description",
-        data['id'] ?? '0',
-        Image.network(data['image_url']),
-        data['image_url'] ?? "",
-        data['isResolved'] ?? false,
-        data['isVerified'] ?? false,
-        data['location'] ?? const GeoPoint(0, 0),
-        data['address'] ?? "Location Unknown",
-        data['reporter'] ??
-            usersCollection.doc("paXZUUVoXrXgIkLxg3iw"),
-        data['timestamp'] ?? Timestamp.now(),
-        data['title'] ?? "Untitled");
+      Category.fromString(data?['category']),
+      data?['description'] ?? "No Description",
+      data?['id'] ?? '0',
+      _getImage(data?['image_url']),
+      data?['image_url'] ?? "",
+      data?['isResolved'] ?? false,
+      data?['isVerified'] ?? false,
+      data?['isPending'] ?? false,
+      data?['location'] ?? const GeoPoint(0, 0),
+      data?['address'] ?? "Location Unknown",
+      data?['reporter'] ??
+          usersCollection.doc("paXZUUVoXrXgIkLxg3iw"),
+      data?['timestamp'] ?? Timestamp.now(),
+      data?['dateResolved'] ??
+          Timestamp.fromMicrosecondsSinceEpoch(0),
+      data?['dateresolving'] ??
+          Timestamp.fromMicrosecondsSinceEpoch(0),
+      data?['title'] ?? "Untitled",
+    );
   }
 
   Map<String, dynamic> toFirestore() {
@@ -120,18 +132,6 @@ class ReporterRecord {
     } else {
       return "User";
     }
-  }
-
-  static Image? _getImage(String? url) {
-    Image? image;
-    if (url != null) {
-      image = Image.network(url,
-          errorBuilder: (context, error, stacktrace) {
-        return Image.asset('images/logo-notext.png');
-        // return const Text("Image failed to load");
-      });
-    }
-    return image;
   }
 
   Map<String, dynamic> toFirestore() {

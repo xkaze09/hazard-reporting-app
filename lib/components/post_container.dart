@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 
-class PostContainer extends StatelessWidget {
+class PostContainer extends StatefulWidget {
   final ReportsRecord? report;
   final ReporterRecord? reporter;
 
   const PostContainer(
       {super.key, required this.report, required this.reporter});
 
+  @override
+  State<PostContainer> createState() => _PostContainerState();
+}
+
+class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +37,7 @@ class PostContainer extends StatelessWidget {
             children: [
               Row(children: [
                 CircleAvatar(
-                  foregroundImage: reporter?.photo?.image ??
+                  foregroundImage: widget.reporter?.photo?.image ??
                       const AssetImage('images/logo-notext.png'),
                   radius: 20,
                   backgroundColor:
@@ -50,7 +55,7 @@ class PostContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        reporter?.displayName ?? "Anonymous",
+                        widget.reporter?.displayName ?? "Anonymous",
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -58,7 +63,7 @@ class PostContainer extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        report?.address ?? "Location Unknown",
+                        widget.report?.address ?? "Location Unknown",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 12,
@@ -68,11 +73,23 @@ class PostContainer extends StatelessWidget {
                     ],
                   ),
                 ),
+                Visibility(
+                  visible: widget.report?.isPending ?? false,
+                  child: Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text("Pending"),
+                    ),
+                  ),
+                ),
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
                     Icon(
-                      report?.category?.icon.icon ??
+                      widget.report?.category?.icon.icon ??
                           Categories.miscellaneous.category.icon.icon,
                       size: 60,
                       color: Colors.grey,
@@ -87,7 +104,8 @@ class PostContainer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Text(
-                        report?.category?.name ?? "Miscellaneous",
+                        widget.report?.category?.name ??
+                            "Miscellaneous",
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           color: Colors.white,
@@ -99,7 +117,7 @@ class PostContainer extends StatelessWidget {
                 )
               ]),
               Text(
-                report?.title ?? "Untitled",
+                widget.report?.title ?? "Untitled",
                 textAlign: TextAlign.left,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -124,7 +142,7 @@ class PostContainer extends StatelessWidget {
                     ),
                   ),
                 ),
-                report?.image ??
+                widget.report?.image ??
                     Image.asset("images/UPatrol-logo.png"),
               ]),
             ]));

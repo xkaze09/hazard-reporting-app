@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';

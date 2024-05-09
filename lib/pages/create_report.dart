@@ -121,16 +121,16 @@ class _CreateReportState extends State<CreateReport> {
   @override
   void initState() {
     super.initState();
-    getPosition().then((position) {
-      reverseGeocode(position).then(
-        (value) {
-          setState(() {
-            debugPrint(value);
-            _locationController.text = value;
-          });
-        },
-      );
-    });
+    // getPosition().then((position) {
+    //   reverseGeocode(position).then(
+    //     (value) {
+    //       setState(() {
+    //         debugPrint(value);
+    //         _locationController.text = value;
+    //       });
+    //     },
+    //   );
+    // });
   }
 
   @override

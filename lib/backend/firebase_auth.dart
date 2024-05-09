@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +7,6 @@ import 'package:hazard_reporting_app/authentication/transfer_page.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
-import 'package:hazard_reporting_app/data_types/utils.dart';
 
 final authInstance = FirebaseAuth.instance;
 
@@ -85,10 +83,17 @@ void checkUserChanges() async {
 }
 
 Stream<QuerySnapshot> getActiveReports({int limit = 20}) {
+  String role = currentUser?.getRole() ?? "User";
+
   var reportStream = reportsCollection
       .limit(limit)
       .where('isResolved', isEqualTo: false)
       .where('category', whereNotIn: categoryFilters)
       .orderBy('timestamp', descending: true);
+
+  if (role == "User" || role == "Responder") {
+    reportStream.where('isVerified', isEqualTo: true);
+  }
+
   return reportStream.snapshots();
 }

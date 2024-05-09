@@ -61,11 +61,14 @@ class ImageStoreMethods {
           imageUrl,
           false, //isResolved
           false, //isVerified,
+          false,
           geoPoint, //location
           address,
           // (await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).get()) as DocumentReference<Object?>,   //reporter
           currentUserRef,
           Timestamp.fromDate(DateTime.now()), //timestamp
+          Timestamp.fromMicrosecondsSinceEpoch(0),
+          Timestamp.fromMicrosecondsSinceEpoch(0),
           subject);
       db.collection('reports').doc(reportId).set(
             report.toFirestore(),
