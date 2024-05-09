@@ -63,8 +63,7 @@ class ReportTile extends StatelessWidget {
     return Column(
       children: [
         Row(children: [
-          Expanded(
-              child: report.image ?? Image.asset('assets/Hey.png')),
+          Expanded(child: report.image ?? Image.asset('assets/Hey.png')),
         ]),
         TextField(
           //Title
@@ -104,8 +103,7 @@ class ReportTile extends StatelessWidget {
           //Reporter
           readOnly: true,
           controller: TextEditingController(
-            text: getReporter(report.reporter)?.displayName ??
-                'Anonymous',
+            text: getReporter(report.reporter)?.displayName ?? 'Anonymous',
           ),
           decoration: const InputDecoration(
               border: UnderlineInputBorder(),
@@ -138,13 +136,10 @@ class ModControl extends StatelessWidget {
                       .doc(report.id)
                       .update({"isVerified": false});
                 } else {
-                  reportsCollection
-                      .doc(report.id)
-                      .update({"isVerified": true});
+                  reportsCollection.doc(report.id).update({"isVerified": true});
                 }
               },
-              child: Text(
-                  report.isVerified ?? false ? 'Revoke' : 'Verify')),
+              child: Text(report.isVerified ?? false ? 'Revoke' : 'Verify')),
           TextButton(
               onPressed: () {
                 showDialog(
@@ -162,11 +157,9 @@ class ModControl extends StatelessWidget {
                               child: const Text('No')),
                           TextButton(
                               onPressed: () {
-                                reportsCollection
-                                    .doc(report.id)
-                                    .delete();
-                                Navigator.of(context).popUntil(
-                                    (route) => route.isFirst);
+                                reportsCollection.doc(report.id).delete();
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
                               },
                               child: const Text('Yes'))
                         ],
@@ -188,7 +181,7 @@ class ResponderControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: currentUser?.getRole() == 'responder',
+      visible: currentUser?.getRole() == 'Responder',
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -197,8 +190,7 @@ class ResponderControl extends StatelessWidget {
                 if (report.isPending ?? false) {
                   reportsCollection.doc(report.id).update({
                     "isPending": false,
-                    "dateResolving":
-                        Timestamp.fromMicrosecondsSinceEpoch(0),
+                    "dateResolving": Timestamp.fromMicrosecondsSinceEpoch(0),
                   });
                 } else {
                   reportsCollection.doc(report.id).update({
@@ -208,7 +200,7 @@ class ResponderControl extends StatelessWidget {
                 }
                 //TODO implement stuff
               },
-              child: Text(report.isVerified ?? false
+              child: Text(report.isPending ?? false
                   ? 'Cancel Resolving'
                   : 'Start Resolving')),
           Visibility(
@@ -230,15 +222,13 @@ class ResponderControl extends StatelessWidget {
                                 child: const Text('No')),
                             TextButton(
                                 onPressed: () {
-                                  reportsCollection
-                                      .doc(report.id)
-                                      .update({
+                                  reportsCollection.doc(report.id).update({
                                     'isResolved': true,
                                     'isPending': false,
                                     'dateResolved': Timestamp.now(),
                                   });
-                                  Navigator.of(context).popUntil(
-                                      (route) => route.isFirst);
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
                                 },
                                 child: const Text('Yes'))
                           ],
