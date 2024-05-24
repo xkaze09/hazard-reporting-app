@@ -42,32 +42,30 @@ void signInWithPassword(BuildContext context,
       await authInstance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
       checkUserChanges();
-      usersCollection.add(currentUser?.toFirestore());
+      await usersCollection.add(currentUser?.toFirestore());
+    }
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
     }
 
     if (authInstance.currentUser != null) {
       checkUserChanges();
       if (context.mounted) {
-        Navigator.of(context).pop();
         transferPage(context);
       }
     }
   } on FirebaseAuthException catch (e) {
-    loggedScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-      content: Text(e.message ?? "An unknown error has occurred."),
-    ));
     if (context.mounted) {
       Navigator.of(context).pop();
     }
+    loggedScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+      content: Text(e.message ?? "An unknown error has occurred."),
+    ));
   }
 }
 
 void checkUserChanges() async {
-  // debugPrint(authInstance.currentUser?.toString());
-  // currentUser = ReporterRecord.fromFirestore(
-  //     (await usersCollection.doc(authInstance.currentUser?.uid).get())
-  //         as DocumentSnapshot<Map<String, dynamic>>,
-  //     SnapshotOptions());
   authInstance.authStateChanges().listen((User? user) async {
     try {
       if (user != null) {
@@ -84,17 +82,6 @@ void checkUserChanges() async {
 }
 
 Stream<QuerySnapshot> getActiveReports({int limit = 20}) {
-  String role = currentUser?.getRole() ?? "User";
-
-  var reportStream = reportsCollection
-      .limit(limit)
-      .where('isResolved', isEqualTo: false)
-      .where('category', whereNotIn: categoryFilters)
-      .orderBy('timestamp', descending: true);
-
-  if (role == "User" || role == "Responder") {
-    reportStream.where('isVerified', isEqualTo: true);
-  }
-
-  return reportStream.snapshots();
+  var reportStream = reportsCollection.limit(limit).snapshots();
+  return reportStream;
 }

@@ -64,7 +64,7 @@ class ImageStoreMethods {
           false, //isVerified,
           false,
           geoPoint, //location
-          location,
+          address,
           // (await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).get()) as DocumentReference<Object?>,   //reporter
           currentUserRef,
           Timestamp.now(), //timestamp

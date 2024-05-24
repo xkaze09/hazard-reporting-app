@@ -12,15 +12,14 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 import 'package:hazard_reporting_app/pages/report_info.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class History extends StatefulWidget {
+  const History({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<History> createState() => _HistoryState();
 }
 
-class _HomeState extends State<Home>
-    with AutomaticKeepAliveClientMixin {
+class _HistoryState extends State<History> {
   Stream<QuerySnapshot> reportStream = getActiveReports();
 
   ValueNotifier<List> filterListener =
@@ -46,10 +45,9 @@ class _HomeState extends State<Home>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        heroTag: "Filter",
+        heroTag: "Filterer",
         onPressed: () {
           showDialog(
               context: context,
@@ -78,9 +76,6 @@ class _HomeState extends State<Home>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class ActiveFeed extends StatefulWidget {
@@ -95,22 +90,6 @@ class _ActiveFeedState extends State<ActiveFeed> {
   @override
   void initState() {
     super.initState();
-    if (currentUser?.getRole() == 'Responder') {
-      showUnverifiedReports = false;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = false;
-    } else if (currentUser?.getRole() == 'Moderator') {
-      showUnverifiedReports = true;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = true;
-    } else {
-      showUnverifiedReports = false;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = false;
-    }
   }
 
   @override
@@ -147,7 +126,9 @@ class _ActiveFeedState extends State<ActiveFeed> {
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
                 if (snapshot.data?.uid == currentUser?.uid) {
-                  Container(height: 0);
+                  Container(
+                    height: 0,
+                  );
                 }
                 return PostContainer(
                     report: report, reporter: snapshot.data);

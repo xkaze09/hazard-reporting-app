@@ -10,3 +10,7 @@ final GlobalKey<NavigatorState> navigatorKey =
 
 ReporterRecord? currentUser;
 List<String> categoryFilters = List.filled(1, "test", growable: true);
+bool showUnverifiedReports = false;
+bool showVerifiedReports = true;
+bool showResolvedReports = false;
+bool showPendingReports = true;

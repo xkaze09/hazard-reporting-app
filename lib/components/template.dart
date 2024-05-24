@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
+import 'package:hazard_reporting_app/pages/history.dart';
 import '../pages/create_report.dart';
 import '/pages/dashboard.dart';
 import '/pages/map.dart';
@@ -48,7 +49,13 @@ class _TemplateState extends State<Template> {
               initialKey: 1,
             )),
         '/create': (context) => const TemplateBody(
-            title: "Create Report", child: CreateReport()),
+              title: "Create Report",
+              child: CreateReport(),
+            ),
+        '/history': (context) => const TemplateBody(
+              title: "History",
+              child: History(),
+            )
       },
       home: TemplateBody(
         title: widget.title,

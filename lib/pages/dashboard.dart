@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/components/template.dart';
-import 'package:hazard_reporting_app/pages/create_report.dart';
 import '../pages/home.dart';
 import '../pages/map.dart';
 
