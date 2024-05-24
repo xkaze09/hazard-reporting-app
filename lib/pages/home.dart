@@ -23,23 +23,8 @@ class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
   Stream<QuerySnapshot> reportStream = getActiveReports();
 
-  ValueNotifier<List> filterListener =
-      ValueNotifier<List>(categoryFilters);
-
-  @override
-  void initState() {
-    super.initState();
-    // print value on change
-    filterListener.addListener(() {
-      setState(() {
-        reportStream = getActiveReports();
-      });
-    });
-  }
-
   @override
   void dispose() {
-    filterListener.dispose();
     reportStream.drain();
     super.dispose();
   }
@@ -92,35 +77,50 @@ class ActiveFeed extends StatefulWidget {
 }
 
 class _ActiveFeedState extends State<ActiveFeed> {
+  ValueNotifier<List> filterListener =
+      ValueNotifier<List>(categoryFilters);
+  Key _refreshKey = UniqueKey();
+
+  void refreshFeed() {
+    setState(() {
+      debugPrint('ping');
+      _refreshKey = UniqueKey();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    if (currentUser?.getRole() == 'Responder') {
-      showUnverifiedReports = false;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = false;
-    } else if (currentUser?.getRole() == 'Moderator') {
-      showUnverifiedReports = true;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = true;
+    if (currentUser?.getRole() == 'Moderator') {
+      hideUnverifiedReports = false;
+      hideVerifiedReports = false;
+      hidePendingReports = false;
+      hideResolvedReports = false;
     } else {
-      showUnverifiedReports = false;
-      showVerifiedReports = true;
-      showPendingReports = true;
-      showResolvedReports = false;
+      hideUnverifiedReports = true;
+      hideVerifiedReports = false;
+      hidePendingReports = false;
+      hideResolvedReports = true;
     }
+    // print value on change
+    filterListener.addListener(() {
+      setState(() {
+        debugPrint('ping');
+        _refreshKey = UniqueKey();
+      });
+    });
   }
 
   @override
   void dispose() {
+    filterListener.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      key: _refreshKey,
       itemCount: widget.snapshot.data?.size,
       itemBuilder: (context, index) {
         Map<String, dynamic>? data = widget.snapshot.data!.docs[index]
@@ -129,10 +129,10 @@ class _ActiveFeedState extends State<ActiveFeed> {
         if (report.isVerified != null &&
             report.isPending != null &&
             report.isResolved != null) {
-          if (report.isVerified == showVerifiedReports ||
-              report.isResolved == showResolvedReports ||
-              report.isVerified != showUnverifiedReports ||
-              report.isPending == showPendingReports ||
+          if ((report.isVerified == true && hideVerifiedReports) ||
+              (report.isResolved == true && hideResolvedReports) ||
+              (report.isVerified == false && hideUnverifiedReports) ||
+              (report.isPending == true && hidePendingReports) ||
               categoryFilters.contains(report.category?.name)) {
             return Container(height: 0);
           }
@@ -146,9 +146,9 @@ class _ActiveFeedState extends State<ActiveFeed> {
           child: FutureBuilder(
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
-                if (snapshot.data?.uid == currentUser?.uid) {
-                  Container(height: 0);
-                }
+                // if (snapshot.data?.uid == currentUser?.uid) {
+                //   Container(height: 0);
+                // }
                 return PostContainer(
                     report: report, reporter: snapshot.data);
               }),

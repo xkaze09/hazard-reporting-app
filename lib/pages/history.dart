@@ -108,10 +108,10 @@ class _ActiveFeedState extends State<ActiveFeed> {
         if (report.isVerified != null &&
             report.isPending != null &&
             report.isResolved != null) {
-          if (report.isVerified == showVerifiedReports ||
-              report.isResolved == showResolvedReports ||
-              report.isVerified != showUnverifiedReports ||
-              report.isPending == showPendingReports ||
+          if ((report.isVerified == true && hideVerifiedReports) ||
+              (report.isResolved == true && hideResolvedReports) ||
+              (report.isVerified == false && hideUnverifiedReports) ||
+              (report.isPending == true && hidePendingReports) ||
               categoryFilters.contains(report.category?.name)) {
             return Container(height: 0);
           }
@@ -125,7 +125,7 @@ class _ActiveFeedState extends State<ActiveFeed> {
           child: FutureBuilder(
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
-                if (snapshot.data?.uid == currentUser?.uid) {
+                if (snapshot.data?.uid != currentUser?.uid) {
                   Container(
                     height: 0,
                   );
