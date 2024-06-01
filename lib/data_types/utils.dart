@@ -224,8 +224,13 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: !isPasswordVisible,
       controller: widget.controller,
       decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          fillColor: Colors.white,
+          filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          icon: widget.icon ?? const Icon(Icons.lock),
+          prefixIcon: widget.icon ?? const Icon(Icons.lock),
           suffixIcon: IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/pages/map.dart';
 
 import 'dart:typed_data';
@@ -210,6 +212,23 @@ class _CreateReportState extends State<CreateReport> {
                       ),
                       child: const Text('Submit'),
                     ),
+                    Visibility(
+                      visible:
+                          authInstance.currentUser?.isAnonymous ??
+                              false,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          logOut().then(
+                              (value) => Navigator.of(context).pop());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                    )
                   ],
                 ),
               )),

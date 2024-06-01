@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/authentication/reset_pass_page.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 
@@ -9,28 +10,38 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late Size size = MediaQuery.of(context).size;
     return Scaffold(
-        body: Column(mainAxisSize: MainAxisSize.min, children: [
-      Center(
-          child: Hero(
-              tag: "Logo with Text",
-              child: Image.asset("images/UPatrol-logo.png"))),
-      Stack(children: [
+        body: Column(
+      children: [
         Container(
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40)),
-          ),
-        ),
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
+            height: size.shortestSide * 0.4,
+            width: size.shortestSide * 0.4,
+            child: Center(
+                child: Hero(
+                    tag: "Logo with Text",
+                    child: Image.asset("images/UPatrol-logo.png")))),
+        Container(
+            height: size.height - (size.shortestSide * 0.4),
+            width: size.width,
+            decoration: BoxDecoration(
+                color: const Color(0xFF146136),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.elliptical(
+                    size.width / 2,
+                    size.shortestSide * 0.1,
+                  ),
+                )),
+            padding: EdgeInsets.only(
+              top: 20,
+              left: size.width * 0.05,
+              right: size.width * 0.05,
+            ),
             child: AuthForm(
               showSignUpFirst: showSignUpFirst,
-            ))
-      ])
-    ]));
+            )),
+      ],
+    ));
   }
 }
 
@@ -47,29 +58,45 @@ class _AuthPageState extends State<AuthForm>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    late Size size = MediaQuery.of(context).size;
     return DefaultTabController(
         length: 2,
-        child: Flex(
-          direction: Axis.vertical,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const TabBar(
-              dividerColor: Colors.transparent,
-              tabs: [
-                Tab(text: "Sign In"),
-                Tab(text: "Sign Up"),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: const TabBarView(children: [
-                SignInForm(),
-                SignInForm(
-                  signUp: true,
-                )
-              ]),
-            )
-          ],
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TabBar(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                dividerColor: Colors.transparent,
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(
+                      icon: Text(
+                    "Sign In",
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 25),
+                  )),
+                  Tab(
+                      icon: Text(
+                    "Sign Up",
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 25),
+                  )),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    SignInForm(),
+                    SignInForm(
+                      signUp: true,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ));
   }
 }
@@ -100,15 +127,23 @@ class _SignInFormState extends State<SignInForm> {
       child: Form(
           key: formKey,
           child: Column(children: [
+            const SizedBox(height: 20),
             TextFormField(
               controller: emailController,
               decoration: const InputDecoration(
-                icon: Icon(Icons.mail),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                prefixIcon: Icon(Icons.mail),
               ),
             ),
+            const SizedBox(height: 20),
             PasswordField(
               controller: passwordController,
             ),
+            const SizedBox(height: 20),
             Visibility(
               visible: widget.signUp,
               child: PasswordField(
@@ -121,7 +156,8 @@ class _SignInFormState extends State<SignInForm> {
                 },
               ),
             ),
-            TextButton(
+            const SizedBox(height: 20),
+            OutlinedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     signInWithPassword(
@@ -129,11 +165,30 @@ class _SignInFormState extends State<SignInForm> {
                         signUp: widget.signUp);
                   }
                 },
-                child: Text(widget.signUp ? "Sign Up" : "Sign In"))
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.white),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  minimumSize: const Size(200, 50),
+                ),
+                child: Text(
+                  widget.signUp ? "Sign Up" : "Sign In",
+                  style: const TextStyle(
+                      color: Color(0xFF146136), fontSize: 20),
+                ))
           ])),
     );
   }
 }
+
+// class AuthPage extends StatefulWidget {
+//   const AuthPage({super.key});
+
+//   @override
+//   State<AuthPage> createState() => _AuthPageState();
+// }
 
 // class _AuthPageState extends State<AuthPage> {
 //   late Color myColor;
@@ -194,10 +249,6 @@ class _SignInFormState extends State<SignInForm> {
 //     myColor = Theme.of(context).primaryColor;
 //     double height = MediaQuery.of(context).size.height;
 //     double width = MediaQuery.of(context).size.width;
-
-//     if (widget.showSignUpFirst) {
-//       isSignInSelected = false;
-//     }
 
 //     return Scaffold(
 //       resizeToAvoidBottomInset: false,
@@ -312,14 +363,8 @@ class _SignInFormState extends State<SignInForm> {
 //               ),
 //               GestureDetector(
 //                 onTap: () async {
-//                   try {
-//                     // Call the signInWithEmailAndPassword method and get UserCredential
-//                     signInWithPassword(
-//                         context, emailController, passwordController);
-//                   } on FirebaseAuthException catch (e) {
-//                     showSnackBar(
-//                         e.message ?? "Unknown Error has occurred");
-//                   }
+//                   signInWithPassword(
+//                       context, emailController, passwordController);
 //                 },
 //               ),
 //               if (isSignInSelected) // Sign In
@@ -369,22 +414,24 @@ class _SignInFormState extends State<SignInForm> {
 //                         width: width * 0.3,
 //                         child: ElevatedButton(
 //                           onPressed: () {},
-//                           child: const Text('Sign In',
-//                               style: TextStyle(
-//                                   fontSize: 17, color: Colors.white)),
 //                           style: ElevatedButton.styleFrom(
 //                             backgroundColor: const Color(0xFF29AB84),
 //                             textStyle: const TextStyle(fontSize: 15),
 //                           ),
+//                           child: const Text('Sign In',
+//                               style: TextStyle(
+//                                   fontSize: 17, color: Colors.white)),
 //                         ),
 //                       ),
 //                       const SizedBox(height: 10),
 //                       GestureDetector(
 //                         onTap: () {
-//                           // Navigator.push(
-//                           //   context,
-//                           //   MaterialPageRoute(builder: (context) => ResetPasswordPage()),
-//                           // );
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                                 builder: (context) =>
+//                                     const ResetPasswordPage()),
+//                           );
 //                         },
 //                         child: Text(
 //                           'Forgot Password?',
@@ -463,13 +510,13 @@ class _SignInFormState extends State<SignInForm> {
 //                         width: width * 0.3,
 //                         child: ElevatedButton(
 //                           onPressed: () {},
-//                           child: const Text('Sign Up',
-//                               style: TextStyle(
-//                                   fontSize: 17, color: Colors.white)),
 //                           style: ElevatedButton.styleFrom(
 //                             backgroundColor: const Color(0xFF29AB84),
 //                             textStyle: const TextStyle(fontSize: 20),
 //                           ),
+//                           child: const Text('Sign Up',
+//                               style: TextStyle(
+//                                   fontSize: 17, color: Colors.white)),
 //                         ),
 //                       ),
 //                       const SizedBox(height: 20),

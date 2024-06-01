@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/pages/create_report.dart';
 import 'authentication/auth_page.dart';
 
 class LandingPage extends StatelessWidget {
@@ -67,7 +69,17 @@ class LandingPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await FirebaseAuth.instance
+                                .signInAnonymously();
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const PopScope(
+                                          canPop: false,
+                                          child: CreateReport(),
+                                        )));
+                          },
                           style: OutlinedButton.styleFrom(
                             side:
                                 const BorderSide(color: Colors.white),
