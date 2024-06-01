@@ -134,7 +134,8 @@ class _PublicDrawerState extends State<PublicDrawer> {
       child: ListView(
         children: [
           ListTile(
-              leading: currentUser?.photo,
+              leading: currentUser?.photo ??
+                  Image.asset('assets/images/anon.png'),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

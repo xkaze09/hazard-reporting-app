@@ -3,40 +3,50 @@ import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
+import 'package:hazard_reporting_app/pages/edit_report.dart';
 
-class ReportInfo extends StatelessWidget {
+class ReportInfo extends StatefulWidget {
   final ReportsRecord report;
 
   const ReportInfo({super.key, required this.report});
 
   @override
+  State<ReportInfo> createState() => _ReportInfoState();
+}
+
+class _ReportInfoState extends State<ReportInfo> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         // automaticallyImplyLeading: true,
-        title: Text.rich(TextSpan(children: [
-          TextSpan(text: report.title ?? 'Untitled'),
-          const TextSpan(text: ' Report')
-        ])),
+        title: Text(widget.report.title ?? 'Untitled'),
         actions: [
-          Column(
-            children: [
-              report.category?.icon ??
-                  const Icon(Icons.question_mark, size: 20),
-              Center(
-                child: Text(report.category?.name ?? 'Unknown',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 10,
-                    )),
-              )
-            ],
+          Transform.translate(
+            offset: Offset(-20, 10),
+            child: Column(
+              children: [
+                Icon(
+                  widget.report.category?.icon.icon,
+                  size: 30,
+                  color: widget.report.category?.color,
+                ),
+                Center(
+                  child:
+                      Text(widget.report.category?.name ?? 'Unknown',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          )),
+                )
+              ],
+            ),
           )
         ],
       ),
       body: SingleChildScrollView(
         child: ReportTile(
-          report: report,
+          report: widget.report,
         ),
       ),
     );
@@ -60,70 +70,147 @@ class ReportTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    late Size size = MediaQuery.sizeOf(context);
+    String role = currentUser?.getRole() ?? "User";
+    ReporterRecord? reporter = getReporter(report.reporter);
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            SizedBox(
+                height: size.shortestSide * 0.8,
+                width: size.shortestSide * 0.6,
+                child: report.image ?? Image.asset('assets/Hey.png')),
+          ]),
+          TextField(
+            //Title
+            readOnly: true,
+            controller: TextEditingController(
+              text: report.title ?? 'Untitled',
+            ),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Title',
+                icon: Icon(Icons.note)),
+          ),
+          TextField(
+            //Description
+            readOnly: true,
+            controller: TextEditingController(
+              text: report.description ?? 'No Description',
+            ),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: '',
+                icon: Icon(Icons.list)),
+            maxLines: 3,
+          ),
+          TextField(
+            //Location
+            readOnly: true,
+            controller: TextEditingController(
+              text: report.address ?? 'Untitled',
+            ),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: '',
+                icon: Icon(Icons.map)),
+          ),
+          TextField(
+            //Reporter
+            readOnly: true,
+            controller: TextEditingController(
+              text: reporter?.displayName ?? 'Anonymous',
+            ),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: '',
+                icon: Icon(Icons.person)),
+          ),
+          (currentUser?.getRole() == 'Moderator')
+              ? ModControl(report: report)
+              : const SizedBox(
+                  height: 0,
+                ),
+          if (role == "Moderator")
+            ModControl(report: report)
+          else if (role == "Responder")
+            ResponderControl(report: report)
+          else if (role == "User" &&
+              currentUser?.uid == reporter?.uid)
+            ReporterControl(report: report)
+        ],
+      ),
+    );
+  }
+}
+
+class ReporterControl extends StatefulWidget {
+  final ReportsRecord report;
+  const ReporterControl({super.key, required this.report});
+
+  @override
+  State<StatefulWidget> createState() => _ReporterControlState();
+}
+
+class _ReporterControlState extends State<ReporterControl> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
       children: [
-        Row(children: [
-          Expanded(
-              child: report.image ?? Image.asset('assets/Hey.png')),
-        ]),
-        TextField(
-          //Title
-          readOnly: true,
-          controller: TextEditingController(
-            text: report.title ?? 'Untitled',
-          ),
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Title',
-              icon: Icon(Icons.note)),
-        ),
-        TextField(
-          //Description
-          readOnly: true,
-          controller: TextEditingController(
-            text: report.description ?? 'No Description',
-          ),
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: '',
-              icon: Icon(Icons.list)),
-          maxLines: 3,
-        ),
-        TextField(
-          //Location
-          readOnly: true,
-          controller: TextEditingController(
-            text: report.address ?? 'Untitled',
-          ),
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: '',
-              icon: Icon(Icons.map)),
-        ),
-        TextField(
-          //Reporter
-          readOnly: true,
-          controller: TextEditingController(
-            text: getReporter(report.reporter)?.displayName ??
-                'Anonymous',
-          ),
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: '',
-              icon: Icon(Icons.person)),
-        ),
-        ModControl(report: report),
-        ResponderControl(report: report),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      EditReportInfo(report: widget.report)));
+            },
+            child: const Text('Edit')),
+        TextButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Delete Report'),
+                      content: const Text(
+                          'Are you sure about deleting this report?'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('No')),
+                        TextButton(
+                            onPressed: () {
+                              reportsCollection
+                                  .doc(widget.report.id)
+                                  .delete();
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            },
+                            child: const Text('Yes'))
+                      ],
+                    );
+                  });
+            },
+            child: const Text('Delete Report')),
       ],
     );
   }
 }
 
-class ModControl extends StatelessWidget {
+class ModControl extends StatefulWidget {
   final ReportsRecord report;
 
   const ModControl({super.key, required this.report});
 
+  @override
+  State<ModControl> createState() => _ModControlState();
+}
+
+class _ModControlState extends State<ModControl> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -133,18 +220,19 @@ class ModControl extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () {
-                if (report.isVerified ?? false) {
+                if (widget.report.isVerified ?? false) {
                   reportsCollection
-                      .doc(report.id)
+                      .doc(widget.report.id)
                       .update({"isVerified": false});
                 } else {
                   reportsCollection
-                      .doc(report.id)
+                      .doc(widget.report.id)
                       .update({"isVerified": true});
                 }
               },
-              child: Text(
-                  report.isVerified ?? false ? 'Revoke' : 'Verify')),
+              child: Text(widget.report.isVerified ?? false
+                  ? 'Revoke'
+                  : 'Verify')),
           TextButton(
               onPressed: () {
                 showDialog(
@@ -163,7 +251,7 @@ class ModControl extends StatelessWidget {
                           TextButton(
                               onPressed: () {
                                 reportsCollection
-                                    .doc(report.id)
+                                    .doc(widget.report.id)
                                     .delete();
                                 Navigator.of(context).popUntil(
                                     (route) => route.isFirst);

@@ -484,20 +484,3 @@ class _SignInFormState extends State<SignInForm> {
 //     );
 //   }
 // }
-
-String _getErrorMessage(String errorCode) {
-  switch (errorCode) {
-    case 'user-not-found':
-      return 'No user found for that email.';
-    case 'wrong-password':
-      return 'Wrong password provided for that user.';
-    case 'user-disabled':
-      return 'User has been disabled.';
-    case 'too-many-requests':
-      return 'Too many requests. Try again later.';
-    case 'operation-not-allowed':
-      return 'Signing in with Email and Password is not enabled.';
-    default:
-      return 'An unknown error occurred.';
-  }
-}

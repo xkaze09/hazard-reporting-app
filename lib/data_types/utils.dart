@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'globals.dart';
 import 'package:image_picker/image_picker.dart';
@@ -184,7 +184,11 @@ void showSnackBar(String text) {
 
 dynamic pickImage(ImageSource source) async {
   final ImagePicker imagePicker = ImagePicker();
-  XFile? file = await imagePicker.pickImage(source: source);
+  XFile? file = await imagePicker.pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 1920,
+      maxHeight: 1920);
   if (file != null) {
     return await file.readAsBytes();
   }
@@ -239,6 +243,13 @@ class _PasswordFieldState extends State<PasswordField> {
       validator: widget.validator ?? backup,
     );
   }
+}
+
+Future<LatLng> getPosition() async {
+  Position pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best);
+  LatLng posnew = LatLng(pos.latitude, pos.longitude);
+  return posnew;
 }
 
 // showSnackBar(String content, BuildContext context) {

@@ -14,3 +14,4 @@ bool hideUnverifiedReports = true;
 bool hideVerifiedReports = false;
 bool hideResolvedReports = false;
 bool hidePendingReports = false;
+bool checkFilter = false;

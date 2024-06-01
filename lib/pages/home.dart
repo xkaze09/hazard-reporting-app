@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:js_interop';
 import 'dart:math';
 
 import "package:flutter/material.dart";
@@ -12,6 +11,9 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 import 'package:hazard_reporting_app/pages/report_info.dart';
 
+ValueNotifier<bool> filterListener = ValueNotifier(checkFilter);
+Stream<QuerySnapshot> reportStream = getActiveReports();
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -21,10 +23,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
     with AutomaticKeepAliveClientMixin {
-  Stream<QuerySnapshot> reportStream = getActiveReports();
-
   @override
   void dispose() {
+    filterListener.dispose();
     reportStream.drain();
     super.dispose();
   }
@@ -56,9 +57,13 @@ class _HomeState extends State<Home>
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text("Loading");
           }
-          return ActiveFeed(
-            snapshot: snapshot,
-          );
+          return ValueListenableBuilder(
+              valueListenable: filterListener,
+              builder: (context, value, widget) {
+                return ActiveFeed(
+                  snapshot: snapshot,
+                );
+              });
         },
       ),
     );
@@ -77,17 +82,6 @@ class ActiveFeed extends StatefulWidget {
 }
 
 class _ActiveFeedState extends State<ActiveFeed> {
-  ValueNotifier<List> filterListener =
-      ValueNotifier<List>(categoryFilters);
-  Key _refreshKey = UniqueKey();
-
-  void refreshFeed() {
-    setState(() {
-      debugPrint('ping');
-      _refreshKey = UniqueKey();
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -102,25 +96,11 @@ class _ActiveFeedState extends State<ActiveFeed> {
       hidePendingReports = false;
       hideResolvedReports = true;
     }
-    // print value on change
-    filterListener.addListener(() {
-      setState(() {
-        debugPrint('ping');
-        _refreshKey = UniqueKey();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    filterListener.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      key: _refreshKey,
       itemCount: widget.snapshot.data?.size,
       itemBuilder: (context, index) {
         Map<String, dynamic>? data = widget.snapshot.data!.docs[index]
@@ -242,6 +222,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   categoryFilters.remove(categoryList[i].name);
                 }
               }
+              filterListener.value = !filterListener.value;
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(

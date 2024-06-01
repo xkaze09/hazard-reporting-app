@@ -1,31 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/pages/map.dart';
 
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../data_types/utils.dart';
 import '../backend/firestore.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const UPatrol());
-}
-
-class UPatrol extends StatelessWidget {
-  const UPatrol({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'UPatrol',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const CreateReport(),
-    );
+Future<bool> askCameraPermission() async {
+  PermissionStatus status = await Permission.camera.request();
+  if (status.isDenied == true) {
+    return askCameraPermission();
+  } else {
+    return true;
   }
 }
 
@@ -48,8 +38,7 @@ class _CreateReportState extends State<CreateReport> {
       TextEditingController();
   String? _categoryControllerValue;
 
-  // ignore: unused_field
-  bool _isLoading = false;
+  late bool _isLoading = false;
   void postReport() async {
     if (_createReportFormKey.currentState!.validate()) {
       setState(() {
@@ -87,6 +76,8 @@ class _CreateReportState extends State<CreateReport> {
   }
 
   _imageSelect(BuildContext context) async {
+    PermissionStatus status = await Permission.camera.request();
+
     return showDialog(
         context: context,
         builder: (context) {
@@ -130,6 +121,14 @@ class _CreateReportState extends State<CreateReport> {
     //     },
     //   );
     // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        askCameraPermission();
+        askMapPermission();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    });
   }
 
   @override
@@ -190,6 +189,7 @@ class _CreateReportState extends State<CreateReport> {
                       controller: _locationController,
                       label: 'Location',
                       isRequired: false,
+                      readOnly: true,
                     ),
                     const SizedBox(height: 40),
                     ReportImageContainer(file: _file),

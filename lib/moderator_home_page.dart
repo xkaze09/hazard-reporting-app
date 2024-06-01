@@ -14,8 +14,10 @@ class ModeratorHomePage extends StatelessWidget {
             icon: const Icon(Icons.exit_to_app),
             onPressed: () async {
               await logOut();
-              Navigator.of(context)
-                  .popUntil((route) => route.isFirst);
+              if (context.mounted) {
+                Navigator.of(context)
+                    .popUntil((route) => route.isFirst);
+              }
             },
           ),
         ],

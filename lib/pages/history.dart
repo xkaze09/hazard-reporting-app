@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:js_interop';
 import 'dart:math';
 
 import "package:flutter/material.dart";
@@ -12,6 +11,9 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 import 'package:hazard_reporting_app/pages/report_info.dart';
 
+ValueNotifier<bool> filterListener = ValueNotifier(checkFilter);
+Stream<QuerySnapshot> reportStream = getActiveReports();
+
 class History extends StatefulWidget {
   const History({super.key});
 
@@ -19,23 +21,8 @@ class History extends StatefulWidget {
   State<History> createState() => _HistoryState();
 }
 
-class _HistoryState extends State<History> {
-  Stream<QuerySnapshot> reportStream = getActiveReports();
-
-  ValueNotifier<List> filterListener =
-      ValueNotifier<List>(categoryFilters);
-
-  @override
-  void initState() {
-    super.initState();
-    // print value on change
-    filterListener.addListener(() {
-      setState(() {
-        reportStream = getActiveReports();
-      });
-    });
-  }
-
+class _HistoryState extends State<History>
+    with AutomaticKeepAliveClientMixin {
   @override
   void dispose() {
     filterListener.dispose();
@@ -45,9 +32,10 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        heroTag: "Filterer",
+        heroTag: "Filter",
         onPressed: () {
           showDialog(
               context: context,
@@ -63,19 +51,30 @@ class _HistoryState extends State<History> {
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            debugPrint(snapshot.error.toString());
-            return Text(snapshot.error.toString());
+            return const Center(
+              child: Text(
+                  "An error has occurred, please ensure you have a stable internet connection before using this app."),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+            return const Center(
+              child: Text("Loading"),
+            );
           }
-          return ActiveFeed(
-            snapshot: snapshot,
-          );
+          return ValueListenableBuilder(
+              valueListenable: filterListener,
+              builder: (context, value, widget) {
+                return ActiveFeed(
+                  snapshot: snapshot,
+                );
+              });
         },
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class ActiveFeed extends StatefulWidget {
@@ -90,11 +89,17 @@ class _ActiveFeedState extends State<ActiveFeed> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    if (currentUser?.getRole() == 'Moderator') {
+      hideUnverifiedReports = false;
+      hideVerifiedReports = false;
+      hidePendingReports = false;
+      hideResolvedReports = false;
+    } else {
+      hideUnverifiedReports = true;
+      hideVerifiedReports = false;
+      hidePendingReports = false;
+      hideResolvedReports = true;
+    }
   }
 
   @override
@@ -125,11 +130,9 @@ class _ActiveFeedState extends State<ActiveFeed> {
           child: FutureBuilder(
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
-                if (snapshot.data?.uid != currentUser?.uid) {
-                  Container(
-                    height: 0,
-                  );
-                }
+                // if (snapshot.data?.uid == currentUser?.uid) {
+                //   Container(height: 0);
+                // }
                 return PostContainer(
                     report: report, reporter: snapshot.data);
               }),
@@ -223,6 +226,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   categoryFilters.remove(categoryList[i].name);
                 }
               }
+              filterListener.value = !filterListener.value;
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(

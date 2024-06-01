@@ -43,7 +43,7 @@ class LandingPage extends StatelessWidget {
                                 context,
                                 PageRouteBuilder(
                                     transitionDuration:
-                                        Duration(seconds: 1),
+                                        const Duration(seconds: 1),
                                     pageBuilder: (_, __, ___) =>
                                         const AuthPage())
                                 // MaterialPageRoute(
