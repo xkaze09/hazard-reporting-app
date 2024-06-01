@@ -76,8 +76,6 @@ class _CreateReportState extends State<CreateReport> {
   }
 
   _imageSelect(BuildContext context) async {
-    PermissionStatus status = await Permission.camera.request();
-
     return showDialog(
         context: context,
         builder: (context) {
