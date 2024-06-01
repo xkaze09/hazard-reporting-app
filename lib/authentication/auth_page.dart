@@ -137,17 +137,21 @@ class _SignInFormState extends State<SignInForm> {
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: Icon(Icons.mail),
+                hintText: "Email Address",
+                hintStyle: TextStyle(color: Colors.grey)
               ),
             ),
             const SizedBox(height: 20),
             PasswordField(
               controller: passwordController,
+              hintText: "Password",
             ),
             const SizedBox(height: 20),
             Visibility(
               visible: widget.signUp,
               child: PasswordField(
                 controller: confirmPasswordController,
+                hintText: "Confirm Password",
                 validator: (value) {
                   if (value != passwordController.text) {
                     return "Passwords do not match";

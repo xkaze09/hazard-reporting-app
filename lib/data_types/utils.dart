@@ -199,11 +199,14 @@ class PasswordField extends StatefulWidget {
   final Icon? icon;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final String hintText;
+  
   const PasswordField(
       {super.key,
       this.icon,
       this.validator,
-      required this.controller});
+      required this.controller, 
+      required this.hintText,});
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -241,10 +244,14 @@ class _PasswordFieldState extends State<PasswordField> {
               icon: isPasswordVisible
                   ? const Icon(
                       Icons.visibility,
-                      color: Colors.black,
+                      color: Colors.grey,
                     )
                   : const Icon(Icons.visibility_off,
-                      color: Colors.black))),
+                      color: Colors.grey),
+                      ),
+                      hintText: widget.hintText,
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      ),
       validator: widget.validator ?? backup,
     );
   }
