@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/data_types/globals.dart';
 
 class EditProfile extends StatelessWidget {
   const EditProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: EditProfilePage(),
     );
   }
@@ -34,9 +33,9 @@ class EditProfilePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                currentUser?.displayName ?? "Anonymous",
-                style: const TextStyle(
+              const Text(
+                '[Display Name]',
+                style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF146136)),
@@ -45,7 +44,6 @@ class EditProfilePage extends StatelessWidget {
               CircleAvatar(
                 radius: 80,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: currentUser?.photo?.image,
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -65,8 +63,6 @@ class EditProfilePage extends StatelessWidget {
                     ],
                   ),
                   child: TextFormField(
-                    controller:
-                        TextEditingController(text: currentUser?.uid),
                     decoration: const InputDecoration(
                       hintText: 'User ID',
                       hintStyle: TextStyle(color: Colors.grey),
