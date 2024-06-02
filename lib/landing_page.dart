@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hazard_reporting_app/pages/create_report.dart';
+import 'package:hazard_reporting_app/pages/create_report_updated_new.dart';
 import 'authentication/auth_page.dart';
 
 class LandingPage extends StatelessWidget {
