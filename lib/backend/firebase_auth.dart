@@ -7,6 +7,7 @@ import 'package:hazard_reporting_app/authentication/transfer_page.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 final authInstance = FirebaseAuth.instance;
 
@@ -30,8 +31,11 @@ void signInWithPassword(BuildContext context,
               child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              CircularProgressIndicator(),
-              Text("Logging In...")
+              LoadingIndicator(),
+              SizedBox(
+                height: 20,
+              ),
+              Text("Logging In..."),
             ]),
           ));
         });

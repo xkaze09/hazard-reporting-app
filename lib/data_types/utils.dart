@@ -108,7 +108,7 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset("LoadingLogo_Animation.gif");
+    return Image.asset("assets/images/LoadingLogo_Animation.gif");
   }
 }
 
