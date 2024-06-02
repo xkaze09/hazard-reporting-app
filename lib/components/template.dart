@@ -106,8 +106,10 @@ class PublicAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
       automaticallyImplyLeading: true,
-      title: Text(widget.title),
+      iconTheme: IconThemeData(color: Color(0xFF146136),),
+      title: Text(widget.title, style: TextStyle(color: Color(0xFF146136), fontWeight: FontWeight.bold,)),
     );
   }
 
@@ -128,57 +130,76 @@ class _PublicDrawerState extends State<PublicDrawer> {
     super.initState();
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        children: [
-          ListTile(
-              leading: currentUser?.photo ??
-                  Image.asset('assets/images/anon.png'),
+      backgroundColor: Colors.white,
+       child: Container(
+        margin: EdgeInsets.only(top: 25), 
+        child: ListView(
+          children: [
+            ListTile(
+              leading: currentUser?.photo ?? Image.asset('assets/images/anon.png'),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                          currentUser?.displayName ?? "No Name")),
+                    alignment: Alignment.centerLeft,
+                    child: Text(currentUser?.displayName ?? "No Name")),
                   Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(currentUser?.getRole() ?? "User"))
+                    alignment: Alignment.centerLeft,
+                    child: Text(currentUser?.getRole() ?? "User"))
                 ],
-              )),
-          const DashboardTile(
-              icon: Icon(Icons.house_outlined, size: 40),
-              label: 'Dashboard',
-              namedRoute: '/home'),
-          const DashboardTile(
-              icon: Icon(Icons.history, size: 40),
-              label: 'History',
-              namedRoute: '/history'),
-          const DashboardTile(
-              icon: Icon(Icons.settings_outlined, size: 40),
-              label: 'Settings',
-              namedRoute: '/settings'),
-          ListTile(
-            leading: const Icon(Icons.logout, size: 40),
-            title: const Text(
-              "Log-Out",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                fontFamily: "Roboto",
               ),
             ),
-            onTap: () {
-              logOut();
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) {
-                return const LandingPage();
-              }));
-            },
-          )
-        ],
+
+          Divider(),
+          SizedBox(height: 15),
+          const DashboardTile(
+            icon: Icon(Icons.house_outlined, size: 30),
+            label: 'Dashboard',
+            namedRoute: '/home',
+          ),
+          const DashboardTile(
+            icon: Icon(Icons.history, size: 30),
+            label: 'History',
+            namedRoute: '/history',
+          ),
+          const DashboardTile(
+            icon: Icon(Icons.settings_outlined, size: 30),
+            label: 'Settings',
+            namedRoute: '/settings',
+          ),
+          const SizedBox(height: 580),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                logOut();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                  return const LandingPage();
+                }));
+              },
+              hoverColor: Color(0xFF29AB84),
+              child: ListTile(
+                leading: Icon(Icons.logout, size: 30),
+                title: Row(
+                  children: [
+                    SizedBox(width: 15),
+                    Text(
+                      "Log-Out",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Roboto",
+                       ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -190,29 +211,41 @@ class DashboardTile extends StatelessWidget {
   final String namedRoute;
 
   const DashboardTile({
-    super.key,
+    Key? key,
     required this.icon,
     required this.label,
     required this.namedRoute,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        leading: icon,
-        title: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            fontFamily: "Roboto",
-          ),
-        ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         onTap: () {
           Navigator.of(context).popAndPushNamed(namedRoute);
-        });
+        },
+        hoverColor: Color(0xFF29AB84),
+        child: ListTile(
+          leading: icon,
+          title: Row(
+            children: [
+              SizedBox(width: 15), 
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Roboto",
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -248,8 +281,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+          backgroundColor: Colors.white,
             key: _scaffoldKey,
             appBar: AppBar(
+              backgroundColor: Colors.white,
               automaticallyImplyLeading: true,
               title: const Text("Dashboard"),
             ),
@@ -271,12 +306,14 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
               currentIndex: _selectedPageIndex,
-              onTap: (selectedPageIndex) {
+              onTap: (int index) {
                 setState(() {
-                  _selectedPageIndex = selectedPageIndex;
-                  _pageController.jumpToPage(selectedPageIndex);
-                });
-              },
-            )));
+                  _selectedPageIndex = index;
+                  _pageController.jumpToPage(index);
+            });
+          },
+        ),
+      ),
+    );
   }
 }

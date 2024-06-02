@@ -17,7 +17,9 @@ class _ReportInfoState extends State<EditReportInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         // automaticallyImplyLeading: true,
         title: Text(widget.report.title ?? 'Untitled'),
         actions: [
@@ -37,6 +39,7 @@ class _ReportInfoState extends State<EditReportInfo> {
         ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: ReportTile(
           report: widget.report,
         ),
@@ -65,7 +68,22 @@ class ReportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
 
-    return Form(
+    return Container(
+      margin: const EdgeInsets.all(16), 
+      padding: const EdgeInsets.all(16), 
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: const Offset(0, 2), 
+          ),
+        ],
+      ),
+    child: Form(
       key: _formKey,
       child: Column(
         children: [
@@ -75,6 +93,7 @@ class ReportTile extends StatelessWidget {
                 width: size.shortestSide * 0.2 * 4,
                 child: report.image ?? Image.asset('assets/Hey.png')),
           ]),
+          const SizedBox(height: 16),
           TextField(
             //Title
             controller: TextEditingController(
@@ -83,8 +102,10 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'Title',
-                icon: Icon(Icons.note)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.note, color: Color(0xFF146136))),
           ),
+          const SizedBox(height: 16),
           TextField(
             //Description
             controller: TextEditingController(
@@ -93,9 +114,11 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.list)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.list, color: Color(0xFF146136),)),
             maxLines: 3,
           ),
+          const SizedBox(height: 16),
           TextField(
             //Location
             controller: TextEditingController(
@@ -104,8 +127,10 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.map)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.map, color: Color(0xFF146136),)),
           ),
+          const SizedBox(height: 16),
           TextField(
             //Reporter
             readOnly: true,
@@ -116,29 +141,40 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.person)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.person, color: Color(0xFF146136),)),
           ),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
                   onPressed: () {},
-                  child: const Text("Confirm Changes")),
-              TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF29AB84),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                  ),
+                  child: const Text("Confirm Changes", style: TextStyle(color: Colors.white),)),
+              ElevatedButton(
                   onPressed: () {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Delete Report'),
+                            backgroundColor: Colors.white,
+                            title: const Text('Delete Report', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                             content: const Text(
-                                'Are you sure about deleting this report?'),
+                                'Are you sure about deleting this report?', style: TextStyle(color: Colors.black),),
                             actions: [
                               TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('No')),
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                                  child: const Text('No', style: TextStyle(color: Colors.white))),
                               TextButton(
                                   onPressed: () {
                                     reportsCollection
@@ -147,16 +183,24 @@ class ReportTile extends StatelessWidget {
                                     Navigator.of(context).popUntil(
                                         (route) => route.isFirst);
                                   },
-                                  child: const Text('Yes'))
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFFD95767),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                                  child: const Text('Yes', style: TextStyle(color: Colors.white)))
                             ],
                           );
                         });
                   },
-                  child: const Text('Reject')),
-            ],
-          ),
-        ],
-      ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFD95767),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),),
+                  child: const Text('Reject', style: TextStyle(color: Colors.white)),),
+             ],
+           ),
+         ],
+       ),
+     ),
     );
   }
 }

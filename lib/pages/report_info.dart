@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
@@ -18,7 +19,9 @@ class _ReportInfoState extends State<ReportInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         // automaticallyImplyLeading: true,
         title: Text(widget.report.title ?? 'Untitled'),
         actions: [
@@ -75,7 +78,22 @@ class ReportTile extends StatelessWidget {
     ReporterRecord? reporter = getReporter(report.reporter);
     return Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
       child: Column(
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -84,16 +102,18 @@ class ReportTile extends StatelessWidget {
                 width: size.shortestSide * 0.6,
                 child: report.image ?? Image.asset('assets/Hey.png')),
           ]),
+          SizedBox(height: 8),
           TextField(
             //Title
             readOnly: true,
             controller: TextEditingController(
               text: report.title ?? 'Untitled',
-            ),
+              ),
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'Title',
-                icon: Icon(Icons.note)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.note, color: Color(0xFF146136),)),
           ),
           TextField(
             //Description
@@ -104,7 +124,8 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.list)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.list, color: Color(0xFF146136),)),
             maxLines: 3,
           ),
           TextField(
@@ -116,7 +137,8 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.map)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.map, color: Color(0xFF146136),)),
           ),
           TextField(
             //Reporter
@@ -127,7 +149,9 @@ class ReportTile extends StatelessWidget {
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: '',
-                icon: Icon(Icons.person)),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                icon: Icon(Icons.person, color: Color(0xFF146136),)),
+  
           ),
           (currentUser?.getRole() == 'Moderator')
               ? ModControl(report: report)
@@ -141,7 +165,8 @@ class ReportTile extends StatelessWidget {
           else if (role == "User" &&
               currentUser?.uid == reporter?.uid)
             ReporterControl(report: report)
-        ],
+         ],
+       ),
       ),
     );
   }
@@ -159,47 +184,84 @@ class _ReporterControlState extends State<ReporterControl> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextButton(
+        SizedBox(width: 16), 
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                       EditReportInfo(report: widget.report)));
             },
-            child: const Text('Edit')),
-        TextButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF29AB84),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+            ),
+            child: const Text('Edit', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        SizedBox(width: 30), 
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: ElevatedButton(
             onPressed: () {
               showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Delete Report'),
-                      content: const Text(
-                          'Are you sure about deleting this report?'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('No')),
-                        TextButton(
-                            onPressed: () {
-                              reportsCollection
-                                  .doc(widget.report.id)
-                                  .delete();
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                            },
-                            child: const Text('Yes'))
-                      ],
-                    );
-                  });
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: const Text(
+                      'Delete Report',
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    content: const Text(
+                      'Are you sure about deleting this report?',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        ),
+                        child: const Text('No', style: TextStyle(color: Colors.white)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          reportsCollection.doc(widget.report.id).delete();
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFFD95767),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        ),
+                        child: const Text('Yes', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
-            child: const Text('Delete Report')),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD95767),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+            ),
+            child: const Text('Reject', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        SizedBox(width: 16), 
       ],
     );
   }
 }
+
 
 class ModControl extends StatefulWidget {
   final ReportsRecord report;
@@ -233,21 +295,26 @@ class _ModControlState extends State<ModControl> {
               child: Text(widget.report.isVerified ?? false
                   ? 'Revoke'
                   : 'Verify')),
-          TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Delete Report'),
-                        content: const Text(
-                            'Are you sure about deleting this report?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('No')),
+          ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: const Text('Delete Report', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,)),
+                            content: const Text(
+                                'Are you sure about deleting this report?', style: TextStyle(color: Colors.black)),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                                  child: const Text('No', style: TextStyle(color: Colors.white)),),
                           TextButton(
                               onPressed: () {
                                 reportsCollection
@@ -256,12 +323,21 @@ class _ModControlState extends State<ModControl> {
                                 Navigator.of(context).popUntil(
                                     (route) => route.isFirst);
                               },
-                              child: const Text('Yes'))
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFD95767),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                              child: const Text('Yes', style: TextStyle(color: Colors.white)),),
                         ],
                       );
                     });
               },
-              child: const Text('Reject')),
+              style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD95767),
+              padding: const EdgeInsets.symmetric(horizontal: 24),),
+              child: const Text('Reject', style: TextStyle(color: Colors.white)),
+          ),
+          SizedBox(width: 16),
         ],
       ),
     );
@@ -301,22 +377,27 @@ class ResponderControl extends StatelessWidget {
                   : 'Start Resolving')),
           Visibility(
             visible: report.isPending ?? false,
-            child: TextButton(
+            child: ElevatedButton(
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Resolve Report'),
+                          backgroundColor: Colors.white,
+                          title: const Text('Resolve Report', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                           content: const Text(
-                              'Are you sure that the issue has been resolved?'),
+                              'Are you sure that the issue has been resolved?', style: TextStyle(color: Colors.black),),
                           actions: [
-                            TextButton(
+                            ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('No')),
-                            TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFFD95767),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                                child: const Text('No', style: TextStyle(color: Colors.white)),),
+                            ElevatedButton(
                                 onPressed: () {
                                   reportsCollection
                                       .doc(report.id)
@@ -327,13 +408,21 @@ class ResponderControl extends StatelessWidget {
                                   });
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('Yes'))
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFF29AB84),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),),
+                                child: const Text('Yes', style: TextStyle(color: Colors.white)),),
                           ],
                         );
                       });
                 },
-                child: const Text('Mark Resolved')),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF29AB84),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),),
+                child: const Text('Mark Resolved', style: TextStyle(color: Colors.white))),
           ),
+          SizedBox(width: 16),
         ],
       ),
     );

@@ -14,6 +14,7 @@ class ResetPasswordPage extends StatelessWidget {
     bool emailNotFound = false;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Stack(
           children: [

@@ -39,6 +39,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         body: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
@@ -65,6 +66,7 @@ class _DashboardState extends State<Dashboard> {
           shape: const CircularNotchedRectangle(),
           padding: EdgeInsets.zero,
           child: BottomNavigationBar(
+            backgroundColor: Colors.white,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -82,6 +84,7 @@ class _DashboardState extends State<Dashboard> {
                 _pageController.jumpToPage(selectedPageIndex);
               });
             },
+            selectedItemColor: Color(0xFF146136),
           ),
         ));
   }

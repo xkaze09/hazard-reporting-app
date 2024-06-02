@@ -34,6 +34,7 @@ class _HomeState extends State<Home>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         heroTag: "Filter",
         onPressed: () {
@@ -44,7 +45,7 @@ class _HomeState extends State<Home>
               });
         },
         backgroundColor: const Color(0xFF29AB84),
-        child: const Icon(Icons.filter_list),
+        child: const Icon(Icons.filter_list, color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: reportStream,
@@ -193,6 +194,7 @@ class _FilterDialogState extends State<FilterDialog> {
                     filter[cat.index] = val ?? false;
                   });
                 },
+                activeColor: const Color(0xFF29AB84),
                 title: Text(cat.category.name));
           }).toList(),
         ),

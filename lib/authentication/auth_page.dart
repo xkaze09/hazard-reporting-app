@@ -12,6 +12,7 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
         body: Column(
       children: [
         Container(
