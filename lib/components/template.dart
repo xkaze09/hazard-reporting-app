@@ -178,7 +178,6 @@ class _PublicDrawerState extends State<PublicDrawer> {
               label: 'Settings',
               namedRoute: '/settings',
             ),
-            const SizedBox(height: 580),
             Material(
               color: Colors.transparent,
               child: InkWell(
