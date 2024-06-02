@@ -50,7 +50,7 @@ class _PostContainerState extends State<PostContainer> {
               Row(children: [
                 CircleAvatar(
                   foregroundImage: widget.reporter?.photo?.image ??
-                      const AssetImage('images/logo-notext.png'),
+                      const AssetImage('assets/images/logo-notext.png'),
                   radius: 20,
                   backgroundColor:
                       const Color.fromARGB(255, 11, 14, 13),
@@ -142,9 +142,7 @@ class _PostContainerState extends State<PostContainer> {
               ),
               Stack(children: [
                 Container(
-                    height: (isLandscape)
-                        ? size.height * 0.3
-                        : size.height * 0.6,
+                    height: size.height * 0.6,
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10.0),

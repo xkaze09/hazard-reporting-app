@@ -55,7 +55,7 @@ class _DashboardState extends State<Dashboard> {
             shape: const CircleBorder(),
             // elevation: 0,
             child: Image.asset(
-              "images/logo-notext.png",
+              "assets/images/logo-notext.png",
             ),
             onPressed: () {
               Navigator.of(context).popAndPushNamed('/create');
@@ -84,7 +84,7 @@ class _DashboardState extends State<Dashboard> {
                 _pageController.jumpToPage(selectedPageIndex);
               });
             },
-            selectedItemColor: Color(0xFF146136),
+            selectedItemColor: const Color(0xFF146136),
           ),
         ));
   }

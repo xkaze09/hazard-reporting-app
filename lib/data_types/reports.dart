@@ -8,7 +8,7 @@ Image? _getImage(String? url) {
   if (url != null) {
     image = Image.network(url,
         errorBuilder: (context, error, stacktrace) {
-      return Image.asset('images/logo-notext.png');
+      return Image.asset('assets/images/logo-notext.png');
       // return const Text("Image failed to load");
     });
   }

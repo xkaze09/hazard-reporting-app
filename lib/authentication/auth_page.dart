@@ -21,7 +21,7 @@ class AuthPage extends StatelessWidget {
             child: Center(
                 child: Hero(
                     tag: "Logo with Text",
-                    child: Image.asset("images/UPatrol-logo.png")))),
+                    child: Image.asset("assets/images/UPatrol-logo.png")))),
         Container(
             height: size.height - (size.shortestSide * 0.4),
             width: size.width,

@@ -219,11 +219,11 @@ class DashboardTile extends StatelessWidget {
   final String namedRoute;
 
   const DashboardTile({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.namedRoute,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
