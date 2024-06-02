@@ -203,6 +203,7 @@ class _FilterDialogState extends State<FilterDialog> {
                     filter[cat.index] = val ?? false;
                   });
                 },
+                activeColor: const Color(0xFF29AB84),
                 title: Text(cat.category.name));
           }).toList(),
         ),
