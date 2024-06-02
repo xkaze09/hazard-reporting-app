@@ -29,7 +29,7 @@ class LandingPage extends StatelessWidget {
                       child: Image.asset(
                         'assets/images/UPatrol-logo.png',
                         width: 600,
-                        height: 600,
+                        height: 520,
                       ),
                     ),
                   ),
@@ -57,45 +57,37 @@ class LandingPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF29AB84),
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20.0),
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
                             minimumSize: const Size(200, 50),
                           ),
                           child: const Text(
                             'Get Started',
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 20),
+                            style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ),
                         const SizedBox(height: 15),
                         OutlinedButton(
                           onPressed: () async {
-                            await FirebaseAuth.instance
-                                .signInAnonymously();
-                            Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PopScope(
-                                          canPop: false,
-                                          child: CreateReport(),
-                                        )));
+                            await FirebaseAuth.instance.signInAnonymously();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const PopScope(
+                                      canPop: false,
+                                      child: CreateReport(),
+                                    )));
                           },
                           style: OutlinedButton.styleFrom(
-                            side:
-                                const BorderSide(color: Colors.white),
+                            side: const BorderSide(color: Colors.white),
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20.0),
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
                             minimumSize: const Size(200, 50),
                           ),
                           child: const Text(
                             'Quick Report',
                             style: TextStyle(
-                                color: Color(0xFF146136),
-                                fontSize: 20),
+                                color: Color(0xFF146136), fontSize: 20),
                           ),
                         ),
                         const SizedBox(height: 50),
@@ -118,8 +110,8 @@ class CurvePainter extends CustomPainter {
     Paint paint = Paint()..color = const Color(0xFF146136);
     Path path = Path()
       ..moveTo(0, size.height * 0.4)
-      ..quadraticBezierTo(size.width / 2, size.height / 2, size.width,
-          size.height * 0.4)
+      ..quadraticBezierTo(
+          size.width / 2, size.height / 2, size.width, size.height * 0.4)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
