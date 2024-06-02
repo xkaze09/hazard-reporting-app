@@ -103,15 +103,6 @@ abstract class LatLngType {
   bool operator ==(other);
 }
 
-class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset("LoadingLogo_Animation.gif");
-  }
-}
-
 class Email {
   const Email({this.name, this.provider});
   final String? name;
