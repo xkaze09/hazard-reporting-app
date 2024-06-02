@@ -108,8 +108,15 @@ class PublicAppBar extends StatelessWidget
     return AppBar(
       backgroundColor: Colors.white,
       automaticallyImplyLeading: true,
-      iconTheme: IconThemeData(color: Color(0xFF146136),),
-      title: Text(widget.title, style: TextStyle(color: Color(0xFF146136), fontWeight: FontWeight.bold,)),
+      iconTheme: const IconThemeData(
+        color: Color(0xFF146136),
+      ),
+      centerTitle: true,
+      title: Text(widget.title,
+          style: const TextStyle(
+            color: Color(0xFF146136),
+            fontWeight: FontWeight.bold,
+          )),
     );
   }
 
@@ -130,68 +137,70 @@ class _PublicDrawerState extends State<PublicDrawer> {
     super.initState();
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.white,
-       child: Container(
-        margin: EdgeInsets.only(top: 25), 
+      child: Container(
+        margin: const EdgeInsets.only(top: 25),
         child: ListView(
           children: [
             ListTile(
-              leading: currentUser?.photo ?? Image.asset('assets/images/anon.png'),
+              leading: currentUser?.photo ??
+                  Image.asset('assets/images/anon.png'),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(currentUser?.displayName ?? "No Name")),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          currentUser?.displayName ?? "No Name")),
                   Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(currentUser?.getRole() ?? "User"))
+                      alignment: Alignment.centerLeft,
+                      child: Text(currentUser?.getRole() ?? "User"))
                 ],
               ),
             ),
-
-          Divider(),
-          SizedBox(height: 15),
-          const DashboardTile(
-            icon: Icon(Icons.house_outlined, size: 30),
-            label: 'Dashboard',
-            namedRoute: '/home',
-          ),
-          const DashboardTile(
-            icon: Icon(Icons.history, size: 30),
-            label: 'History',
-            namedRoute: '/history',
-          ),
-          const DashboardTile(
-            icon: Icon(Icons.settings_outlined, size: 30),
-            label: 'Settings',
-            namedRoute: '/settings',
-          ),
-          const SizedBox(height: 580),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                logOut();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-                  return const LandingPage();
-                }));
-              },
-              hoverColor: Color(0xFF29AB84),
-              child: ListTile(
-                leading: Icon(Icons.logout, size: 30),
-                title: Row(
-                  children: [
-                    SizedBox(width: 15),
-                    Text(
-                      "Log-Out",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: "Roboto",
-                       ),
+            const Divider(),
+            const SizedBox(height: 15),
+            const DashboardTile(
+              icon: Icon(Icons.house_outlined, size: 30),
+              label: 'Dashboard',
+              namedRoute: '/home',
+            ),
+            const DashboardTile(
+              icon: Icon(Icons.history, size: 30),
+              label: 'History',
+              namedRoute: '/history',
+            ),
+            const DashboardTile(
+              icon: Icon(Icons.settings_outlined, size: 30),
+              label: 'Settings',
+              namedRoute: '/settings',
+            ),
+            const SizedBox(height: 580),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  logOut();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) {
+                    return const LandingPage();
+                  }));
+                },
+                hoverColor: const Color(0xFF29AB84),
+                child: const ListTile(
+                  leading: Icon(Icons.logout, size: 30),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        "Log-Out",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "Roboto",
+                        ),
                       ),
                     ],
                   ),
@@ -225,12 +234,12 @@ class DashboardTile extends StatelessWidget {
         onTap: () {
           Navigator.of(context).popAndPushNamed(namedRoute);
         },
-        hoverColor: Color(0xFF29AB84),
+        hoverColor: const Color(0xFF29AB84),
         child: ListTile(
           leading: icon,
           title: Row(
             children: [
-              SizedBox(width: 15), 
+              const SizedBox(width: 15),
               Text(
                 label,
                 style: const TextStyle(
@@ -245,7 +254,6 @@ class DashboardTile extends StatelessWidget {
     );
   }
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -280,36 +288,36 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        key: _scaffoldKey,
+        appBar: AppBar(
           backgroundColor: Colors.white,
-            key: _scaffoldKey,
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              automaticallyImplyLeading: true,
-              title: const Text("Dashboard"),
+          automaticallyImplyLeading: true,
+          title: const Text("Dashboard"),
+        ),
+        drawer: const Drawer(child: PublicDrawer()),
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            drawer: const Drawer(child: PublicDrawer()),
-            body: PageView(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: _pages,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Maps',
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.map),
-                  label: 'Maps',
-                ),
-              ],
-              currentIndex: _selectedPageIndex,
-              onTap: (int index) {
-                setState(() {
-                  _selectedPageIndex = index;
-                  _pageController.jumpToPage(index);
+          ],
+          currentIndex: _selectedPageIndex,
+          onTap: (int index) {
+            setState(() {
+              _selectedPageIndex = index;
+              _pageController.jumpToPage(index);
             });
           },
         ),

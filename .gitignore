@@ -54,3 +54,4 @@ app.*.map.json
 lib/firebase_options.dart
 
 node_modules/
+lib/pages/create_report_updated.dart

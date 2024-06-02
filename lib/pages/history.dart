@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import "package:flutter/material.dart";
@@ -11,9 +10,6 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 import 'package:hazard_reporting_app/pages/report_info.dart';
 
-ValueNotifier<bool> filterListener = ValueNotifier(checkFilter);
-Stream<QuerySnapshot> reportStream = getActiveReports();
-
 class History extends StatefulWidget {
   const History({super.key});
 
@@ -23,6 +19,12 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+    reportStream = getActiveReports();
+  }
+
   @override
   void dispose() {
     filterListener.dispose();
@@ -58,7 +60,7 @@ class _HistoryState extends State<History>
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: Text("Loading"),
+              child: CircularProgressIndicator(),
             );
           }
           return ValueListenableBuilder(

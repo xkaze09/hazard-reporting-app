@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 
 GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
@@ -8,6 +10,8 @@ final GlobalKey<ScaffoldMessengerState> loggedScaffoldMessengerKey =
 final GlobalKey<NavigatorState> navigatorKey =
     GlobalKey<NavigatorState>();
 
+Stream<QuerySnapshot> reportStream = getActiveReports();
+ValueNotifier<bool> filterListener = ValueNotifier(checkFilter);
 ReporterRecord? currentUser;
 List<String> categoryFilters = List.filled(1, "test", growable: true);
 bool hideUnverifiedReports = true;
