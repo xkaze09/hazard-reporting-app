@@ -13,39 +13,36 @@ class AuthPage extends StatelessWidget {
     late Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Container(
-                  height: size.shortestSide * 0.4,
-                  width: size.shortestSide * 0.4,
-                  child: Center(
-                      child: Hero(
-                          tag: "Logo with Text",
-                          child:
-                              Image.asset("assets/images/UPatrol-logo.png")))),
-              Container(
-                  height: size.height - (size.shortestSide * 0.4),
-                  width: size.width,
-                  decoration: BoxDecoration(
-                      color: const Color(0xFF146136),
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.elliptical(
-                          size.width / 2,
-                          size.shortestSide * 0.1,
-                        ),
-                      )),
-                  padding: EdgeInsets.only(
-                    top: 20,
-                    left: size.width * 0.05,
-                    right: size.width * 0.05,
-                  ),
-                  child: AuthForm(
-                    showSignUpFirst: showSignUpFirst,
-                  )),
-            ],
-          ),
+        body: Column(
+          children: [
+            Container(
+                height: size.shortestSide * 0.4,
+                width: size.shortestSide * 0.4,
+                child: Center(
+                    child: Hero(
+                        tag: "Logo with Text",
+                        child: Image.asset(
+                            "assets/images/UPatrol-logo.png")))),
+            Container(
+                height: size.height - (size.shortestSide * 0.4),
+                width: size.width,
+                decoration: BoxDecoration(
+                    color: const Color(0xFF146136),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.elliptical(
+                        size.width / 2,
+                        size.shortestSide * 0.1,
+                      ),
+                    )),
+                padding: EdgeInsets.only(
+                  top: 20,
+                  left: size.width * 0.05,
+                  right: size.width * 0.05,
+                ),
+                child: AuthForm(
+                  showSignUpFirst: showSignUpFirst,
+                )),
+          ],
         ));
   }
 }
@@ -59,7 +56,8 @@ class AuthForm extends StatefulWidget {
   State<AuthForm> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
+class _AuthPageState extends State<AuthForm>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
@@ -78,12 +76,14 @@ class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
                   Tab(
                       icon: Text(
                     "Sign In",
-                    style: TextStyle(color: Colors.white, fontSize: 25),
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 25),
                   )),
                   Tab(
                       icon: Text(
                     "Sign Up",
-                    style: TextStyle(color: Colors.white, fontSize: 25),
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 25),
                   )),
                 ],
               ),
@@ -113,10 +113,13 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController(text: "");
-  TextEditingController passwordController = TextEditingController(text: "");
+  TextEditingController emailController =
+      TextEditingController(text: "");
+  TextEditingController passwordController =
+      TextEditingController(text: "");
   bool isPasswordVisible = false;
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController();
   bool isPassword2Visible = false;
 
   @override
@@ -131,7 +134,8 @@ class _SignInFormState extends State<SignInForm> {
               controller: emailController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(20)),
                   ),
                   fillColor: Colors.white,
                   filled: true,
@@ -177,8 +181,8 @@ class _SignInFormState extends State<SignInForm> {
                 ),
                 child: Text(
                   widget.signUp ? "Sign Up" : "Sign In",
-                  style:
-                      const TextStyle(color: Color(0xFF146136), fontSize: 20),
+                  style: const TextStyle(
+                      color: Color(0xFF146136), fontSize: 20),
                 )),
             const SizedBox(height: 20),
             Visibility(
@@ -187,7 +191,8 @@ class _SignInFormState extends State<SignInForm> {
                   child: TextButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ResetPasswordPage()));
+                            builder: (context) =>
+                                const ResetPasswordPage()));
                       },
                       child: const Text(
                         "Forgot Password?",
