@@ -47,7 +47,10 @@ class _HistoryState extends State<History>
               });
         },
         backgroundColor: const Color(0xFF29AB84),
-        child: const Icon(Icons.filter_list, color: Colors.white,),
+        child: const Icon(
+          Icons.filter_list,
+          color: Colors.white,
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: reportStream,
@@ -56,7 +59,7 @@ class _HistoryState extends State<History>
           if (snapshot.hasError) {
             return const Center(
               child: Text(
-                  "An error has occurred, please ensure you have a stable internet connection before using this app."),
+                  'An error has occurred, please ensure you have a stable internet connection before using this app. Contact administrators if this issue persists.'),
             );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {

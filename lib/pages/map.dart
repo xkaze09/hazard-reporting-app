@@ -59,7 +59,9 @@ class _MapState extends State<Maps>
         future: Future.wait([getPosition(), getMarkers()]),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('$snapshot.error'));
+            return const Center(
+                child: Text(
+                    'An error has occurred, please ensure you have a stable internet connection before using this app. Contact administrators if this issue persists.'));
           } else if (!snapshot.hasData) {
             return const Center(
               child: SizedBox(
