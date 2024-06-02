@@ -55,19 +55,24 @@ class LandingPage extends StatelessWidget {
                                 );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF29AB84),
+                            backgroundColor: Color.fromARGB(255, 35, 150, 115),
+                            elevation: 5,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
+                              borderRadius: BorderRadius.circular(25.0),
                             ),
                             minimumSize: const Size(200, 50),
                           ),
                           child: const Text(
                             'Get Started',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: TextStyle(
+                                fontFamily: 'Helvetica',
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         const SizedBox(height: 15),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () async {
                             await FirebaseAuth.instance.signInAnonymously();
                             Navigator.of(context).push(MaterialPageRoute(
@@ -76,18 +81,22 @@ class LandingPage extends StatelessWidget {
                                       child: CreateReport(),
                                     )));
                           },
-                          style: OutlinedButton.styleFrom(
+                          style: ElevatedButton.styleFrom(
                             side: const BorderSide(color: Colors.white),
                             backgroundColor: Colors.white,
+                            elevation: 5,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
+                              borderRadius: BorderRadius.circular(25.0),
                             ),
                             minimumSize: const Size(200, 50),
                           ),
                           child: const Text(
                             'Quick Report',
                             style: TextStyle(
-                                color: Color(0xFF146136), fontSize: 20),
+                                fontFamily: 'Helvetica',
+                                color: Color(0xFF146136),
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         const SizedBox(height: 50),
