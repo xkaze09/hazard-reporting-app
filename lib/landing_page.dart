@@ -55,7 +55,7 @@ class LandingPage extends StatelessWidget {
                                 );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 35, 150, 115),
+                            backgroundColor: Colors.green[600],
                             elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25.0),

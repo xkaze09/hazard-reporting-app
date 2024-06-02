@@ -71,19 +71,28 @@ class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
             mainAxisSize: MainAxisSize.min,
             children: [
               TabBar(
+                unselectedLabelColor: Colors.lightGreen,
+                unselectedLabelStyle:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                labelColor: Colors.white,
+                labelStyle:
+                    TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+                indicatorColor: Colors.white,
+                indicatorWeight: 5,
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 dividerColor: Colors.transparent,
-                indicatorColor: Colors.white,
                 tabs: [
                   Tab(
                       icon: Text(
                     "Sign In",
-                    style: TextStyle(color: Colors.white, fontSize: 25),
+                    style: TextStyle(
+                        fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
                   )),
                   Tab(
                       icon: Text(
                     "Sign Up",
-                    style: TextStyle(color: Colors.white, fontSize: 25),
+                    style: TextStyle(
+                        fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
                   )),
                 ],
               ),
@@ -159,7 +168,7 @@ class _SignInFormState extends State<SignInForm> {
               ),
             ),
             const SizedBox(height: 20),
-            OutlinedButton(
+            ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     signInWithPassword(
@@ -167,18 +176,21 @@ class _SignInFormState extends State<SignInForm> {
                         signUp: widget.signUp);
                   }
                 },
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white),
-                  backgroundColor: Colors.white,
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  backgroundColor: Colors.green[600],
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(25.0),
                   ),
                   minimumSize: const Size(200, 50),
                 ),
                 child: Text(
                   widget.signUp ? "Sign Up" : "Sign In",
-                  style:
-                      const TextStyle(color: Color(0xFF146136), fontSize: 20),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'Helvetica',
+                      fontWeight: FontWeight.bold),
                 )),
             const SizedBox(height: 20),
             Visibility(
