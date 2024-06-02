@@ -52,7 +52,15 @@ class ResetPasswordPage extends StatelessWidget {
                                 horizontal: 20),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: TextField(
                               controller: emailController,
@@ -115,7 +123,7 @@ class ResetPasswordPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 10),
                           SizedBox(
                             width: MediaQuery.of(context).size.width *
                                 0.5,
