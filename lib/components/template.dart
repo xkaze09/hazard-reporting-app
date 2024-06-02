@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
+import 'package:hazard_reporting_app/pages/create_report_updated.dart';
 import 'package:hazard_reporting_app/pages/edit_profile.dart';
 import 'package:hazard_reporting_app/pages/history.dart';
-import '../pages/create_report.dart';
 import '/pages/dashboard.dart';
 import '/pages/map.dart';
 import '/pages/home.dart';

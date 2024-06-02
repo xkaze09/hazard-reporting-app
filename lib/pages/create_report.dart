@@ -21,14 +21,14 @@ Future<bool> askCameraPermission() async {
   }
 }
 
-class CreateReport extends StatefulWidget {
-  const CreateReport({super.key});
+class CreateReportOld extends StatefulWidget {
+  const CreateReportOld({super.key});
 
   @override
-  State<CreateReport> createState() => _CreateReportState();
+  State<CreateReportOld> createState() => _CreateReportOldState();
 }
 
-class _CreateReportState extends State<CreateReport> {
+class _CreateReportOldState extends State<CreateReportOld> {
   final _createReportFormKey = GlobalKey<FormState>();
 
   Uint8List? _file;
@@ -111,16 +111,16 @@ class _CreateReportState extends State<CreateReport> {
   @override
   void initState() {
     super.initState();
-    // getPosition().then((position) {
-    //   reverseGeocode(position).then(
-    //     (value) {
-    //       setState(() {
-    //         debugPrint(value);
-    //         _locationController.text = value;
-    //       });
-    //     },
-    //   );
-    // });
+    getPosition().then((position) {
+      reverseGeocode(position).then(
+        (value) {
+          setState(() {
+            debugPrint(value);
+            _locationController.text = value;
+          });
+        },
+      );
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         askCameraPermission();

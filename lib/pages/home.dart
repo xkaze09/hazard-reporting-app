@@ -30,7 +30,7 @@ class _HomeState extends State<Home>
 
   @override
   void dispose() {
-    filterListener.dispose();
+    // filterListener.dispose();
     reportStream.drain();
     super.dispose();
   }
