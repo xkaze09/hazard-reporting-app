@@ -171,11 +171,6 @@ class ReportTile extends StatelessWidget {
                     color: Color(0xFF146136),
                   )),
             ),
-            (currentUser?.getRole() == 'Moderator')
-                ? ModControl(report: report)
-                : const SizedBox(
-                    height: 0,
-                  ),
             if (role == "Moderator")
               ModControl(report: report)
             else if (role == "Responder")
@@ -325,6 +320,7 @@ class _ModControlState extends State<ModControl> {
                         .doc(widget.report.id)
                         .update({"isVerified": true});
                   }
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF29AB84),
@@ -335,6 +331,19 @@ class _ModControlState extends State<ModControl> {
                         ? 'Revoke'
                         : 'Verify',
                     style: const TextStyle(color: Colors.white))),
+            const SizedBox(width: 16),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          EditReportInfo(report: widget.report)));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                ),
+                child: const Text("Edit",
+                    style: TextStyle(color: Colors.white))),
             const SizedBox(width: 16),
             ElevatedButton(
               onPressed: () {

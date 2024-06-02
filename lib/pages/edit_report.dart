@@ -49,11 +49,16 @@ class _ReportInfoState extends State<EditReportInfo> {
   }
 }
 
-class ReportTile extends StatelessWidget {
+class ReportTile extends StatefulWidget {
   final ReportsRecord report;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  ReportTile({super.key, required this.report});
+  const ReportTile({super.key, required this.report});
+  @override
+  State<ReportTile> createState() => _ReportTileState();
+}
+
+class _ReportTileState extends State<ReportTile> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   ReporterRecord? getReporter(DocumentReference? report) {
     ReporterRecord? reporter;
@@ -69,10 +74,12 @@ class ReportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     final TextEditingController titleController =
-        TextEditingController(text: report.title ?? "Untitled");
+        TextEditingController(
+            text: widget.report.title ?? "Untitled");
     final TextEditingController descController =
-        TextEditingController(text: report.description ?? "");
-    String categoryControllerValue = "";
+        TextEditingController(text: widget.report.description ?? "");
+    String categoryControllerValue =
+        widget.report.category?.name ?? "Miscellaneous";
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -97,8 +104,8 @@ class ReportTile extends StatelessWidget {
               SizedBox(
                   height: size.shortestSide * 0.2 * 3,
                   width: size.shortestSide * 0.2 * 4,
-                  child:
-                      report.image ?? Image.asset('assets/Hey.png')),
+                  child: widget.report.image ??
+                      Image.asset('assets/Hey.png')),
             ]),
             const SizedBox(height: 16),
             TextField(
@@ -131,6 +138,8 @@ class ReportTile extends StatelessWidget {
               value: categoryControllerValue,
               decoration: const InputDecoration(
                 labelText: 'Report Category',
+                icon: Icon(Icons.miscellaneous_services),
+                iconColor: Color(0xFF146136),
               ),
               items: categoryList.map((category) {
                 return DropdownMenuItem<String>(
@@ -139,7 +148,9 @@ class ReportTile extends StatelessWidget {
                 );
               }).toList(),
               onChanged: (value) {
-                categoryControllerValue = value!;
+                setState(() {
+                  categoryControllerValue = value!;
+                });
               },
               isExpanded: true,
             ),
@@ -148,7 +159,8 @@ class ReportTile extends StatelessWidget {
               //Reporter
               readOnly: true,
               controller: TextEditingController(
-                text: getReporter(report.reporter)?.displayName ??
+                text: getReporter(widget.report.reporter)
+                        ?.displayName ??
                     'Anonymous',
               ),
               decoration: const InputDecoration(
@@ -172,12 +184,14 @@ class ReportTile extends StatelessWidget {
                       } else {
                         try {
                           await reportsCollection
-                              .doc(report.id)
+                              .doc(widget.report.id)
                               .update({
                             "title": titleController.text,
                             "description": descController.text,
+                            "category": categoryControllerValue,
                           });
                           showSnackBar("Report Success");
+                          Navigator.of(context).pop();
                         } catch (e) {
                           showSnackBar(
                               "An error has occured. Please try again.");
@@ -231,7 +245,7 @@ class ReportTile extends StatelessWidget {
                               TextButton(
                                   onPressed: () {
                                     reportsCollection
-                                        .doc(report.id)
+                                        .doc(widget.report.id)
                                         .delete();
                                     Navigator.of(context).popUntil(
                                         (route) => route.isFirst);
