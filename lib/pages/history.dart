@@ -36,6 +36,7 @@ class _HistoryState extends State<History>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         heroTag: "Filter",
         onPressed: () {
@@ -46,7 +47,7 @@ class _HistoryState extends State<History>
               });
         },
         backgroundColor: const Color(0xFF29AB84),
-        child: const Icon(Icons.filter_list),
+        child: const Icon(Icons.filter_list, color: Colors.white,),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: reportStream,
