@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/authentication/reset_pass_page.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/backend/firestore.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
 
 class EditProfile extends StatelessWidget {
   const EditProfile({super.key});
@@ -12,7 +17,17 @@ class EditProfile extends StatelessWidget {
 }
 
 class EditProfilePage extends StatelessWidget {
-  const EditProfilePage({super.key});
+  final TextEditingController _userIDController =
+      TextEditingController(text: currentUser?.uid);
+  final TextEditingController _usernameController =
+      TextEditingController(text: currentUser?.displayName);
+  final TextEditingController _emailController =
+      TextEditingController(text: currentUser?.email.toString());
+  final TextEditingController _phoneController =
+      TextEditingController(
+          text: authInstance.currentUser?.phoneNumber);
+
+  EditProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +48,9 @@ class EditProfilePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
-                '[Display Name]',
-                style: TextStyle(
+              Text(
+                currentUser?.displayName ?? "Anonymous",
+                style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF146136)),
@@ -44,123 +59,53 @@ class EditProfilePage extends StatelessWidget {
               CircleAvatar(
                 radius: 80,
                 backgroundColor: Colors.grey[300],
+                foregroundImage: currentUser?.photo?.image,
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                height: 70,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'User ID',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 70,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Username',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 70,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Email Address',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 70,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Contact Number',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              EditFormField(
+                  fieldLabel: "User ID: ",
+                  controller: _userIDController),
+              EditFormField(
+                  fieldLabel: "User Name: ",
+                  controller: _usernameController),
+              EditFormField(
+                  fieldLabel: "Email: ",
+                  controller: _emailController),
+              EditFormField(
+                  fieldLabel: "Contact Number: ",
+                  controller: _phoneController),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // delete
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Delete Account"),
+                              content: const Text(
+                                  "Are you sure you want to delete your account?"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("No")),
+                                TextButton(
+                                    onPressed: () async {
+                                      await usersCollection
+                                          .doc(currentUser?.uid)
+                                          .delete();
+                                      await logOut();
+                                      await authInstance.currentUser
+                                          ?.delete();
+                                    },
+                                    child: const Text("Yes")),
+                              ],
+                            );
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD95767),
@@ -177,8 +122,19 @@ class EditProfilePage extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // confirm
+                    onPressed: () async {
+                      if (_emailController.text.contains("@")) {
+                        await usersCollection
+                            .doc(currentUser?.uid)
+                            .update({
+                          "display_name": _usernameController.text,
+                          "email": _emailController.text,
+                          "phone_number": _phoneController.text,
+                        });
+                        showSnackBar("Profile Updated");
+                      } else {
+                        showSnackBar("Profile Updated");
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF146136),
@@ -197,6 +153,9 @@ class EditProfilePage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // Add your reset password logic here
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              const ResetPasswordPage()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2746AA),
@@ -216,6 +175,63 @@ class EditProfilePage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EditFormField extends StatelessWidget {
+  const EditFormField({
+    super.key,
+    required TextEditingController controller,
+    required this.fieldLabel,
+  }) : _userIDController = controller;
+
+  final TextEditingController _userIDController;
+  final String fieldLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 70,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: TextFormField(
+          controller: _userIDController,
+          decoration: InputDecoration(
+            prefixIcon: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  fieldLabel,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            hintText: 'User ID',
+            hintStyle: const TextStyle(color: Colors.grey),
+            border: const OutlineInputBorder(
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
       ),

@@ -10,9 +10,8 @@ import 'pages/dashboard.dart';
 import 'components/template.dart';
 
 Future<void> main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding
+  WidgetsFlutterBinding
       .ensureInitialized(); // Ensure flutter bindings are initialized
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options:
         DefaultFirebaseOptions.currentPlatform, // Initialize Firebase
@@ -51,7 +50,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // FlutterNativeSplash.remove();
     Future.delayed(const Duration(seconds: 0), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -68,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset('assets/images/UPatrol-logo.png'),
+        child: Image.asset('assets/images/UPatrolLogo_Animation.gif'),
       ),
     );
   }
