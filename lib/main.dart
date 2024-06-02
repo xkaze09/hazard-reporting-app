@@ -12,7 +12,7 @@ import 'components/template.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding
       .ensureInitialized(); // Ensure flutter bindings are initialized
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options:
         DefaultFirebaseOptions.currentPlatform, // Initialize Firebase
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove();
     Future.delayed(const Duration(seconds: 0), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
