@@ -200,13 +200,14 @@ class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final String hintText;
-  
-  const PasswordField(
-      {super.key,
-      this.icon,
-      this.validator,
-      required this.controller, 
-      required this.hintText,});
+
+  const PasswordField({
+    super.key,
+    this.icon,
+    this.validator,
+    required this.controller,
+    required this.hintText,
+  });
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -227,31 +228,30 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: !isPasswordVisible,
       controller: widget.controller,
       decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          prefixIcon: widget.icon ?? const Icon(Icons.lock),
-          suffixIcon: IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                setState(() {
-                  isPasswordVisible = !isPasswordVisible;
-                });
-              },
-              icon: isPasswordVisible
-                  ? const Icon(
-                      Icons.visibility,
-                      color: Colors.grey,
-                    )
-                  : const Icon(Icons.visibility_off,
-                      color: Colors.grey),
-                      ),
-                      hintText: widget.hintText,
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        prefixIcon: widget.icon ?? const Icon(Icons.lock),
+        suffixIcon: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            setState(() {
+              isPasswordVisible = !isPasswordVisible;
+            });
+          },
+          icon: isPasswordVisible
+              ? const Icon(
+                  Icons.visibility,
+                  color: Colors.grey,
+                )
+              : const Icon(Icons.visibility_off, color: Colors.grey),
+        ),
+        hintText: widget.hintText,
+        hintStyle: const TextStyle(color: Colors.grey),
+      ),
       validator: widget.validator ?? backup,
     );
   }

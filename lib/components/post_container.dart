@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
@@ -16,6 +18,16 @@ class PostContainer extends StatefulWidget {
 class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
+    var image = widget.report?.image;
+    bool isLandscape = true;
+    try {
+      if (image != null) {
+        if (image.height! > image.width!) {
+          isLandscape = false;
+        }
+      }
+    } catch (e) {}
+    late Size size = MediaQuery.of(context).size;
     return Container(
         margin: const EdgeInsets.symmetric(
             vertical: 8.0, horizontal: 16.0),
@@ -130,20 +142,28 @@ class _PostContainerState extends State<PostContainer> {
               ),
               Stack(children: [
                 Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Image Placeholder',
-                      style: TextStyle(fontSize: 16.0),
+                    height: (isLandscape)
+                        ? size.height * 0.3
+                        : size.height * 0.6,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                  ),
-                ),
-                widget.report?.image ??
-                    Image.asset("images/UPatrol-logo.png"),
+                    child: Stack(
+                      children: [
+                        const Center(
+                          child: Text(
+                            'Image Placeholder',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ),
+                        Center(
+                            child: widget.report?.image ??
+                                Image.memory(const Base64Codec().decode(
+                                    "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"))),
+                        // Image.asset("images/UPatrol-logo.png"),
+                      ],
+                    )),
               ]),
             ]));
   }
