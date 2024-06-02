@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 
@@ -19,6 +20,17 @@ class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
+    String tag = "";
+    if (widget.report?.isResolved ?? false) {
+      tag = "Resolved";
+    } else if (widget.report?.isPending ?? false) {
+      tag = "Pending";
+    } else if ((widget.report?.isVerified ?? false) &&
+        currentUser?.getRole() == "Moderator") {
+      tag = "Verified";
+    } else {
+      tag = "Unverified";
+    }
     return Container(
         margin: const EdgeInsets.symmetric(
             vertical: 8.0, horizontal: 16.0),
@@ -108,14 +120,36 @@ class _PostContainerState extends State<PostContainer> {
                   ],
                 ),
               ]),
-              Text(
-                widget.report?.title ?? "Untitled",
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                  color: Colors.black,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.report?.title ?? "Untitled",
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: (tag.isNotEmpty)
+                        ? BoxDecoration(
+                            color: (tag == "Unverified" ||
+                                    tag == "Pending")
+                                ? Colors.grey
+                                : Colors.green,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(3)))
+                        : null,
+                    child: Center(
+                        child: Text(
+                      tag,
+                      style: TextStyle(color: Colors.white),
+                    )),
+                  )
+                ],
               ),
               const SizedBox(
                 height: 10,

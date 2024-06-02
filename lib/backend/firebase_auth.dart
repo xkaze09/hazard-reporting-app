@@ -33,9 +33,12 @@ void signInWithPassword(BuildContext context,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               LoadingIndicator(),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
-              Text("Logging In..."),
+              Text("Logging In...",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
             ]),
           ));
         });
