@@ -277,10 +277,12 @@ class _ModControlState extends State<ModControl> {
   Widget build(BuildContext context) {
     return Visibility(
       visible: currentUser?.getRole() == 'Moderator',
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextButton(
+          ElevatedButton(
               onPressed: () {
                 if (widget.report.isVerified ?? false) {
                   reportsCollection
@@ -292,9 +294,13 @@ class _ModControlState extends State<ModControl> {
                       .update({"isVerified": true});
                 }
               },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF29AB84),
+              padding: const EdgeInsets.symmetric(horizontal: 24),),
               child: Text(widget.report.isVerified ?? false
                   ? 'Revoke'
-                  : 'Verify')),
+                  : 'Verify', style: TextStyle(color: Colors.white))),
+              const SizedBox(width: 16),
           ElevatedButton(
                   onPressed: () {
                     showDialog(
@@ -337,8 +343,8 @@ class _ModControlState extends State<ModControl> {
               padding: const EdgeInsets.symmetric(horizontal: 24),),
               child: const Text('Reject', style: TextStyle(color: Colors.white)),
           ),
-          SizedBox(width: 16),
         ],
+      ),
       ),
     );
   }
@@ -353,8 +359,10 @@ class ResponderControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: currentUser?.getRole() == 'Responder',
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
               onPressed: () {
@@ -372,9 +380,15 @@ class ResponderControl extends StatelessWidget {
                 }
                 //TODO implement stuff
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: report.isPending ?? false
+                  ? const Color(0xFFD95767)
+                  : const Color(0xFF29AB84),
+              padding: const EdgeInsets.symmetric(horizontal: 24),),
               child: Text(report.isPending ?? false
                   ? 'Cancel Resolving'
-                  : 'Start Resolving')),
+                  : 'Start Resolving', style: TextStyle(color: Colors.white),)),
+          SizedBox(width: 16),
           Visibility(
             visible: report.isPending ?? false,
             child: ElevatedButton(
@@ -424,6 +438,7 @@ class ResponderControl extends StatelessWidget {
           ),
           SizedBox(width: 16),
         ],
+      ),
       ),
     );
   }
