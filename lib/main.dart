@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset('images/UPatrol-logo.png'),
+        child: Image.asset('assets/images/UPatrol-logo.png'),
       ),
     );
   }

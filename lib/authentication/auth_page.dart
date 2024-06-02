@@ -12,37 +12,38 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         body: Column(
-      children: [
-        Container(
-            height: size.shortestSide * 0.4,
-            width: size.shortestSide * 0.4,
-            child: Center(
-                child: Hero(
-                    tag: "Logo with Text",
-                    child: Image.asset("images/UPatrol-logo.png")))),
-        Container(
-            height: size.height - (size.shortestSide * 0.4),
-            width: size.width,
-            decoration: BoxDecoration(
-                color: const Color(0xFF146136),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.elliptical(
-                    size.width / 2,
-                    size.shortestSide * 0.1,
-                  ),
+          children: [
+            Container(
+                height: size.shortestSide * 0.4,
+                width: size.shortestSide * 0.4,
+                child: Center(
+                    child: Hero(
+                        tag: "Logo with Text",
+                        child: Image.asset(
+                            "assets/images/UPatrol-logo.png")))),
+            Container(
+                height: size.height - (size.shortestSide * 0.4),
+                width: size.width,
+                decoration: BoxDecoration(
+                    color: const Color(0xFF146136),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.elliptical(
+                        size.width / 2,
+                        size.shortestSide * 0.1,
+                      ),
+                    )),
+                padding: EdgeInsets.only(
+                  top: 20,
+                  left: size.width * 0.05,
+                  right: size.width * 0.05,
+                ),
+                child: AuthForm(
+                  showSignUpFirst: showSignUpFirst,
                 )),
-            padding: EdgeInsets.only(
-              top: 20,
-              left: size.width * 0.05,
-              right: size.width * 0.05,
-            ),
-            child: AuthForm(
-              showSignUpFirst: showSignUpFirst,
-            )),
-      ],
-    ));
+          ],
+        ));
   }
 }
 
@@ -64,10 +65,10 @@ class _AuthPageState extends State<AuthForm>
         length: 2,
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TabBar(
+              const TabBar(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 dividerColor: Colors.transparent,
                 indicatorColor: Colors.white,
@@ -89,10 +90,20 @@ class _AuthPageState extends State<AuthForm>
               Expanded(
                 child: TabBarView(
                   children: [
-                    SignInForm(),
-                    SignInForm(
+                    const SignInForm(),
+                    const SignInForm(
                       signUp: true,
-                    )
+                    ),
+                    Center(
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) {
+                              return ResetPasswordPage();
+                            }));
+                          },
+                          child: const Text("Forgot Password")),
+                    ),
                   ],
                 ),
               ),
@@ -132,15 +143,15 @@ class _SignInFormState extends State<SignInForm> {
             TextFormField(
               controller: emailController,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                fillColor: Colors.white,
-                filled: true,
-                prefixIcon: Icon(Icons.mail),
-                hintText: "Email Address",
-                hintStyle: TextStyle(color: Colors.grey)
-              ),
+                  border: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(20)),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  prefixIcon: Icon(Icons.mail),
+                  hintText: "Email Address",
+                  hintStyle: TextStyle(color: Colors.grey)),
             ),
             const SizedBox(height: 20),
             PasswordField(
