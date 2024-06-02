@@ -24,6 +24,7 @@ class _HomeState extends State<Home>
   @override
   void initState() {
     super.initState();
+    currentUser?.getRole();
     reportStream = getActiveReports();
   }
 

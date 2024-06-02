@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
@@ -27,7 +26,7 @@ class _ReportInfoState extends State<ReportInfo> {
         title: Text(widget.report.title ?? 'Untitled'),
         actions: [
           Transform.translate(
-            offset: Offset(-20, 10),
+            offset: const Offset(-20, 10),
             child: Column(
               children: [
                 Icon(
@@ -91,7 +90,7 @@ class ReportTile extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 4,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -106,7 +105,7 @@ class ReportTile extends StatelessWidget {
                       child: report.image ??
                           Image.asset('assets/Hey.png')),
                 ]),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               //Title
               readOnly: true,
@@ -205,7 +204,7 @@ class _ReporterControlState extends State<ReporterControl> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: ElevatedButton(
@@ -222,7 +221,7 @@ class _ReporterControlState extends State<ReporterControl> {
                 style: TextStyle(color: Colors.white)),
           ),
         ),
-        SizedBox(width: 30),
+        const SizedBox(width: 30),
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: ElevatedButton(
@@ -290,7 +289,7 @@ class _ReporterControlState extends State<ReporterControl> {
                 style: TextStyle(color: Colors.white)),
           ),
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
       ],
     );
   }
@@ -335,7 +334,7 @@ class _ModControlState extends State<ModControl> {
                     widget.report.isVerified ?? false
                         ? 'Revoke'
                         : 'Verify',
-                    style: TextStyle(color: Colors.white))),
+                    style: const TextStyle(color: Colors.white))),
             const SizedBox(width: 16),
             ElevatedButton(
               onPressed: () {
@@ -448,9 +447,9 @@ class ResponderControl extends StatelessWidget {
                   report.isPending ?? false
                       ? 'Cancel Resolving'
                       : 'Start Resolving',
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 )),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Visibility(
               visible: report.isPending ?? false,
               child: ElevatedButton(
@@ -524,7 +523,7 @@ class ResponderControl extends StatelessWidget {
                   child: const Text('Mark Resolved',
                       style: TextStyle(color: Colors.white))),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
           ],
         ),
       ),

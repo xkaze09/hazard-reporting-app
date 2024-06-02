@@ -12,6 +12,8 @@ class EditProfile extends StatelessWidget {
 }
 
 class EditProfilePage extends StatelessWidget {
+  const EditProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,11 +22,12 @@ class EditProfilePage extends StatelessWidget {
         backgroundColor: Colors.white,
         title: const Text(
           'Profile',
-          style: TextStyle(color: Color(0xFF146136), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Color(0xFF146136), fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25),
           child: Column(
@@ -32,7 +35,10 @@ class EditProfilePage extends StatelessWidget {
             children: [
               const Text(
                 '[Display Name]',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF146136)),
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF146136)),
               ),
               const SizedBox(height: 16),
               CircleAvatar(
@@ -154,34 +160,38 @@ class EditProfilePage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // delete 
+                      // delete
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD95767),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                     child: const Text(
                       'Delete Account',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 14),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // confirm 
+                      // confirm
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF146136),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                     child: const Text(
                       'Confirm',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 14),
                     ),
                   ),
                   ElevatedButton(
@@ -190,19 +200,21 @@ class EditProfilePage extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2746AA),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
                     child: const Text(
                       'Reset Password',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 14),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20), 
+              const SizedBox(height: 20),
             ],
           ),
         ),

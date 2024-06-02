@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
+import 'package:hazard_reporting_app/pages/edit_profile.dart';
 import 'package:hazard_reporting_app/pages/history.dart';
 import '../pages/create_report.dart';
 import '/pages/dashboard.dart';
@@ -146,6 +147,10 @@ class _PublicDrawerState extends State<PublicDrawer> {
         child: ListView(
           children: [
             ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const EditProfilePage()));
+              },
               leading: currentUser?.photo ??
                   Image.asset('assets/images/anon.png'),
               title: Column(

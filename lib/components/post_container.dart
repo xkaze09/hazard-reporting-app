@@ -18,15 +18,6 @@ class PostContainer extends StatefulWidget {
 class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
-    var image = widget.report?.image;
-    bool isLandscape = true;
-    try {
-      if (image != null) {
-        if (image.height! > image.width!) {
-          isLandscape = false;
-        }
-      }
-    } catch (e) {}
     late Size size = MediaQuery.of(context).size;
     return Container(
         margin: const EdgeInsets.symmetric(
@@ -49,16 +40,17 @@ class _PostContainerState extends State<PostContainer> {
             children: [
               Row(children: [
                 CircleAvatar(
-                  foregroundImage: widget.reporter?.photo?.image ??
-                      const AssetImage('assets/images/logo-notext.png'),
-                  radius: 20,
-                  backgroundColor:
-                      const Color.fromARGB(255, 11, 14, 13),
-                  child: const Text(
-                    'DP',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                    foregroundImage: widget.reporter?.photo?.image ??
+                        const AssetImage(
+                            'assets/images/logo-notext.png'),
+                    radius: 20,
+                    backgroundColor:
+                        const Color.fromARGB(255, 11, 14, 13),
+                    child: Image.asset("assets/images/anon.png")
+                    // const Text(
+                    //   'DP',
+                    //   style: TextStyle(color: Colors.white),
+                    ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -89,7 +81,8 @@ class _PostContainerState extends State<PostContainer> {
                   visible: widget.report?.isPending ?? false,
                   child: Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(5),
+                      alignment: Alignment.topLeft,
+                      // padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -97,36 +90,23 @@ class _PostContainerState extends State<PostContainer> {
                     ),
                   ),
                 ),
-                Stack(
-                  alignment: AlignmentDirectional.center,
+                Column(
                   children: [
                     Icon(
-                      widget.report?.category?.icon.icon ??
-                          Categories.miscellaneous.category.icon.icon,
-                      size: 60,
-                      color: Colors.grey,
-                      opticalSize: 2,
+                      widget.report?.category?.icon.icon,
+                      size: 30,
+                      color: widget.report?.category?.color,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFF29AB84).withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
+                    Center(
                       child: Text(
-                        widget.report?.category?.name ??
-                            "Miscellaneous",
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                          widget.report?.category?.name ?? 'Unknown',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          )),
+                    )
                   ],
-                )
+                ),
               ]),
               Text(
                 widget.report?.title ?? "Untitled",
@@ -142,26 +122,16 @@ class _PostContainerState extends State<PostContainer> {
               ),
               Stack(children: [
                 Container(
-                    height: size.height * 0.6,
-                    decoration: BoxDecoration(
+                  height: size.height * 0.4,
+                  decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Stack(
-                      children: [
-                        const Center(
-                          child: Text(
-                            'Image Placeholder',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                        Center(
-                            child: widget.report?.image ??
-                                Image.memory(const Base64Codec().decode(
-                                    "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"))),
-                        // Image.asset("images/UPatrol-logo.png"),
-                      ],
-                    )),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: widget.report?.image?.image ??
+                              MemoryImage(const Base64Codec().decode(
+                                  "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")))),
+                ),
               ]),
             ]));
   }

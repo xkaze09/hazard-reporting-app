@@ -6,7 +6,7 @@ import '../data_types/utils.dart';
 Image? _getImage(String? url) {
   Image? image;
   if (url != null) {
-    image = Image.network(url,
+    image = Image.network(url, fit: BoxFit.cover,
         errorBuilder: (context, error, stacktrace) {
       return Image.asset('assets/images/logo-notext.png');
       // return const Text("Image failed to load");

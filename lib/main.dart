@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'firebase_options.dart';
@@ -9,8 +10,9 @@ import 'pages/dashboard.dart';
 import 'components/template.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding
       .ensureInitialized(); // Ensure flutter bindings are initialized
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options:
         DefaultFirebaseOptions.currentPlatform, // Initialize Firebase
@@ -49,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // FlutterNativeSplash.remove();
     Future.delayed(const Duration(seconds: 0), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(

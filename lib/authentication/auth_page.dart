@@ -65,10 +65,10 @@ class _AuthPageState extends State<AuthForm>
         length: 2,
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Column(
+          child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const TabBar(
+              TabBar(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 dividerColor: Colors.transparent,
                 indicatorColor: Colors.white,
@@ -90,19 +90,9 @@ class _AuthPageState extends State<AuthForm>
               Expanded(
                 child: TabBarView(
                   children: [
-                    const SignInForm(),
-                    const SignInForm(
+                    SignInForm(),
+                    SignInForm(
                       signUp: true,
-                    ),
-                    Center(
-                      child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) {
-                              return ResetPasswordPage();
-                            }));
-                          },
-                          child: const Text("Forgot Password")),
                     ),
                   ],
                 ),
@@ -193,7 +183,24 @@ class _SignInFormState extends State<SignInForm> {
                   widget.signUp ? "Sign Up" : "Sign In",
                   style: const TextStyle(
                       color: Color(0xFF146136), fontSize: 20),
-                ))
+                )),
+            const SizedBox(height: 20),
+            Visibility(
+              visible: !widget.signUp,
+              child: Center(
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                const ResetPasswordPage()));
+                      },
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ))),
+            )
           ])),
     );
   }
