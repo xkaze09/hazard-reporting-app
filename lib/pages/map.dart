@@ -21,8 +21,7 @@ import 'package:permission_handler/permission_handler.dart';
 // }
 
 Future<bool> askMapPermission() async {
-  PermissionStatus status =
-      await Permission.locationWhenInUse.request();
+  PermissionStatus status = await Permission.location.request();
   if (status.isDenied == true) {
     return askMapPermission();
   } else {
@@ -46,11 +45,18 @@ class _MapState extends State<Maps>
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      askMapPermission();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return FutureBuilder(
-        future: Future.wait(
-            [getPosition(), getMarkers(), askMapPermission()]),
+        future: Future.wait([getPosition(), getMarkers()]),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('$snapshot.error'));
