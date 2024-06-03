@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 0), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => const Template(

@@ -249,7 +249,7 @@ class _CreateReportState extends State<CreateReport> {
                                   top: 5,
                                   bottom: 5),
                             ),
-                            maxLines: null,
+                            maxLines: 3,
                             maxLength: 500,
                             controller: _descriptionController,
                           ),

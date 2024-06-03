@@ -29,7 +29,7 @@ class LandingPage extends StatelessWidget {
                       child: Image.asset(
                         'assets/images/UPatrol-logo.png',
                         width: 600,
-                        height: 520,
+                        height: 600,
                       ),
                     ),
                   ),

@@ -95,17 +95,6 @@ class _ActiveFeedState extends State<ActiveFeed> {
   @override
   void initState() {
     super.initState();
-    if (currentUser?.getRole() == 'Moderator') {
-      hideUnverifiedReports = false;
-      hideVerifiedReports = false;
-      hidePendingReports = false;
-      hideResolvedReports = false;
-    } else {
-      hideUnverifiedReports = true;
-      hideVerifiedReports = false;
-      hidePendingReports = false;
-      hideResolvedReports = true;
-    }
   }
 
   @override
@@ -119,11 +108,7 @@ class _ActiveFeedState extends State<ActiveFeed> {
         if (report.isVerified != null &&
             report.isPending != null &&
             report.isResolved != null) {
-          if ((report.isVerified == true && hideVerifiedReports) ||
-              (report.isResolved == true && hideResolvedReports) ||
-              (report.isVerified == false && hideUnverifiedReports) ||
-              (report.isPending == true && hidePendingReports) ||
-              categoryFilters.contains(report.category?.name)) {
+          if  (categoryFilters.contains(report.category?.name)) {
             return Container(height: 0);
           }
         }

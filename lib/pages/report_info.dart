@@ -179,7 +179,8 @@ class ReportTile extends StatelessWidget {
 
 class ReporterControl extends StatefulWidget {
   final ReportsRecord? report;
-  const ReporterControl({super.key, required this.report});
+  final ReporterRecord? reporter;
+  const ReporterControl({super.key, required this.report, this.reporter});
 
   @override
   State<StatefulWidget> createState() => _ReporterControlState();
@@ -285,8 +286,9 @@ class _ReporterControlState extends State<ReporterControl> {
 
 class ModControl extends StatefulWidget {
   final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const ModControl({super.key, required this.report});
+  const ModControl({super.key, required this.report, this.reporter});
 
   @override
   State<ModControl> createState() => _ModControlState();
