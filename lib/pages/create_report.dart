@@ -1,43 +1,34 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
+import 'package:hazard_reporting_app/pages/map.dart';
 
-import '../components/template.dart';
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../data_types/utils.dart';
 import '../backend/firestore.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const UPatrol());
-}
-
-class UPatrol extends StatelessWidget {
-  const UPatrol({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'UPatrol',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const CreateReport(),
-    );
+Future<bool> askCameraPermission() async {
+  PermissionStatus status = await Permission.camera.request();
+  if (status.isDenied == true) {
+    return askCameraPermission();
+  } else {
+    return true;
   }
 }
 
-class CreateReport extends StatefulWidget {
-  const CreateReport({super.key});
+class CreateReportOld extends StatefulWidget {
+  const CreateReportOld({super.key});
 
   @override
-  State<CreateReport> createState() => _CreateReportState();
+  State<CreateReportOld> createState() => _CreateReportOldState();
 }
 
-class _CreateReportState extends State<CreateReport> {
+class _CreateReportOldState extends State<CreateReportOld> {
   final _createReportFormKey = GlobalKey<FormState>();
 
   Uint8List? _file;
@@ -49,10 +40,9 @@ class _CreateReportState extends State<CreateReport> {
       TextEditingController();
   String? _categoryControllerValue;
 
-  // ignore: unused_field
-  bool _isLoading = false;
+  late bool _isLoading = false;
   void postReport() async {
-    if(_createReportFormKey.currentState!.validate()) {
+    if (_createReportFormKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
@@ -62,7 +52,7 @@ class _CreateReportState extends State<CreateReport> {
             _descriptionController.text,
             _categoryControllerValue ?? '',
             _locationController.text,
-            _file!);
+            _file ?? Uint8List(0));
         if (res == 'success') {
           setState(() {
             _isLoading = false;
@@ -119,26 +109,61 @@ class _CreateReportState extends State<CreateReport> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getPosition().then((position) {
+      reverseGeocode(position).then(
+        (value) {
+          setState(() {
+            debugPrint(value);
+            _locationController.text = value;
+          });
+        },
+      );
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        askCameraPermission();
+        askMapPermission();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // _subjectController.dispose();
+    // _descriptionController.dispose();
+    // _locationController.dispose();
+    // _createReportFormKey.currentState?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Template(child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-      return Center(
-        child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _createReportFormKey,
-              child: ListView(
-                children: [
-                  ReportFormField(
+    return Scaffold(
+      body: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Center(
+          child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _createReportFormKey,
+                child: ListView(
+                  children: [
+                    ReportFormField(
                       controller: _subjectController,
                       label: 'Subject',
-                      isRequired: true,),
-                  ReportFormField(
+                      isRequired: true,
+                    ),
+                    ReportFormField(
                       controller: _descriptionController,
                       label: 'Short Description',
-                      isRequired: false,),
-                  const SizedBox(height: 10),
-                  Container(
+                      isRequired: false,
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10),
@@ -155,51 +180,76 @@ class _CreateReportState extends State<CreateReport> {
                           );
                         }).toList(),
                         onChanged: (value) {
-                            _categoryControllerValue = value!;
+                          _categoryControllerValue = value!;
                         },
                         isExpanded: true,
                       ),
                     ),
-                  ReportFormField(
+                    ReportFormField(
                       controller: _locationController,
                       label: 'Location',
-                      isRequired: false,),
-                  const SizedBox(height: 40),
-                  ReportImageContainer(file: _file),
-                  const SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () => _imageSelect(context),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      isRequired: false,
+                      readOnly: true,
                     ),
-                    child: const Text('Take Photo'),
-                  ),
-                  ElevatedButton(
-                    onPressed: postReport,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                    const SizedBox(height: 40),
+                    ReportImageContainer(file: _file),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => _imageSelect(context),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
+                      child: const Text('Take Photo'),
                     ),
-                    child: const Text('Submit'),
-                  ),
-                ],
-              ),
-            )),
-      );
-    }));
+                    ElevatedButton(
+                      onPressed: postReport,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Submit'),
+                    ),
+                    Visibility(
+                      visible:
+                          authInstance.currentUser?.isAnonymous ??
+                              false,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          logOut().then(
+                              (value) => Navigator.of(context).pop());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        );
+      }),
+    );
   }
 }
 
 class ReportFormField extends StatelessWidget {
   const ReportFormField(
-      {super.key, required this.controller, required this.label, required this.isRequired});
+      {super.key,
+      required this.controller,
+      required this.label,
+      required this.isRequired,
+      this.readOnly});
 
   final TextEditingController controller;
   final bool isRequired;
   final String label;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -212,9 +262,11 @@ class ReportFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: TextFormField(
+            readOnly: readOnly ?? false,
             controller: controller,
             validator: (value) {
-              if (isRequired == true && (value == null || value.isEmpty)) {
+              if (isRequired == true &&
+                  (value == null || value.isEmpty)) {
                 return 'Please enter a subject';
               }
               return null;

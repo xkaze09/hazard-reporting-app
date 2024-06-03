@@ -14,13 +14,14 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => LandingPage()));
+          MaterialPageRoute(builder: (_) => const LandingPage()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Image.asset('assets/upatrol_logo.png'), // Logo
       ),

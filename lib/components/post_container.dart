@@ -1,129 +1,188 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
+import 'package:hazard_reporting_app/data_types/reports.dart';
+import 'package:hazard_reporting_app/data_types/utils.dart';
+import 'package:hazard_reporting_app/pages/report_info.dart';
 
-class PostContainer extends StatelessWidget {
-  final String displayName;
-  final String location;
-  final String title;
-  final String category;
+class PostContainer extends StatefulWidget {
+  final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const PostContainer({
-    super.key,
-    required this.displayName,
-    required this.location,
-    required this.title,
-    required this.category,
-  });
+  const PostContainer(
+      {super.key, required this.report, required this.reporter});
+
+  @override
+  State<PostContainer> createState() => _PostContainerState();
+}
+
+class _PostContainerState extends State<PostContainer> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(
-            vertical: 8.0, horizontal: 16.0),
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Color(0xFF29AB84),
-                  child: Text(
-                    'DP',
-                    style: TextStyle(color: Colors.white),
+    late Size size = MediaQuery.of(context).size;
+    String tag = "";
+    if (widget.report?.isResolved ?? false) {
+      tag = "Resolved";
+    } else if (widget.report?.isPending ?? false) {
+      tag = "Pending";
+    } else if ((widget.report?.isVerified ?? false) &&
+        currentUser?.getRole() == "Moderator") {
+      tag = "Verified";
+    } else if ((widget.report?.isVerified != true)) {
+      tag = "Unverified";
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ReportInfo(
+                report: widget.report, reporter: widget.reporter)));
+      },
+      child: Container(
+          margin: const EdgeInsets.symmetric(
+              vertical: 8.0, horizontal: 16.0),
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  CircleAvatar(
+                    foregroundImage:
+                        NetworkImage(widget.reporter?.photoUrl ?? ""),
+                    radius: 20,
+                    backgroundImage:
+                        const AssetImage("assets/images/anon.png"),
+                    backgroundColor:
+                        const Color.fromARGB(255, 11, 14, 13),
+                    // child: Image.asset("assets/images/anon.png")
+                    // const Text(
+                    //   'DP',
+                    //   style: TextStyle(color: Colors.white),
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.reporter?.displayName ?? "Anonymous",
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Text(
+                          widget.report?.address ??
+                              "Location Unknown",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.report?.isPending ?? false,
+                    child: Expanded(
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        // padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(""),
+                      ),
+                    ),
+                  ),
+                  Column(
                     children: [
-                      Text(
-                        displayName,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
+                      Icon(
+                        widget.report?.category?.icon.icon,
+                        size: 30,
+                        color: widget.report?.category?.color,
                       ),
-                      Text(
-                        location,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                      Center(
+                        child: Text(
+                            widget.report?.category?.name ??
+                                'Unknown',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            )),
+                      )
                     ],
                   ),
-                ),
-                Stack(
-                  alignment: AlignmentDirectional.center,
+                ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.local_fire_department,
-                      size: 70,
-                      color: Colors.grey,
-                      opticalSize: 2,
+                    Text(
+                      widget.report?.title ?? "Untitled",
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFF29AB84).withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Text(
-                        category,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                      padding: const EdgeInsets.all(5),
+                      decoration: (tag.isNotEmpty)
+                          ? BoxDecoration(
+                              color: (tag == "Unverified" ||
+                                      tag == "Pending")
+                                  ? Colors.grey
+                                  : Colors.green,
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(3)))
+                          : null,
+                      child: Center(
+                          child: Text(
+                        tag,
+                        style: const TextStyle(color: Colors.white),
+                      )),
+                    )
                   ],
-                )
-              ]),
-              Text(
-                title,
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                  color: Colors.black,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(10.0),
+                const SizedBox(
+                  height: 10,
                 ),
-                child: const Center(
-                  child: Text(
-                    'Image Placeholder',
-                    style: TextStyle(fontSize: 16.0),
+                Stack(children: [
+                  Container(
+                    height: size.height * 0.4,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10.0),
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: widget.report?.image?.image ??
+                                MemoryImage(const Base64Codec().decode(
+                                    "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")))),
                   ),
-                ),
-              ),
-            ]));
+                ]),
+              ])),
+    );
   }
 }

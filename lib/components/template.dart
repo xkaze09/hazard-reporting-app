@@ -1,8 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/landing_page.dart';
-import '../pages/create_report.dart';
+import 'package:hazard_reporting_app/pages/create_report_updated_new.dart';
+import 'package:hazard_reporting_app/pages/edit_profile.dart';
+import 'package:hazard_reporting_app/pages/history.dart';
 import '/pages/dashboard.dart';
 import '/pages/map.dart';
 import '/pages/home.dart';
@@ -10,10 +11,14 @@ import 'package:hazard_reporting_app/data_types/globals.dart';
 
 //insert query here
 var reportsList = List<bool>;
+final GlobalKey<ScaffoldMessengerState> rootScaffoldKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class Template extends StatefulWidget {
   final Widget child;
-  const Template({super.key, required this.child});
+  final String title;
+  const Template(
+      {super.key, required this.child, required this.title});
 
   @override
   State<Template> createState() => _TemplateState();
@@ -21,19 +26,41 @@ class Template extends StatefulWidget {
 
 class _TemplateState extends State<Template> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    rootScaffoldMessengerKey.currentState?.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
-        '/home': (context) => const Template(child: Dashboard()),
-        '/map': (context) => const Template(
-                child: Dashboard(
+        '/home': (context) => const TemplateBody(
+            title: "Dashboard", child: Dashboard()),
+        '/map': (context) => const TemplateBody(
+            title: "Dashboard",
+            child: Dashboard(
               initialKey: 1,
             )),
-        '/create': (context) => const Template(child: CreateReport())
+        '/create': (context) => const TemplateBody(
+              title: "Create Report",
+              child: CreateReport(),
+            ),
+        '/history': (context) => const TemplateBody(
+              title: "History",
+              child: History(),
+            )
       },
       home: TemplateBody(
-        title: 'Dashboard',
+        title: widget.title,
         child: widget.child,
       ),
     );
@@ -56,13 +83,14 @@ class TemplateBody extends StatefulWidget {
 
 class _TemplateBodyState extends State<TemplateBody> {
   @override
-  Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey =
-        GlobalKey<ScaffoldState>();
+  void initState() {
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      appBar: PublicAppBar(scaffoldKey: scaffoldKey, widget: widget),
+      appBar: PublicAppBar(widget: widget),
       drawer: const PublicDrawer(),
       body: widget.child,
     );
@@ -73,27 +101,24 @@ class PublicAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const PublicAppBar({
     super.key,
-    required this.scaffoldKey,
     required this.widget,
   });
-
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final TemplateBody widget;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: SizedBox(
-        width: 40,
-        height: 40,
-        child: IconButton(
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
-            icon: const ImageIcon(
-              AssetImage('images/UPatrol-logo.png'),
-              size: 40,
-            )),
+      backgroundColor: Colors.white,
+      automaticallyImplyLeading: true,
+      iconTheme: const IconThemeData(
+        color: Color(0xFF146136),
       ),
-      title: Text(widget.title),
+      centerTitle: true,
+      title: Text(widget.title,
+          style: const TextStyle(
+            color: Color(0xFF146136),
+            fontWeight: FontWeight.bold,
+          )),
     );
   }
 
@@ -110,54 +135,98 @@ class PublicDrawer extends StatefulWidget {
 
 class _PublicDrawerState extends State<PublicDrawer> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    try {
+      Image(image: NetworkImage(currentUser?.photoUrl ?? ""));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return Drawer(
-      child: ListView(
-        children: [
-          ListTile(
-              leading: currentUser?.photo,
+      backgroundColor: Colors.white,
+      child: Container(
+        margin: const EdgeInsets.only(top: 25),
+        child: ListView(
+          children: [
+            ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EditProfilePage()));
+              },
+              leading: CircleAvatar(
+                backgroundImage:
+                    NetworkImage(currentUser?.photoUrl ?? ""),
+                foregroundImage:
+                    const AssetImage("assets/images/anon.png"),
+              ),
+              // Image(
+              //   image: NetworkImage(currentUser?.photoUrl ?? "") ,
+              // ),
               title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                          currentUser?.displayName ?? "No Name")),
+                          authInstance.currentUser?.displayName ??
+                              "No Name")),
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text(currentUser?.getRole() ?? "User"))
                 ],
-              )),
-          const DashboardTile(
-              icon: Icon(Icons.house_outlined, size: 40),
-              label: 'Dashboard',
-              namedRoute: '/home'),
-          const DashboardTile(
-              icon: Icon(Icons.history, size: 40),
-              label: 'History',
-              namedRoute: '/history'),
-          const DashboardTile(
-              icon: Icon(Icons.settings_outlined, size: 40),
-              label: 'Settings',
-              namedRoute: '/settings'),
-          ListTile(
-            leading: const Icon(Icons.logout, size: 40),
-            title: const Text(
-              "Log-Out",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                fontFamily: "Roboto",
               ),
             ),
-            onTap: () {
-              logOut();
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) {
-                return const LandingPage();
-              }));
-            },
-          )
-        ],
+            const Divider(),
+            const SizedBox(height: 15),
+            const DashboardTile(
+              icon: Icon(Icons.house_outlined, size: 30),
+              label: 'Dashboard',
+              namedRoute: '/home',
+            ),
+            const DashboardTile(
+              icon: Icon(Icons.history, size: 30),
+              label: 'History',
+              namedRoute: '/history',
+            ),
+            const DashboardTile(
+              icon: Icon(Icons.settings_outlined, size: 30),
+              label: 'Settings',
+              namedRoute: '/settings',
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  logOut();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) {
+                    return const LandingPage();
+                  }));
+                },
+                hoverColor: const Color(0xFF29AB84),
+                child: const ListTile(
+                  leading: Icon(Icons.logout, size: 30),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        "Log-Out",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "Roboto",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,19 +246,30 @@ class DashboardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        leading: icon,
-        title: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            fontFamily: "Roboto",
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).popAndPushNamed(namedRoute);
+        },
+        hoverColor: const Color(0xFF29AB84),
+        child: ListTile(
+          leading: icon,
+          title: Row(
+            children: [
+              const SizedBox(width: 15),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Roboto",
+                ),
+              ),
+            ],
           ),
         ),
-        onTap: () {
-          Navigator.of(context).pushNamed(namedRoute);
-        });
+      ),
+    );
   }
 }
 
@@ -204,8 +284,6 @@ class _MyAppState extends State<MyApp> {
   late int _selectedPageIndex;
   late List<Widget> _pages;
   late PageController _pageController;
-  final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -226,36 +304,39 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-              automaticallyImplyLeading: true,
-              title: const Text("Dashboard"),
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: true,
+          title: const Text("Dashboard"),
+        ),
+        drawer: const Drawer(child: PublicDrawer()),
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            drawer: const Drawer(child: PublicDrawer()),
-            body: PageView(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: _pages,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Maps',
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.map),
-                  label: 'Maps',
-                ),
-              ],
-              currentIndex: _selectedPageIndex,
-              onTap: (selectedPageIndex) {
-                setState(() {
-                  _selectedPageIndex = selectedPageIndex;
-                  _pageController.jumpToPage(selectedPageIndex);
-                });
-              },
-            )));
+          ],
+          currentIndex: _selectedPageIndex,
+          onTap: (int index) {
+            setState(() {
+              _selectedPageIndex = index;
+              _pageController.jumpToPage(index);
+            });
+          },
+        ),
+      ),
+    );
   }
 }

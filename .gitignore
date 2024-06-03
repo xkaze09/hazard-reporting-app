@@ -46,9 +46,16 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/src/debug
+/android/app/src/main
 
 # Firebase credentials
 **/GoogleService-Info.plist
 lib/firebase_options.dart
 
 node_modules/
+lib/pages/create_report_updated.dart
+android/app/src/main/AndroidManifest.xml
+firebase.json
+android/app/google-services.json
+lib/firebase_options.dart
