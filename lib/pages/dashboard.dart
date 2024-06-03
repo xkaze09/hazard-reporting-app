@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hazard_reporting_app/data_types/globals.dart';
 import '../pages/home.dart';
 import '../pages/map.dart';
 
@@ -39,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         body: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
@@ -47,19 +48,22 @@ class _DashboardState extends State<Dashboard> {
         ),
         floatingActionButtonLocation:
             FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: SizedBox(
-          width: size.width * 0.2,
-          height: size.width * 0.2,
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            shape: const CircleBorder(),
-            // elevation: 0,
-            child: Image.asset(
-              "assets/images/logo-notext.png",
+        floatingActionButton: Visibility(
+          visible: (currentUser?.isModerator != true) ?? false,
+          child: SizedBox(
+            width: size.width * 0.2,
+            height: size.width * 0.2,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              shape: const CircleBorder(),
+              // elevation: 0,
+              child: Image.asset(
+                "assets/images/logo-notext.png",
+              ),
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed('/create');
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).popAndPushNamed('/create');
-            },
           ),
         ),
         bottomNavigationBar: BottomAppBar(

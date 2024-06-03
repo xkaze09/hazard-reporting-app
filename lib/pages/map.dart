@@ -116,11 +116,6 @@ Future<Marker> convertReportToMarker(ReportsRecord report) async {
     markerId: MarkerId(report.id ?? '0'),
     position: convertFromGeoPoint(
         report.location ?? const GeoPoint(0.0, 0.0)),
-    icon: await marker.createBitmapDescriptorFromIconData(
-        category?.icon.icon ?? Icons.warning,
-        category?.color ?? Colors.black,
-        Colors.green,
-        Colors.white),
     infoWindow: InfoWindow(
         title: report.title,
         snippet: report.address ?? 'Location Unknown',
