@@ -32,9 +32,12 @@ class _CreateReportState extends State<CreateReport> {
   final _createReportFormKey = GlobalKey<FormState>();
 
   Uint8List? _file;
-  final TextEditingController _subjectController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _subjectController =
+      TextEditingController();
+  final TextEditingController _descriptionController =
+      TextEditingController();
+  final TextEditingController _locationController =
+      TextEditingController();
   String? _categoryControllerValue;
 
   late bool _isLoading = false;
@@ -78,28 +81,30 @@ class _CreateReportState extends State<CreateReport> {
     return showDialog(
         context: context,
         builder: (context) {
-          return SimpleDialog(title: const Text('Select Image'), children: [
-            SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text('Take a Photo'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                Uint8List file = await pickImage(
-                  ImageSource.camera,
-                );
-                setState(() {
-                  _file = file;
-                });
-              },
-            ),
-            SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]);
+          return SimpleDialog(
+              title: const Text('Select Image'),
+              children: [
+                SimpleDialogOption(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text('Take a Photo'),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    Uint8List file = await pickImage(
+                      ImageSource.camera,
+                    );
+                    setState(() {
+                      _file = file;
+                    });
+                  },
+                ),
+                SimpleDialogOption(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
         });
   }
 
@@ -149,8 +154,10 @@ class _CreateReportState extends State<CreateReport> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: authInstance.currentUser?.isAnonymous ?? false,
-                      child: Center(
+                      visible:
+                          authInstance.currentUser?.isAnonymous ??
+                              false,
+                      child: const Center(
                         child: Text(
                           'Create Report',
                           style: TextStyle(
@@ -161,7 +168,7 @@ class _CreateReportState extends State<CreateReport> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -171,7 +178,7 @@ class _CreateReportState extends State<CreateReport> {
                             color: Colors.grey.withOpacity(0.3),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -187,28 +194,33 @@ class _CreateReportState extends State<CreateReport> {
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
                                       height: 1,
-                                      color: Color(0xFF146136),
+                                      color: const Color(0xFF146136),
                                     ),
                                   ),
                                 ),
                                 TextFormField(
-                                  style: TextStyle(color: Color(0xFF146136)),
-                                  decoration: InputDecoration(
+                                  style: const TextStyle(
+                                      color: Color(0xFF146136)),
+                                  decoration: const InputDecoration(
                                     labelText: 'Subject',
                                     labelStyle: TextStyle(
-                                        fontSize: 18, color: Color(0xFF146136)),
+                                        fontSize: 18,
+                                        color: Color(0xFF146136)),
                                     filled: true,
                                     fillColor: Colors.transparent,
                                     border: InputBorder.none,
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFF146136))),
+                                    enabledBorder:
+                                        UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(
+                                                    0xFF146136))),
                                   ),
                                   maxLines: 3,
                                   maxLength: 30,
                                   controller: _subjectController,
                                   validator: (value) {
-                                    if (value == null || value.isEmpty) {
+                                    if (value == null ||
+                                        value.isEmpty) {
                                       return 'Please enter a subject';
                                     }
                                     return null;
@@ -218,19 +230,24 @@ class _CreateReportState extends State<CreateReport> {
                             ),
                           ),
                           TextFormField(
-                            style: TextStyle(color: Color(0xFF146136)),
-                            decoration: InputDecoration(
+                            style: const TextStyle(
+                                color: Color(0xFF146136)),
+                            decoration: const InputDecoration(
                               labelText: 'Short Description',
                               labelStyle: TextStyle(
-                                  fontSize: 18, color: Color(0xFF146136)),
+                                  fontSize: 18,
+                                  color: Color(0xFF146136)),
                               filled: true,
                               fillColor: Colors.transparent,
                               border: InputBorder.none,
                               enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFF146136))),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFF146136))),
                               contentPadding: EdgeInsets.only(
-                                  left: 10, right: 10, top: 5, bottom: 5),
+                                  left: 10,
+                                  right: 10,
+                                  top: 5,
+                                  bottom: 5),
                             ),
                             maxLines: null,
                             maxLength: 500,
@@ -239,7 +256,7 @@ class _CreateReportState extends State<CreateReport> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -249,15 +266,15 @@ class _CreateReportState extends State<CreateReport> {
                             color: Colors.grey.withOpacity(0.3),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Report Category',
-                          labelStyle:
-                              TextStyle(fontSize: 18, color: Color(0xFF146136)),
+                          labelStyle: TextStyle(
+                              fontSize: 18, color: Color(0xFF146136)),
                           filled: true,
                           fillColor: Colors.transparent,
                           focusedBorder: OutlineInputBorder(
@@ -279,7 +296,7 @@ class _CreateReportState extends State<CreateReport> {
                         isExpanded: true,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -289,38 +306,42 @@ class _CreateReportState extends State<CreateReport> {
                             color: Colors.grey.withOpacity(0.3),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: TextFormField(
-                        style: TextStyle(color: Color(0xFF146136)),
-                        decoration: InputDecoration(
+                        style:
+                            const TextStyle(color: Color(0xFF146136)),
+                        decoration: const InputDecoration(
                           labelText: 'Location',
-                          labelStyle:
-                              TextStyle(fontSize: 18, color: Color(0xFF146136)),
+                          labelStyle: TextStyle(
+                              fontSize: 18, color: Color(0xFF146136)),
                           filled: true,
                           fillColor: Colors.transparent,
                           border: InputBorder.none,
-                          counterStyle: TextStyle(color: Color(0xFF146136)),
+                          counterStyle:
+                              TextStyle(color: Color(0xFF146136)),
                         ),
                         controller: _locationController,
                         readOnly: true,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ReportImageContainer(file: _file),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Center(
                       child: ElevatedButton(
                         onPressed: () => _imageSelect(context),
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFF146136)),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(
+                                  const Color(0xFF146136)),
                           foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              MaterialStateProperty.all<Color>(
+                                  Colors.white),
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -329,47 +350,57 @@ class _CreateReportState extends State<CreateReport> {
                         child: const Text('Take Photo'),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              authInstance.currentUser!.isAnonymous ?
-                                logOut().then(
-                                  (value) => Navigator.of(context).pop())
-                              :
-                                Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => TemplateBody(title: 'Dashboard', child: Dashboard(),)));
+                              authInstance.currentUser!.isAnonymous
+                                  ? logOut().then((value) =>
+                                      Navigator.of(context).pop())
+                                  : Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TemplateBody(
+                                                title: 'Dashboard',
+                                                child: Dashboard(),
+                                              )));
                             },
-                              child: Text('Cancel'),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(Colors.grey),
-                                    foregroundColor: MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                          SizedBox(width: 20),
-                          ElevatedButton(
-                            onPressed: postReport,
-                            child: Text('Submit'),
+                            child: const Text('Cancel'),
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFF146136)),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(
+                                      Colors.grey),
+                              foregroundColor:
+                                  MaterialStateProperty.all<Color>(
+                                      Colors.white),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius:
+                                      BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: postReport,
+                            child: const Text('Submit'),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(
+                                      const Color(0xFF146136)),
+                              foregroundColor:
+                                  MaterialStateProperty.all<Color>(
+                                      Colors.white),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(20),
                                 ),
                               ),
                             ),
@@ -392,7 +423,8 @@ class ReportImageContainer extends StatefulWidget {
   final Uint8List? file;
 
   @override
-  State<ReportImageContainer> createState() => _ReportImageContainerState();
+  State<ReportImageContainer> createState() =>
+      _ReportImageContainerState();
 }
 
 class _ReportImageContainerState extends State<ReportImageContainer> {

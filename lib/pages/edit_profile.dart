@@ -8,15 +8,18 @@ import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
+
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   String? _userId;
   String? _display_name;
-  TextEditingController _display_nameController = TextEditingController();
+  TextEditingController _display_nameController =
+      TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _contactNumberController =
       TextEditingController();
@@ -85,8 +88,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           'contactNumber': _contactNumberController.text,
           'photo_url': _photo_url,
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profile updated successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Profile updated successfully')));
         setState(() {
           _display_name = _display_nameController.text;
         });
@@ -112,7 +115,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (pickedFile != null) {
         _profileImage = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        debugPrint('No image selected.');
       }
     });
   }
@@ -135,7 +138,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: user.email!);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Password reset email sent')));
+          const SnackBar(content: Text('Password reset email sent')));
     }
   }
 
@@ -153,10 +156,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Profile'),
+        title: const Text('Profile'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -168,21 +171,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Select an option'),
+                        title: const Text('Select an option'),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await _pickImage(ImageSource.camera);
                             },
-                            child: Text('Camera'),
+                            child: const Text('Camera'),
                           ),
                           TextButton(
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await _pickImage(ImageSource.gallery);
                             },
-                            child: Text('Gallery'),
+                            child: const Text('Gallery'),
                           ),
                         ],
                       );
@@ -204,42 +207,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: _profileImage == null &&
                             (_photo_url == null ||
                                 _photo_url!.isEmpty)
-                        ? Icon(Icons.person,
+                        ? const Icon(Icons.person,
                             size:
                                 75) // Adjust the icon size to match the CircleAvatar
                         : null,
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Center(
                 child: Text(_display_name ?? 'Anonymous',
-                    style: TextStyle(fontSize: 24)),
+                    style: const TextStyle(fontSize: 24)),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildTextField('User ID:',
                   initialValue: _userId, readOnly: true),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('User Name:',
                   controller: _display_nameController),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Email:',
                   controller: _emailController, readOnly: true),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Contact Number:',
                   controller: _contactNumberController),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildButton('Delete Account', Color(0xFFEF5350),
-                      _deleteAccount),
-                  SizedBox(width: 10),
-                  _buildButton('Confirm', Color(0xFF66BB6A),
+                  _buildButton('Delete Account',
+                      const Color(0xFFEF5350), _deleteAccount),
+                  const SizedBox(width: 10),
+                  _buildButton('Confirm', const Color(0xFF66BB6A),
                       _updateUserDetails),
-                  SizedBox(width: 10),
-                  _buildButton('Reset Password', Color(0xFF42A5F5),
-                      _resetPassword),
+                  const SizedBox(width: 10),
+                  _buildButton('Reset Password',
+                      const Color(0xFF42A5F5), _resetPassword),
                 ],
               ),
             ],
@@ -257,7 +260,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 10,
@@ -265,8 +268,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
-      margin: EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: TextFormField(
         controller: controller,
         initialValue: initialValue,
@@ -286,19 +290,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Expanded(
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );

@@ -110,7 +110,7 @@ class ReportsRecord {
 class ReporterRecord {
   final Timestamp? timestamp;
   final String? displayName;
-  final Email? email;
+  final String? email;
   final Image? photo;
   final String? photoUrl;
   final String? uid;
@@ -158,7 +158,7 @@ class ReporterRecord {
     return ReporterRecord(
         data?['timestamp'],
         data?['display_name'],
-        Email.fromString(data?['email']),
+        data?['email'],
         Image.network(data?['photo_url']),
         data?['photo_url'],
         data?['uid'],
@@ -174,7 +174,7 @@ class ReporterRecord {
     return ReporterRecord(
         snapshot['timestamp'],
         snapshot['display_name'],
-        Email.fromString(snapshot['email'].toString()),
+        snapshot['email'],
         image,
         snapshot['photo_url'],
         snapshot['uid'],
@@ -198,7 +198,7 @@ class ReporterRecord {
     return ReporterRecord(
         data?['created_time'],
         data?['display_name'],
-        Email.fromString(data?['email']),
+        data?['email'],
         Image.network(data?['photo_url']),
         data?['photo_url'],
         data?['uid'],

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import "package:flutter/material.dart";
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +6,6 @@ import 'package:hazard_reporting_app/components/post_container.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
-import 'package:hazard_reporting_app/pages/report_info.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -111,37 +108,35 @@ class _ActiveFeedState extends State<ActiveFeed> {
     return ListView.builder(
       itemCount: widget.snapshot.data?.size,
       itemBuilder: (context, index) {
-        Map<String, dynamic>? data = widget.snapshot.data!.docs[index]
-            .data() as Map<String, dynamic>;
-        ReportsRecord report = ReportsRecord.fromMap(data);
-        if (report.isVerified != null &&
-            report.isPending != null &&
-            report.isResolved != null) {
-          if ((report.isVerified == true && hideVerifiedReports) ||
-              (report.isResolved == true && hideResolvedReports) ||
-              (report.isVerified == false && hideUnverifiedReports) ||
-              (report.isPending == true && hidePendingReports) ||
-              categoryFilters.contains(report.category?.name)) {
-            return Container(height: 0);
+        try {
+          Map<String, dynamic>? data =
+              widget.snapshot.data!.docs[index].data()
+                  as Map<String, dynamic>;
+          ReportsRecord report = ReportsRecord.fromMap(data);
+          if (report.isVerified != null &&
+              report.isPending != null &&
+              report.isResolved != null) {
+            if ((report.isVerified == true && hideVerifiedReports) ||
+                (report.isResolved == true && hideResolvedReports) ||
+                (report.isVerified == false &&
+                    hideUnverifiedReports) ||
+                (report.isPending == true && hidePendingReports) ||
+                categoryFilters.contains(report.category?.name)) {
+              return Container(height: 0);
+            }
           }
-        }
-        return GestureDetector(
-          key: Key("${Random().nextDouble()}"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ReportInfo(report: report)));
-          },
-          child: FutureBuilder(
+          return FutureBuilder(
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
-                // if (snapshot.data?.uid == currentUser?.uid) {
-                //   Container(height: 0);
-                // }
-                debugPrint(snapshot.data.toString());
                 return PostContainer(
                     report: report, reporter: snapshot.data);
-              }),
-        );
+              });
+        } catch (e) {
+          debugPrint(e.toString());
+          return const SizedBox(
+            height: 0,
+          );
+        }
       },
     );
   }

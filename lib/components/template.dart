@@ -160,7 +160,8 @@ class _PublicDrawerState extends State<PublicDrawer> {
               leading: CircleAvatar(
                 backgroundImage:
                     NetworkImage(currentUser?.photoUrl ?? ""),
-                foregroundImage: AssetImage("assets/images/anon.png"),
+                foregroundImage:
+                    const AssetImage("assets/images/anon.png"),
               ),
               // Image(
               //   image: NetworkImage(currentUser?.photoUrl ?? "") ,

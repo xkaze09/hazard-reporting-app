@@ -136,9 +136,9 @@ class _ActiveFeedState extends State<ActiveFeed> {
           child: FutureBuilder(
               future: ReporterRecord.fromReference(report.reporter),
               builder: (context, snapshot) {
-                // if (snapshot.data?.uid == currentUser?.uid) {
-                //   Container(height: 0);
-                // }
+                if (snapshot.data?.uid != currentUser?.uid) {
+                  Container(height: 0);
+                }
                 return PostContainer(
                     report: report, reporter: snapshot.data);
               }),

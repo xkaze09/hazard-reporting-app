@@ -49,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
         floatingActionButtonLocation:
             FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Visibility(
-          visible: (currentUser?.isModerator != true) ?? false,
+          visible: (currentUser?.isModerator != true),
           child: SizedBox(
             width: size.width * 0.2,
             height: size.width * 0.2,

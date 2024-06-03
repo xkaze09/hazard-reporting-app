@@ -6,9 +6,11 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 
 class EditReportInfo extends StatefulWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const EditReportInfo({super.key, required this.report});
+  const EditReportInfo(
+      {super.key, required this.report, this.reporter});
 
   @override
   State<EditReportInfo> createState() => _ReportInfoState();
@@ -22,18 +24,19 @@ class _ReportInfoState extends State<EditReportInfo> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         // automaticallyImplyLeading: true,
-        title: Text(widget.report.title ?? 'Untitled'),
+        title: Text(widget.report?.title ?? 'Untitled'),
         actions: [
           Column(
             children: [
-              widget.report.category?.icon ??
+              widget.report?.category?.icon ??
                   const Icon(Icons.question_mark, size: 20),
               Center(
-                child: Text(widget.report.category?.name ?? 'Unknown',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 10,
-                    )),
+                child:
+                    Text(widget.report?.category?.name ?? 'Unknown',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 10,
+                        )),
               )
             ],
           )
@@ -50,7 +53,7 @@ class _ReportInfoState extends State<EditReportInfo> {
 }
 
 class ReportTile extends StatefulWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
 
   const ReportTile({super.key, required this.report});
   @override
@@ -75,11 +78,11 @@ class _ReportTileState extends State<ReportTile> {
     Size size = MediaQuery.sizeOf(context);
     final TextEditingController titleController =
         TextEditingController(
-            text: widget.report.title ?? "Untitled");
+            text: widget.report?.title ?? "Untitled");
     final TextEditingController descController =
-        TextEditingController(text: widget.report.description ?? "");
+        TextEditingController(text: widget.report?.description ?? "");
     String categoryControllerValue =
-        widget.report.category?.name ?? "Miscellaneous";
+        widget.report?.category?.name ?? "Miscellaneous";
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -104,7 +107,7 @@ class _ReportTileState extends State<ReportTile> {
               SizedBox(
                   height: size.shortestSide * 0.2 * 3,
                   width: size.shortestSide * 0.2 * 4,
-                  child: widget.report.image ??
+                  child: widget.report?.image ??
                       Image.asset('assets/Hey.png')),
             ]),
             const SizedBox(height: 16),
@@ -159,7 +162,7 @@ class _ReportTileState extends State<ReportTile> {
               //Reporter
               readOnly: true,
               controller: TextEditingController(
-                text: getReporter(widget.report.reporter)
+                text: getReporter(widget.report?.reporter)
                         ?.displayName ??
                     'Anonymous',
               ),
@@ -184,7 +187,7 @@ class _ReportTileState extends State<ReportTile> {
                       } else {
                         try {
                           await reportsCollection
-                              .doc(widget.report.id)
+                              .doc(widget.report?.id)
                               .set({
                             "title": titleController.text,
                             "description": descController.text,
@@ -246,7 +249,7 @@ class _ReportTileState extends State<ReportTile> {
                               TextButton(
                                   onPressed: () {
                                     reportsCollection
-                                        .doc(widget.report.id)
+                                        .doc(widget.report?.id)
                                         .delete();
                                     Navigator.of(context).popUntil(
                                         (route) => route.isFirst);

@@ -112,22 +112,6 @@ class LoadingIndicator extends StatelessWidget {
   }
 }
 
-class Email {
-  const Email({this.name, this.provider});
-  final String? name;
-  final String? provider;
-
-  @override
-  String toString() {
-    return '$name@$provider';
-  }
-
-  factory Email.fromString(String email) {
-    List<String> sep = email.split('@');
-    return Email(name: sep[0], provider: sep[1]);
-  }
-}
-
 String getErrorMessage(String errorCode) {
   switch (errorCode) {
     case 'user-not-found':
@@ -237,7 +221,7 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: !isPasswordVisible,
       controller: widget.controller,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         fillColor: Colors.white,

@@ -17,14 +17,14 @@ class AuthPage extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                   height: size.shortestSide * 0.4,
                   width: size.shortestSide * 0.4,
                   child: Center(
                       child: Hero(
                           tag: "Logo with Text",
-                          child:
-                              Image.asset("assets/images/UPatrol-logo.png")))),
+                          child: Image.asset(
+                              "assets/images/UPatrol-logo.png")))),
               Container(
                   height: size.height - (size.shortestSide * 0.4),
                   width: size.width,
@@ -59,7 +59,8 @@ class AuthForm extends StatefulWidget {
   State<AuthForm> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
+class _AuthPageState extends State<AuthForm>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
@@ -72,11 +73,11 @@ class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
             children: [
               TabBar(
                 unselectedLabelColor: Colors.lightGreen,
-                unselectedLabelStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                unselectedLabelStyle: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 23),
                 labelColor: Colors.white,
-                labelStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+                labelStyle: TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: 25),
                 indicatorColor: Colors.white,
                 indicatorWeight: 5,
                 padding: EdgeInsets.symmetric(horizontal: 40),
@@ -86,13 +87,15 @@ class _AuthPageState extends State<AuthForm> with TickerProviderStateMixin {
                       icon: Text(
                     "Sign In",
                     style: TextStyle(
-                        fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.bold),
                   )),
                   Tab(
                       icon: Text(
                     "Sign Up",
                     style: TextStyle(
-                        fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.bold),
                   )),
                 ],
               ),
@@ -122,10 +125,13 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController(text: "");
-  TextEditingController passwordController = TextEditingController(text: "");
+  TextEditingController emailController =
+      TextEditingController(text: "");
+  TextEditingController passwordController =
+      TextEditingController(text: "");
   bool isPasswordVisible = false;
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController();
   bool isPassword2Visible = false;
 
   @override
@@ -140,7 +146,8 @@ class _SignInFormState extends State<SignInForm> {
               controller: emailController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(20)),
                   ),
                   fillColor: Colors.white,
                   filled: true,
@@ -199,7 +206,8 @@ class _SignInFormState extends State<SignInForm> {
                   child: TextButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ResetPasswordPage()));
+                            builder: (context) =>
+                                const ResetPasswordPage()));
                       },
                       child: const Text(
                         "Forgot Password?",

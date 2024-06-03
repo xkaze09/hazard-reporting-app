@@ -7,9 +7,10 @@ import 'package:hazard_reporting_app/data_types/reports.dart';
 import 'package:hazard_reporting_app/pages/edit_report.dart';
 
 class ReportInfo extends StatefulWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const ReportInfo({super.key, required this.report});
+  const ReportInfo({super.key, required this.report, this.reporter});
 
   @override
   State<ReportInfo> createState() => _ReportInfoState();
@@ -23,20 +24,20 @@ class _ReportInfoState extends State<ReportInfo> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         // automaticallyImplyLeading: true,
-        title: Text(widget.report.title ?? 'Untitled'),
+        title: Text(widget.report?.title ?? 'Untitled'),
         actions: [
           Transform.translate(
             offset: const Offset(-20, 10),
             child: Column(
               children: [
                 Icon(
-                  widget.report.category?.icon.icon,
+                  widget.report?.category?.icon.icon,
                   size: 30,
-                  color: widget.report.category?.color,
+                  color: widget.report?.category?.color,
                 ),
                 Center(
                   child:
-                      Text(widget.report.category?.name ?? 'Unknown',
+                      Text(widget.report?.category?.name ?? 'Unknown',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 14,
@@ -50,6 +51,7 @@ class _ReportInfoState extends State<ReportInfo> {
       body: SingleChildScrollView(
         child: ReportTile(
           report: widget.report,
+          reporter: widget.reporter,
         ),
       ),
     );
@@ -57,25 +59,15 @@ class _ReportInfoState extends State<ReportInfo> {
 }
 
 class ReportTile extends StatelessWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
+  final ReporterRecord? reporter;
 
-  const ReportTile({super.key, required this.report});
-
-  ReporterRecord? getReporter(DocumentReference? report) {
-    ReporterRecord? reporter;
-    report?.get().then((DocumentSnapshot snapshot) {
-      reporter = ReporterRecord.fromFirestore(
-          snapshot as DocumentSnapshot<Map<String, dynamic>>?,
-          SnapshotOptions());
-    });
-    return reporter;
-  }
+  const ReportTile({super.key, required this.report, this.reporter});
 
   @override
   Widget build(BuildContext context) {
     late Size size = MediaQuery.sizeOf(context);
     String role = currentUser?.getRole() ?? "User";
-    ReporterRecord? reporter = getReporter(report.reporter);
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -102,7 +94,7 @@ class ReportTile extends StatelessWidget {
                   SizedBox(
                       height: size.shortestSide * 0.8,
                       width: size.shortestSide * 0.6,
-                      child: report.image ??
+                      child: report?.image ??
                           Image.asset('assets/Hey.png')),
                 ]),
             const SizedBox(height: 8),
@@ -110,7 +102,7 @@ class ReportTile extends StatelessWidget {
               //Title
               readOnly: true,
               controller: TextEditingController(
-                text: report.title ?? 'Untitled',
+                text: report?.title ?? 'Untitled',
               ),
               decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
@@ -126,7 +118,7 @@ class ReportTile extends StatelessWidget {
               //Description
               readOnly: true,
               controller: TextEditingController(
-                text: report.description ?? 'No Description',
+                text: report?.description ?? 'No Description',
               ),
               decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
@@ -143,7 +135,7 @@ class ReportTile extends StatelessWidget {
               //Location
               readOnly: true,
               controller: TextEditingController(
-                text: report.address ?? 'Untitled',
+                text: report?.address ?? 'Untitled',
               ),
               decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
@@ -186,7 +178,7 @@ class ReportTile extends StatelessWidget {
 }
 
 class ReporterControl extends StatefulWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
   const ReporterControl({super.key, required this.report});
 
   @override
@@ -205,8 +197,9 @@ class _ReporterControlState extends State<ReporterControl> {
           child: ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      EditReportInfo(report: widget.report)));
+                  builder: (context) => EditReportInfo(
+                      report: widget.report,
+                      reporter: widget.reporter)));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF29AB84),
@@ -255,7 +248,7 @@ class _ReporterControlState extends State<ReporterControl> {
                       TextButton(
                         onPressed: () {
                           reportsCollection
-                              .doc(widget.report.id)
+                              .doc(widget.report?.id)
                               .delete();
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
@@ -291,7 +284,7 @@ class _ReporterControlState extends State<ReporterControl> {
 }
 
 class ModControl extends StatefulWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
 
   const ModControl({super.key, required this.report});
 
@@ -311,13 +304,13 @@ class _ModControlState extends State<ModControl> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  if (widget.report.isVerified ?? false) {
+                  if (widget.report?.isVerified ?? false) {
                     reportsCollection
-                        .doc(widget.report.id)
+                        .doc(widget.report?.id)
                         .update({"isVerified": false});
                   } else {
                     reportsCollection
-                        .doc(widget.report.id)
+                        .doc(widget.report?.id)
                         .update({"isVerified": true});
                   }
                   Navigator.of(context).pop();
@@ -327,7 +320,7 @@ class _ModControlState extends State<ModControl> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                 ),
                 child: Text(
-                    widget.report.isVerified ?? false
+                    widget.report?.isVerified ?? false
                         ? 'Revoke'
                         : 'Verify',
                     style: const TextStyle(color: Colors.white))),
@@ -335,8 +328,9 @@ class _ModControlState extends State<ModControl> {
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          EditReportInfo(report: widget.report)));
+                      builder: (context) => EditReportInfo(
+                          report: widget.report,
+                          reporter: widget.reporter)));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -380,7 +374,7 @@ class _ModControlState extends State<ModControl> {
                           TextButton(
                             onPressed: () {
                               reportsCollection
-                                  .doc(widget.report.id)
+                                  .doc(widget.report?.id)
                                   .delete();
                               Navigator.of(context)
                                   .popUntil((route) => route.isFirst);
@@ -417,7 +411,7 @@ class _ModControlState extends State<ModControl> {
 }
 
 class ResponderControl extends StatelessWidget {
-  final ReportsRecord report;
+  final ReportsRecord? report;
 
   const ResponderControl({super.key, required this.report});
 
@@ -432,14 +426,14 @@ class ResponderControl extends StatelessWidget {
           children: [
             TextButton(
                 onPressed: () {
-                  if (report.isPending ?? false) {
-                    reportsCollection.doc(report.id).update({
+                  if (report?.isPending ?? false) {
+                    reportsCollection.doc(report?.id).update({
                       "isPending": false,
                       "dateResolving":
                           Timestamp.fromMicrosecondsSinceEpoch(0),
                     });
                   } else {
-                    reportsCollection.doc(report.id).update({
+                    reportsCollection.doc(report?.id).update({
                       "isPending": true,
                       "dateResolving": Timestamp.now(),
                     });
@@ -449,20 +443,20 @@ class ResponderControl extends StatelessWidget {
                   //TODO implement stuff
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: report.isPending ?? false
+                  backgroundColor: report?.isPending ?? false
                       ? const Color(0xFFD95767)
                       : const Color(0xFF29AB84),
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                 ),
                 child: Text(
-                  report.isPending ?? false
+                  report?.isPending ?? false
                       ? 'Cancel Resolving'
                       : 'Start Resolving',
                   style: const TextStyle(color: Colors.white),
                 )),
             const SizedBox(width: 16),
             Visibility(
-              visible: report.isPending ?? false,
+              visible: report?.isPending ?? false,
               child: ElevatedButton(
                   onPressed: () {
                     showDialog(
@@ -501,7 +495,7 @@ class ResponderControl extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   reportsCollection
-                                      .doc(report.id)
+                                      .doc(report?.id)
                                       .update({
                                     'isResolved': true,
                                     'isPending': false,
