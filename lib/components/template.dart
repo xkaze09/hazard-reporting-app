@@ -39,7 +39,7 @@ class _TemplateState extends State<Template> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // navigatorKey: navigatorKey,
+      navigatorKey: navigatorKey,
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
         '/home': (context) => const TemplateBody(

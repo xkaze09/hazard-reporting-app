@@ -8,6 +8,7 @@ import 'package:hazard_reporting_app/pages/report_info.dart';
 import 'package:hazard_reporting_app/backend/firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 
 // Future<void> main() async {
 //   WidgetsFlutterBinding
@@ -113,14 +114,14 @@ Future<Marker> convertReportToMarker(ReportsRecord report) async {
   MarkerGenerator marker = MarkerGenerator(40);
   Category? category = report.category;
   return Marker(
-    markerId: MarkerId(report.id ?? '0'),
+    markerId: MarkerId(Uuid().v8()),
     position: convertFromGeoPoint(
         report.location ?? const GeoPoint(0.0, 0.0)),
     infoWindow: InfoWindow(
         title: report.title,
         snippet: report.address ?? 'Location Unknown',
         onTap: () {
-          navigatorKey.currentState!.push(MaterialPageRoute(
+          navigatorKey.currentState?.push(MaterialPageRoute(
               builder: (_) => ReportInfo(report: report)));
         }),
   );
