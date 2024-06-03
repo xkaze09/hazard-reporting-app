@@ -15,13 +15,13 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   String? _userId;
-  String? _userName;
-  TextEditingController _userNameController = TextEditingController();
+  String? _displayName;
+  TextEditingController _displayNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _contactNumberController =
       TextEditingController();
   File? _profileImage;
-  String? _profileImageUrl;
+  String? _photoUrl;
 
   @override
   void initState() {
@@ -41,10 +41,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           .get();
       if (userDoc.exists) {
         setState(() {
-          _userName = userDoc['userName'];
-          _userNameController.text = userDoc['userName'];
+          _displayName = userDoc['displayName'];
+          _displayNameController.text = userDoc['displayName'];
           _contactNumberController.text = userDoc['contactNumber'];
-          _profileImageUrl = userDoc['profileImageUrl'];
+          _photoUrl = userDoc['photo_url'];
         });
       } else {
         // Create a new user document if it doesn't exist
@@ -52,16 +52,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
             .collection('users')
             .doc(_userId)
             .set({
-          'userName': '',
+          'displayName': '',
           'email': user.email,
           'contactNumber': '',
-          'profileImageUrl': '',
+          'photo_url': '',
         });
         setState(() {
-          _userName = '';
-          _userNameController.text = '';
+          _displayName = '';
+          _displayNameController.text = '';
           _contactNumberController.text = '';
-          _profileImageUrl = '';
+          _photoUrl = '';
         });
       }
     }
@@ -73,22 +73,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (_profileImage != null) {
           // Upload the profile image to Firebase Storage
           String imageUrl = await _uploadProfileImage();
-          _profileImageUrl = imageUrl;
+          _photoUrl = imageUrl;
         }
         authInstance.currentUser
-            ?.updateDisplayName(_userNameController.text);
+            ?.updateDisplayName(_displayNameController.text);
         await FirebaseFirestore.instance
             .collection('users')
             .doc(_userId)
             .update({
-          'userName': _userNameController.text,
+          'displayName': _displayNameController.text,
           'contactNumber': _contactNumberController.text,
-          'profileImageUrl': _profileImageUrl,
+          'photo_url': _photoUrl,
         });
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Profile updated successfully')));
         setState(() {
-          _userName = _userNameController.text;
+          _displayName = _displayNameController.text;
         });
       }
     }
@@ -141,7 +141,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void dispose() {
-    _userNameController.dispose();
+    _displayNameController.dispose();
     _emailController.dispose();
     _contactNumberController.dispose();
     super.dispose();
@@ -196,14 +196,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     backgroundColor: Colors.grey,
                     backgroundImage: _profileImage != null
                         ? FileImage(_profileImage!)
-                        : (_profileImageUrl != null &&
-                                _profileImageUrl!.isNotEmpty
-                            ? NetworkImage(_profileImageUrl!)
+                        : (_photoUrl != null &&
+                                _photoUrl!.isNotEmpty
+                            ? NetworkImage(_photoUrl!)
                                 as ImageProvider
                             : null),
                     child: _profileImage == null &&
-                            (_profileImageUrl == null ||
-                                _profileImageUrl!.isEmpty)
+                            (_photoUrl == null ||
+                                _photoUrl!.isEmpty)
                         ? Icon(Icons.person,
                             size:
                                 75) // Adjust the icon size to match the CircleAvatar
@@ -213,7 +213,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               SizedBox(height: 20),
               Center(
-                child: Text(_userName ?? 'Anonymous',
+                child: Text(_displayName ?? 'Anonymous',
                     style: TextStyle(fontSize: 24)),
               ),
               SizedBox(height: 20),
@@ -221,7 +221,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   initialValue: _userId, readOnly: true),
               SizedBox(height: 10),
               _buildTextField('User Name:',
-                  controller: _userNameController),
+                  controller: _displayNameController),
               SizedBox(height: 10),
               _buildTextField('Email:',
                   controller: _emailController, readOnly: true),

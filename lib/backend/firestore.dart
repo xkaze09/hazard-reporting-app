@@ -48,6 +48,7 @@ class ImageStoreMethods {
         GeoPoint(position.latitude, position.longitude);
     DocumentReference currentUserRef = usersCollection
         .doc(authInstance.currentUser?.uid ?? 'paXZUUVoXrXgIkLxg3iw');
+        .doc(authInstance.currentUser?.uid);
     String address =
         await reverseGeocode(convertFromGeoPoint(geoPoint));
 
