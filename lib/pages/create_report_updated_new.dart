@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hazard_reporting_app/backend/firebase_auth.dart';
+import 'package:hazard_reporting_app/components/template.dart';
 import 'package:hazard_reporting_app/pages/dashboard.dart';
 import 'package:hazard_reporting_app/pages/map.dart';
 
@@ -335,22 +336,26 @@ class _CreateReportState extends State<CreateReport> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Dashboard()));
+                              authInstance.currentUser!.isAnonymous ?
+                                logOut().then(
+                                  (value) => Navigator.of(context).pop())
+                              :
+                                Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => TemplateBody(title: 'Dashboard', child: Dashboard(),)));
                             },
-                            child: Text('Cancel'),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.grey),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
+                              child: Text('Cancel'),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(Colors.grey),
+                                    foregroundColor: MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                  ),
                           ),
                           SizedBox(width: 20),
                           ElevatedButton(
