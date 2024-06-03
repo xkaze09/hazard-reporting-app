@@ -33,6 +33,7 @@ class _TemplateState extends State<Template> {
   @override
   void dispose() {
     super.dispose();
+    rootScaffoldMessengerKey.currentState?.dispose();
   }
 
   @override
@@ -140,6 +141,11 @@ class _PublicDrawerState extends State<PublicDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    try {
+      Image(image: NetworkImage(currentUser?.photoUrl ?? ""));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return Drawer(
       backgroundColor: Colors.white,
       child: Container(
@@ -151,8 +157,14 @@ class _PublicDrawerState extends State<PublicDrawer> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => EditProfilePage()));
               },
-              leading: currentUser?.photo ??
-                  Image.asset('assets/images/anon.png'),
+              leading: CircleAvatar(
+                backgroundImage:
+                    NetworkImage(currentUser?.photoUrl ?? ""),
+                foregroundImage: AssetImage("assets/images/anon.png"),
+              ),
+              // Image(
+              //   image: NetworkImage(currentUser?.photoUrl ?? "") ,
+              // ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

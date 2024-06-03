@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hazard_reporting_app/backend/firebase_auth.dart';
 import 'package:hazard_reporting_app/data_types/globals.dart';
 import 'package:hazard_reporting_app/data_types/utils.dart';
 import '../data_types/reports.dart';
@@ -46,7 +47,7 @@ class ImageStoreMethods {
     GeoPoint geoPoint =
         GeoPoint(position.latitude, position.longitude);
     DocumentReference currentUserRef = usersCollection
-        .doc(currentUser?.uid ?? 'paXZUUVoXrXgIkLxg3iw');
+        .doc(authInstance.currentUser?.uid ?? 'paXZUUVoXrXgIkLxg3iw');
     String address =
         await reverseGeocode(convertFromGeoPoint(geoPoint));
 

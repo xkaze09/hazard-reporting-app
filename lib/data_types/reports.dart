@@ -153,13 +153,13 @@ class ReporterRecord {
       DocumentSnapshot<Map<String, dynamic>>? snapshot,
       SnapshotOptions? options) {
     final data = snapshot?.data();
-    Image? image = _getImage(data?['photo_url']);
+    // Image? image = _getImage(data?['photo_url']);
 
     return ReporterRecord(
         data?['timestamp'],
         data?['display_name'],
         Email.fromString(data?['email']),
-        image,
+        Image.network(data?['photo_url']),
         data?['photo_url'],
         data?['uid'],
         data?['is_responder'],

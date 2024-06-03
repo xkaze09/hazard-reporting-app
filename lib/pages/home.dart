@@ -137,6 +137,7 @@ class _ActiveFeedState extends State<ActiveFeed> {
                 // if (snapshot.data?.uid == currentUser?.uid) {
                 //   Container(height: 0);
                 // }
+                debugPrint(snapshot.data.toString());
                 return PostContainer(
                     report: report, reporter: snapshot.data);
               }),

@@ -18,6 +18,11 @@ class PostContainer extends StatefulWidget {
 
 class _PostContainerState extends State<PostContainer> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     late Size size = MediaQuery.of(context).size;
     String tag = "";
@@ -52,17 +57,18 @@ class _PostContainerState extends State<PostContainer> {
             children: [
               Row(children: [
                 CircleAvatar(
-                    foregroundImage: widget.reporter?.photo?.image ??
-                        const AssetImage(
-                            'assets/images/logo-notext.png'),
-                    radius: 20,
-                    backgroundColor:
-                        const Color.fromARGB(255, 11, 14, 13),
-                    child: Image.asset("assets/images/anon.png")
-                    // const Text(
-                    //   'DP',
-                    //   style: TextStyle(color: Colors.white),
-                    ),
+                  foregroundImage:
+                      NetworkImage(widget.reporter?.photoUrl ?? ""),
+                  radius: 20,
+                  backgroundImage:
+                      AssetImage("assets/images/anon.png"),
+                  backgroundColor:
+                      const Color.fromARGB(255, 11, 14, 13),
+                  // child: Image.asset("assets/images/anon.png")
+                  // const Text(
+                  //   'DP',
+                  //   style: TextStyle(color: Colors.white),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
