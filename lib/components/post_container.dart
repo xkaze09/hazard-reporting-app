@@ -28,7 +28,7 @@ class _PostContainerState extends State<PostContainer> {
     } else if ((widget.report?.isVerified ?? false) &&
         currentUser?.getRole() == "Moderator") {
       tag = "Verified";
-    } else {
+    } else if ((widget.report?.isVerified != true)) {
       tag = "Unverified";
     }
     return Container(

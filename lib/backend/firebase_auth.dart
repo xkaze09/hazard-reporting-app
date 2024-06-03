@@ -52,9 +52,9 @@ void signInWithPassword(BuildContext context,
       await usersCollection.add(currentUser?.toFirestore());
     }
 
-    if (context.mounted) {
-      Navigator.of(context).pop();
-    }
+    // if (context.mounted) {
+    //   Navigator.of(context).pop();
+    // }
 
     if (authInstance.currentUser != null) {
       checkUserChanges();

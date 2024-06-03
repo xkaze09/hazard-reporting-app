@@ -185,13 +185,14 @@ class _ReportTileState extends State<ReportTile> {
                         try {
                           await reportsCollection
                               .doc(widget.report.id)
-                              .update({
+                              .set({
                             "title": titleController.text,
                             "description": descController.text,
                             "category": categoryControllerValue,
-                          });
+                          }, SetOptions(merge: true));
                           showSnackBar("Report Success");
-                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                         } catch (e) {
                           showSnackBar(
                               "An error has occured. Please try again.");

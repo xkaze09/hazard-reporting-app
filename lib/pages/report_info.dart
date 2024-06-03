@@ -444,6 +444,8 @@ class ResponderControl extends StatelessWidget {
                       "dateResolving": Timestamp.now(),
                     });
                   }
+                  Navigator.of(context)
+                      .popUntil((route) => route.isFirst);
                   //TODO implement stuff
                 },
                 style: ElevatedButton.styleFrom(
@@ -505,7 +507,8 @@ class ResponderControl extends StatelessWidget {
                                     'isPending': false,
                                     'dateResolved': Timestamp.now(),
                                   });
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context).popUntil(
+                                      (route) => route.isFirst);
                                 },
                                 style: TextButton.styleFrom(
                                   backgroundColor:

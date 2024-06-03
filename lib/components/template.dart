@@ -39,7 +39,7 @@ class _TemplateState extends State<Template> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
+      // navigatorKey: navigatorKey,
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       routes: {
         '/home': (context) => const TemplateBody(
@@ -159,7 +159,8 @@ class _PublicDrawerState extends State<PublicDrawer> {
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                          currentUser?.displayName ?? "No Name")),
+                          authInstance.currentUser?.displayName ??
+                              "No Name")),
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text(currentUser?.getRole() ?? "User"))
@@ -270,8 +271,6 @@ class _MyAppState extends State<MyApp> {
   late int _selectedPageIndex;
   late List<Widget> _pages;
   late PageController _pageController;
-  final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -294,7 +293,6 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: true,
