@@ -98,7 +98,7 @@ class _PostContainerState extends State<PostContainer> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text("Pending"),
+                      child: const Text(""),
                     ),
                   ),
                 ),
